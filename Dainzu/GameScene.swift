@@ -24,6 +24,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private var gameState: GameState = .GameWaitingToStart
     
+    // margin bars
+    private var topBarHeight: CGFloat = 0
+    private var bottomBarHeight: CGFloat = 0
+    private var verticalMiddleBar: CGFloat = 0
+    
     // playableRect
     private var playableRect: CGRect!
     private var playableRectOriginInScene: CGPoint {
@@ -38,11 +43,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var rightRing: RingNode!
     
     // layers
+    private let barsLayer = SKNode()
     private let ringsLayer = SKNode()
     
     // physics
     private var gravityAdjustedForDevice: CGFloat {
-        return Physics.GravityBaseY * (playableRect.height / Geometry.PlayableRectBaseHeight)
+        return Physics.GravityBaseY * (playableRect.height / Geometry.DeviceBaseHeight)
     }
     
     // -----------------------------------------------------//
@@ -64,9 +70,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Setup your scene here */
         if !contentCreated {
             
-            playableRect = CGRect(
-                origin: CGPoint(x: 0, y: 0), // origin on UIView coord system (0, 0) is top left
-                size: CGSize(width: size.width, height: size.height - bannerHeight))
+            playableRectSetup()
+            barsSetup() // must be called after playableRectSetup()
             
             if Test.TestModeOn {
                 print("Scene width: \(size.width), height: \(size.height)")
@@ -78,6 +83,60 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             contentCreated = true
         }
+        
+    }
+    
+    private func playableRectSetup() {
+        // playableRect uses all scene width, with a constant ratio to define height
+        let playableRectSize = CGSize(width: size.width, height: size.width / Geometry.PlayableRectRatio)
+        
+        // height left after playableRect and bannerHeight is left for top and bottom bars
+        var availableHeightLeft = size.height - bannerHeight - playableRectSize.height
+        
+        // top bar is given part (or all) of height left until reaching a limit (rel to playableRect height)
+        let topBarHeightLimit = playableRectSize.height * Geometry.TopRelativeHeightAssignedBeforeBottomBar
+        topBarHeight = min(availableHeightLeft, topBarHeightLimit)
+        
+        // the available height left to this point, is divided between top and bottom parts evenly
+        availableHeightLeft -= topBarHeight
+        topBarHeight += availableHeightLeft/2
+        bottomBarHeight += availableHeightLeft/2
+        
+        // UIView coord system ((0,0) is top left)
+        playableRect = CGRect(
+            origin: CGPoint(x: 0, y: topBarHeight),
+            size: playableRectSize)
+    }
+    
+    // must be called after playableRectSetup()
+    private func barsSetup() {
+        barsLayer.position = CGPoint(x: 0, y: 0) // bottom-left of screen
+        barsLayer.zPosition = ZPosition.BarsLayer
+        addChild(barsLayer)
+        
+        // bottom bar node
+        let topBarNode = SKSpriteNode(texture: nil, color: Color.TopBar, size: CGSize(
+            width: size.width,
+            height: topBarHeight))
+        topBarNode.anchorPoint = CGPoint(x: 0, y: 0)
+        topBarNode.position = CGPoint(x: 0, y: playableRectOriginInScene.y + playableRect.height)
+        barsLayer.addChild(topBarNode)
+        
+        // top (add bannerHeight to size to show bar color while banner is not shown)
+        let bottomBarNode = SKSpriteNode(texture: nil, color: Color.BottomBar, size: CGSize(
+            width: size.width,
+            height: bottomBarHeight + bannerHeight))
+        bottomBarNode.anchorPoint = CGPoint(x: 0, y: 0)
+        bottomBarNode.position = CGPoint(x: 0, y: 0)
+        barsLayer.addChild(bottomBarNode)
+        
+        // vertical middle
+        let verticalMiddleNode = SKSpriteNode(texture: nil, color: Color.VerticalMiddleBar, size: CGSize(
+            width: playableRect.width * Geometry.VerticalMiddleBarRelativeWidth,
+            height: playableRect.height))
+        verticalMiddleNode.anchorPoint = CGPoint(x: 0.5, y: 0)
+        verticalMiddleNode.position = CGPoint(x: playableRect.width/2, y: bannerHeight + bottomBarHeight)
+        barsLayer.addChild(verticalMiddleNode)
         
     }
     
@@ -113,17 +172,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let ringHeight = playableRect.height * Geometry.RingRelativeHeight
         let ringsSeparation = playableRect.width * Geometry.RingsRelativeSeparation
-        let floatingVerticalRange = ringHeight * Geometry.RingRelativeFloatingVerticalRange
+        let verticalRange = ringHeight * Geometry.RingRelativeFloatingVerticalRange
         
         // left ring
         leftRing = RingNode(height: ringHeight, pointToRight: false)
         leftRing.position = CGPoint(x: -ringsSeparation/2 - leftRing.size.width/2, y: 0)
-        leftRing.startFloatingAnimation(floatingVerticalRange, durationPerCycle: Time.RingFloatingCycle)
+        leftRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: true)
         ringsLayer.addChild(leftRing)
         
         rightRing = RingNode(height: ringHeight, pointToRight: true)
         rightRing.position = CGPoint(x: +ringsSeparation/2 + rightRing.size.width/2, y: 0)
-        rightRing.startFloatingAnimation(floatingVerticalRange, durationPerCycle: Time.RingFloatingCycle)
+        rightRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: false)
         ringsLayer.addChild(rightRing)
         
     }

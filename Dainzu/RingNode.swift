@@ -61,13 +61,21 @@ class RingNode: SKSpriteNode {
         physicsBody!.contactTestBitMask = PhysicsCategory.Ball | PhysicsCategory.Boundary
     }
     
-    func startFloatingAnimation(verticalRange: CGFloat, durationPerCycle: Double) {
+    func startFloatingAnimation(verticalRange: CGFloat, durationPerCycle: Double, startUpward: Bool) {
+        stopFloatingAnimation()
+        
         let moveUpAction = SKAction.moveByX(0, y: verticalRange/2, duration: durationPerCycle/4)
         let moveUpReverseAction = moveUpAction.reversedAction()
-        let moveDownAction = SKAction.moveByX(0, y: verticalRange/2, duration: durationPerCycle/4)
+        let moveDownAction = SKAction.moveByX(0, y: -verticalRange/2, duration: durationPerCycle/4)
         let moveDownReverseAction = moveDownAction.reversedAction()
-        let moveSequenceAction = SKAction.sequence([moveUpAction, moveUpReverseAction, moveDownAction, moveDownReverseAction])
-        runAction(SKAction.repeatActionForever(moveSequenceAction), withKey: ActionKey.RingFloatingAnimation)
+        
+        let moveSequence: [SKAction]
+        if startUpward {
+            moveSequence = [moveUpAction, moveUpReverseAction, moveDownAction, moveDownReverseAction]
+        } else {
+            moveSequence = [moveDownAction, moveDownReverseAction, moveUpAction, moveUpReverseAction]
+        }
+        runAction(SKAction.repeatActionForever(SKAction.sequence(moveSequence)), withKey: ActionKey.RingFloatingAnimation)
     }
     
     func stopFloatingAnimation() {
