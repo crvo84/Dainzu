@@ -217,7 +217,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let ballHeight = playableRect.height * Geometry.BallRelativeHeight
         let ballNode = BallNode(texture: nil, height: ballHeight, color: SKColor.whiteColor())
         ballNode.position = self.getBallRandomPosition(ballNode, screenSide: screenSide)
-        self.ballsLayer.addChild(ballNode)
+        ballsLayer.addChild(ballNode)
         ballNode.physicsBody?.velocity = getBallVelocity(ballNode, screenSide: screenSide)
     }
 
@@ -257,23 +257,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if gameState == .GameRunning {
             let collision: UInt32 = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
             
-            if collision == PhysicsCategory.Ball | PhysicsCategory.Ring {
-                let ballNode = contact.bodyA.node as? BallNode ?? contact.bodyB.node as! BallNode
-                ballNode.affectedByGravity = true
-            }
-            
-            if collision == PhysicsCategory.Ball | PhysicsCategory.MiddleBar {
-                let ballNode = contact.bodyA.node as? BallNode ?? contact.bodyB.node as! BallNode
-                ballNode.affectedByGravity = true
-//                ballNode.runAction(SKAction.fadeOutWithDuration(Time.BallFadeOut)) {
-//                    ballNode.removeFromParent()
-//                }
-            }
-            
-            if collision == PhysicsCategory.Ball | PhysicsCategory.Boundary {
-                let ballNode = contact.bodyA.node as? BallNode ?? contact.bodyB.node as! BallNode
-                ballNode.runAction(SKAction.fadeOutWithDuration(Time.BallFadeOut)) {
+            if let ballNode = contact.bodyA.node as? BallNode ?? (contact.bodyB.node as? BallNode ?? nil) {
+                
+                if collision == PhysicsCategory.Ball | PhysicsCategory.Ring {
+                    ballNode.affectedByGravity = true
+                    
+                } else if collision == PhysicsCategory.Ball | PhysicsCategory.MiddleBar {
                     ballNode.removeFromParent()
+                    
+                } else if collision == PhysicsCategory.Ball | PhysicsCategory.Boundary {
+                    ballNode.runAction(SKAction.fadeOutWithDuration(Time.BallFadeOut)) {
+                        ballNode.removeFromParent()
+                    }
                 }
             }
         }

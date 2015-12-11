@@ -20,7 +20,7 @@ class RingNode: SKSpriteNode {
         let leftNode = SKSpriteNode(texture: leftTexture, color: SKColor.clearColor(), size: leftNodeSize)
         leftNode.anchorPoint = CGPoint(x: 1, y: 0.5)
         leftNode.zPosition = ZPosition.RingAbove // higher zPosition for 3D effect
-        
+
         // right side
         let rightTexture = SKTexture(imageNamed: ImageFilename.RingRight)
         let rightTextureRatio = rightTexture.size().width / rightTexture.size().height

@@ -38,7 +38,7 @@ class BallNode: SKSpriteNode {
         physicsBody!.linearDamping = Physics.BallLinearDamping
         physicsBody!.categoryBitMask = PhysicsCategory.Ball
         physicsBody!.collisionBitMask = PhysicsCategory.Boundary | PhysicsCategory.MiddleBar | PhysicsCategory.Ring
-        physicsBody!.contactTestBitMask = PhysicsCategory.Boundary | PhysicsCategory.MiddleBar | PhysicsCategory.Ring
+        physicsBody!.contactTestBitMask = PhysicsCategory.Boundary | PhysicsCategory.MiddleBar | PhysicsCategory.Ring | PhysicsCategory.RingGoal
         
         name = NodeName.Ball
     }
