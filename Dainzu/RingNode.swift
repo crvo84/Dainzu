@@ -27,7 +27,6 @@ class RingNode: SKSpriteNode {
         let rightNodeSize = CGSize(width: height * rightTextureRatio, height: height)
         let rightNode = SKSpriteNode(texture: rightTexture, color: SKColor.clearColor(), size: rightNodeSize)
         rightNode.anchorPoint = CGPoint(x: 0, y: 0.5)
-        rightNode.zPosition = ZPosition.RingBelow // lower zPosition for 3D effect
         
         let ringSize = CGSize(width: leftNodeSize.width + rightNodeSize.width, height: height)
         

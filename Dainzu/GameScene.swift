@@ -105,12 +105,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // the available height left to this point, is divided between top and bottom parts evenly
         availableHeightLeft -= topBarHeight
         topBarHeight += availableHeightLeft/2
-        bottomBarHeight += availableHeightLeft/2
+        bottomBarHeight += bannerHeight + availableHeightLeft/2 // banner height is now considered into bottomBarHeight
         
         // UIView coord system ((0,0) is top left)
         playableRect = CGRect(
             origin: CGPoint(x: 0, y: topBarHeight),
             size: playableRectSize)
+    }
+    
+    private func worldSetup()
+    {
+        physicsWorld.contactDelegate = self
+        
+        physicsWorld.gravity = CGVector(dx: 0, dy: gravityAdjustedForDevice)
     }
     
     // must be called after playableRectSetup()
@@ -123,52 +130,47 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bottomBarNode = nil
         verticalMiddleBarNode = nil
         
-        // bottom bar node
+        // BOTTOM bar node
         topBarNode = SKSpriteNode(texture: nil, color: Color.TopBar, size: CGSize(
             width: size.width,
             height: topBarHeight))
-        topBarNode!.anchorPoint = CGPoint(x: 0, y: 0)
-        topBarNode!.position = CGPoint(x: 0, y: playableRectOriginInScene.y + playableRect.height)
+        topBarNode!.position = CGPoint(
+            x: size.width/2,
+            y: playableRectOriginInScene.y + playableRect.height + topBarHeight/2)
+        // physics body
+        topBarNode!.physicsBody = SKPhysicsBody(rectangleOfSize: topBarNode!.size)
+        topBarNode!.physicsBody!.dynamic = false
+        topBarNode!.physicsBody!.categoryBitMask = PhysicsCategory.Boundary
         barsLayer.addChild(topBarNode!)
         
-        // top (add bannerHeight to size to show bar color while banner is not shown)
+        // TOP (add bannerHeight to size to show bar color while banner is not shown)
         bottomBarNode = SKSpriteNode(texture: nil, color: Color.BottomBar, size: CGSize(
             width: size.width,
-            height: bottomBarHeight + bannerHeight))
-        bottomBarNode!.anchorPoint = CGPoint(x: 0, y: 0)
-        bottomBarNode!.position = CGPoint(x: 0, y: 0)
+            height: bottomBarHeight))
+        bottomBarNode!.position = CGPoint(x: size.width/2, y: bottomBarHeight/2)
+        // physics body
+        bottomBarNode!.physicsBody = SKPhysicsBody(rectangleOfSize: bottomBarNode!.size)
+        bottomBarNode!.physicsBody!.dynamic = false
+        bottomBarNode!.physicsBody!.categoryBitMask = PhysicsCategory.Boundary
         barsLayer.addChild(bottomBarNode!)
         
-        // vertical middle
+        // VERTICAL MIDDLE
         verticalMiddleBarNode = SKSpriteNode(texture: nil, color: Color.VerticalMiddleBar, size: CGSize(
             width: playableRect.width * Geometry.VerticalMiddleBarRelativeWidth,
             height: playableRect.height))
-        verticalMiddleBarNode!.anchorPoint = CGPoint(x: 0.5, y: 0)
-        verticalMiddleBarNode!.position = CGPoint(x: playableRect.width/2, y: bannerHeight + bottomBarHeight)
+        verticalMiddleBarNode!.position = CGPoint(
+            x: playableRect.width/2,
+            y: bottomBarHeight + playableRect.height/2)
+        // physics body
+        verticalMiddleBarNode!.physicsBody = SKPhysicsBody(rectangleOfSize: verticalMiddleBarNode!.size)
+        verticalMiddleBarNode!.physicsBody!.dynamic = false
+        verticalMiddleBarNode!.physicsBody!.categoryBitMask = PhysicsCategory.MiddleBar
         barsLayer.addChild(verticalMiddleBarNode!)
     }
     
     private func backgroundSetup() {
         // TODO: add background image instead
         backgroundColor = SKColor(red: 0.0, green: 0.0, blue: 0.2, alpha: 1.0)
-    }
-    
-    private func worldSetup()
-    {
-        physicsWorld.contactDelegate = self
-        
-        physicsWorld.gravity = CGVector(dx: 0, dy: gravityAdjustedForDevice)
-        
-        // playableRect translated to scene coord system
-        let edgeRect = CGRect(
-            x: playableRectOriginInScene.x,
-            y: playableRectOriginInScene.y,
-            width: playableRect.width,
-            height: playableRect.height)
-        physicsBody = SKPhysicsBody(edgeLoopFromRect: edgeRect)
-        physicsBody!.categoryBitMask = PhysicsCategory.Boundary
-        physicsBody!.contactTestBitMask = PhysicsCategory.Ring
-        physicsBody!.collisionBitMask = PhysicsCategory.Ring
     }
     
     private func ringsSetup() {
@@ -260,9 +262,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 ballNode.affectedByGravity = true
             }
             
-            if collision == PhysicsCategory.Ball | PhysicsCategory.Boundary {
+            if collision == PhysicsCategory.Ball | PhysicsCategory.MiddleBar {
                 let ballNode = contact.bodyA.node as? BallNode ?? contact.bodyB.node as! BallNode
                 ballNode.affectedByGravity = true
+//                ballNode.runAction(SKAction.fadeOutWithDuration(Time.BallFadeOut)) {
+//                    ballNode.removeFromParent()
+//                }
+            }
+            
+            if collision == PhysicsCategory.Ball | PhysicsCategory.Boundary {
+                let ballNode = contact.bodyA.node as? BallNode ?? contact.bodyB.node as! BallNode
+                ballNode.runAction(SKAction.fadeOutWithDuration(Time.BallFadeOut)) {
+                    ballNode.removeFromParent()
+                }
             }
         }
     }
@@ -281,19 +293,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func getBallVelocity(ballNode: BallNode, screenSide: ScreenSide) -> CGVector {
-        let dx = playableRect.width * Physics.BallImpulseMultiplier
+        let dx = playableRect.width * Physics.BallVelocityMultiplier
         return CGVector(
             dx: screenSide == .Left ? +dx : -dx,
             dy: 0)
     }
 
     private func getBallRandomPosition(ballNode: BallNode, screenSide: ScreenSide) -> CGPoint {
-        let minY = UInt32(ballNode.size.height/2)
-        let maxY = UInt32(playableRect.height - ballNode.size.height/2)
+        let minY = UInt32(ballNode.size.height)
+        let maxY = UInt32(playableRect.height - ballNode.size.height)
 
         return CGPoint(
-//            x: screenSide == .Left ? -ballNode.size.width/2 : playableRect.width + ballNode.size.width/2,
-            x: screenSide == .Left ? +ballNode.size.width/2 : playableRect.width - ballNode.size.width/2,
+            x: screenSide == .Left ? -ballNode.size.width/2 : playableRect.width + ballNode.size.width/2,
+//            x: screenSide == .Left ? +ballNode.size.width/2 : playableRect.width - ballNode.size.width/2,
             y: CGFloat(arc4random_uniform(maxY - minY) + minY))
     }
     

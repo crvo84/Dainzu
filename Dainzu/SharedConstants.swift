@@ -34,8 +34,7 @@ struct Geometry {
 struct ZPosition {
     static let RingAbove: CGFloat = 110
     static let BallsLayer: CGFloat = 100
-    static let RingsLayer: CGFloat = 100
-    static let RingBelow: CGFloat = 90
+    static let RingsLayer: CGFloat = 90
     static let BarsLayer: CGFloat = 80
 }
 
@@ -54,14 +53,15 @@ struct Physics {
     // ball
     static let BallDensity: CGFloat = 4
     static let BallLinearDamping: CGFloat = 0.2
-    static let BallImpulseMultiplier: CGFloat = 1
+    static let BallVelocityMultiplier: CGFloat = 0.5
 }
 
 struct PhysicsCategory {
-    static let None:        UInt32 = 0      // 0
-    static let Ring:        UInt32 = 0b1    // 1
-    static let Boundary:        UInt32 = 0b10   // 2
-    static let Ball:        UInt32 = 0b100  // 3
+    static let None:        UInt32 = 0
+    static let Ring:        UInt32 = 0b1
+    static let Boundary:    UInt32 = 0b10
+    static let MiddleBar:   UInt32 = 0b100
+    static let Ball:        UInt32 = 0b1000
     static let All:         UInt32 = UInt32.max
 }
 
@@ -70,7 +70,8 @@ struct Time {
     static let RingFloatingCycle: Double = 2
     // ball
     static let BallsWait: Double = 2
-    static let BallsMoveHalfWidth: Double = 2
+//    static let BallsMoveHalfWidth: Double = 2
+    static let BallFadeOut: Double = 0.3
 }
 
 struct Color {
