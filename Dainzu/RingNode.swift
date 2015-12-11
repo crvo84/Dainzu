@@ -57,8 +57,10 @@ class RingNode: SKSpriteNode {
         physicsBody!.density = Physics.RingDensity
         physicsBody!.linearDamping = Physics.RingLinearDamping
         physicsBody!.categoryBitMask = PhysicsCategory.Ring
-        physicsBody!.collisionBitMask = PhysicsCategory.Ball | PhysicsCategory.Boundary
+        physicsBody!.collisionBitMask = PhysicsCategory.Boundary
         physicsBody!.contactTestBitMask = PhysicsCategory.Ball | PhysicsCategory.Boundary
+        
+        name = NodeName.Ring
     }
     
     func startFloatingAnimation(verticalRange: CGFloat, durationPerCycle: Double, startUpward: Bool) {
@@ -82,7 +84,6 @@ class RingNode: SKSpriteNode {
         removeActionForKey(ActionKey.RingFloatingAnimation)
     }
     
-
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

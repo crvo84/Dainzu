@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		73DF508C1C1AA2740022312B /* BallNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DF508B1C1AA2740022312B /* BallNode.swift */; };
 		73F22FF61C18E68D00EC3762 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F22FF51C18E68D00EC3762 /* AppDelegate.swift */; };
 		73F22FFA1C18E68D00EC3762 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F22FF91C18E68D00EC3762 /* GameScene.swift */; };
 		73F22FFC1C18E68D00EC3762 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F22FFB1C18E68D00EC3762 /* GameViewController.swift */; };
@@ -49,6 +50,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		73DF508B1C1AA2740022312B /* BallNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallNode.swift; sourceTree = "<group>"; };
 		73F22FF21C18E68D00EC3762 /* Dainzu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dainzu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		73F22FF51C18E68D00EC3762 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		73F22FF91C18E68D00EC3762 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 		73F230461C18F63400EC3762 /* Node */ = {
 			isa = PBXGroup;
 			children = (
+				73DF508B1C1AA2740022312B /* BallNode.swift */,
 				73F230431C18F62100EC3762 /* RingNode.swift */,
 			);
 			name = Node;
@@ -353,6 +356,7 @@
 				73F22FFA1C18E68D00EC3762 /* GameScene.swift in Sources */,
 				73F230441C18F62100EC3762 /* RingNode.swift in Sources */,
 				73F22FFC1C18E68D00EC3762 /* GameViewController.swift in Sources */,
+				73DF508C1C1AA2740022312B /* BallNode.swift in Sources */,
 				73F2303A1C18F5B000EC3762 /* Int+Extensions.swift in Sources */,
 				73F230381C18F5B000EC3762 /* CGPoint+Extensions.swift in Sources */,
 				73F2303C1C18F5B000EC3762 /* SKAction+SpecialEffects.swift in Sources */,
@@ -588,6 +592,7 @@
 				73F230201C18E68E00EC3762 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		73F230211C18E68E00EC3762 /* Build configuration list for PBXNativeTarget "DainzuTests" */ = {
 			isa = XCConfigurationList;
@@ -596,6 +601,7 @@
 				73F230231C18E68E00EC3762 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		73F230241C18E68E00EC3762 /* Build configuration list for PBXNativeTarget "DainzuUITests" */ = {
 			isa = XCConfigurationList;
@@ -604,6 +610,7 @@
 				73F230261C18E68E00EC3762 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -28,7 +28,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var topBarHeight: CGFloat = 0
     private var bottomBarHeight: CGFloat = 0
     private var verticalMiddleBar: CGFloat = 0
-    
+    private var topBarNode: SKSpriteNode?
+    private var bottomBarNode: SKSpriteNode?
+    private var verticalMiddleBarNode: SKSpriteNode?
+
     // playableRect
     private var playableRect: CGRect!
     private var playableRectOriginInScene: CGPoint {
@@ -44,7 +47,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // layers
     private let barsLayer = SKNode()
+    private let initialUI = SKNode()
     private let ringsLayer = SKNode()
+    private let ballsLayer = SKNode()
     
     // physics
     private var gravityAdjustedForDevice: CGFloat {
@@ -114,30 +119,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         barsLayer.zPosition = ZPosition.BarsLayer
         addChild(barsLayer)
         
+        topBarNode = nil
+        bottomBarNode = nil
+        verticalMiddleBarNode = nil
+        
         // bottom bar node
-        let topBarNode = SKSpriteNode(texture: nil, color: Color.TopBar, size: CGSize(
+        topBarNode = SKSpriteNode(texture: nil, color: Color.TopBar, size: CGSize(
             width: size.width,
             height: topBarHeight))
-        topBarNode.anchorPoint = CGPoint(x: 0, y: 0)
-        topBarNode.position = CGPoint(x: 0, y: playableRectOriginInScene.y + playableRect.height)
-        barsLayer.addChild(topBarNode)
+        topBarNode!.anchorPoint = CGPoint(x: 0, y: 0)
+        topBarNode!.position = CGPoint(x: 0, y: playableRectOriginInScene.y + playableRect.height)
+        barsLayer.addChild(topBarNode!)
         
         // top (add bannerHeight to size to show bar color while banner is not shown)
-        let bottomBarNode = SKSpriteNode(texture: nil, color: Color.BottomBar, size: CGSize(
+        bottomBarNode = SKSpriteNode(texture: nil, color: Color.BottomBar, size: CGSize(
             width: size.width,
             height: bottomBarHeight + bannerHeight))
-        bottomBarNode.anchorPoint = CGPoint(x: 0, y: 0)
-        bottomBarNode.position = CGPoint(x: 0, y: 0)
-        barsLayer.addChild(bottomBarNode)
+        bottomBarNode!.anchorPoint = CGPoint(x: 0, y: 0)
+        bottomBarNode!.position = CGPoint(x: 0, y: 0)
+        barsLayer.addChild(bottomBarNode!)
         
         // vertical middle
-        let verticalMiddleNode = SKSpriteNode(texture: nil, color: Color.VerticalMiddleBar, size: CGSize(
+        verticalMiddleBarNode = SKSpriteNode(texture: nil, color: Color.VerticalMiddleBar, size: CGSize(
             width: playableRect.width * Geometry.VerticalMiddleBarRelativeWidth,
             height: playableRect.height))
-        verticalMiddleNode.anchorPoint = CGPoint(x: 0.5, y: 0)
-        verticalMiddleNode.position = CGPoint(x: playableRect.width/2, y: bannerHeight + bottomBarHeight)
-        barsLayer.addChild(verticalMiddleNode)
-        
+        verticalMiddleBarNode!.anchorPoint = CGPoint(x: 0.5, y: 0)
+        verticalMiddleBarNode!.position = CGPoint(x: playableRect.width/2, y: bannerHeight + bottomBarHeight)
+        barsLayer.addChild(verticalMiddleBarNode!)
     }
     
     private func backgroundSetup() {
@@ -184,7 +192,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightRing.position = CGPoint(x: +ringsSeparation/2 + rightRing.size.width/2, y: 0)
         rightRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: false)
         ringsLayer.addChild(rightRing)
+    }
+    
+    private func generateBalls() {
+        ballsLayer.position = playableRectOriginInScene
+        ballsLayer.zPosition = ZPosition.BallsLayer
+        addChild(ballsLayer)
+
+        let waitAction = SKAction.waitForDuration(Time.BallsWait)
+        let createLeftBallAction = SKAction.runBlock {
+            self.createNewBall(.Left)
+        }
+        let createRightBallAction = SKAction.runBlock {
+            self.createNewBall(.Right)
+        }
         
+        let sequenceAction = SKAction.sequence([waitAction, createLeftBallAction, waitAction, createRightBallAction])
+        runAction(SKAction.repeatActionForever(sequenceAction))
+    }
+    
+    private func createNewBall(screenSide: ScreenSide) {
+        let ballHeight = playableRect.height * Geometry.BallRelativeHeight
+        let ballNode = BallNode(texture: nil, height: ballHeight, color: SKColor.whiteColor())
+        ballNode.position = self.getBallRandomPosition(ballNode, screenSide: screenSide)
+        self.ballsLayer.addChild(ballNode)
+        ballNode.physicsBody?.velocity = getBallVelocity(ballNode, screenSide: screenSide)
     }
 
     private func startGame() {
@@ -193,7 +225,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightRing.stopFloatingAnimation()
         leftRing.physicsBody!.dynamic = true
         rightRing.physicsBody!.dynamic = true
+        
+        generateBalls()
     }
+    
+    
     
     // MARK: User interaction
     
@@ -207,20 +243,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         if location.x < size.width/2 {
-            applyImpulseToRing(leftRing)
+            leftRing.physicsBody?.applyImpulse(getRingImpulse(leftRing))
         } else if location.x > size.width/2 {
-            applyImpulseToRing(rightRing)
+            rightRing.physicsBody?.applyImpulse(getRingImpulse(rightRing))
         }
-
+    }
+    
+    // MARK: SKPhysicsContact Delegate
+    
+    func didBeginContact(contact: SKPhysicsContact) {
+        if gameState == .GameRunning {
+            let collision: UInt32 = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+            
+            if collision == PhysicsCategory.Ball | PhysicsCategory.Ring {
+                let ballNode = contact.bodyA.node as? BallNode ?? contact.bodyB.node as! BallNode
+                ballNode.affectedByGravity = true
+            }
+            
+            if collision == PhysicsCategory.Ball | PhysicsCategory.Boundary {
+                let ballNode = contact.bodyA.node as? BallNode ?? contact.bodyB.node as! BallNode
+                ballNode.affectedByGravity = true
+            }
+        }
     }
     
     // MARK: Helper functions
     
-    private func applyImpulseToRing(ringNode: RingNode) {
-//        var jumpHeight = Geometry.PlayerJumpRelHeight * playableRect.height
-//        if !isjumpingWithRotation {
-//            jumpHeight *= playerNode.physicsBody!.mass * Geometry.PlayerJumpAdjustingFactor
-//        }
+    private func getRingImpulse(ringNode: RingNode) -> CGVector {
         let impulse = CGVector(
             dx: 0,
             dy: ringNode.physicsBody!.mass * playableRect.height * Physics.RingImpulseMultiplier)
@@ -228,9 +277,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if ringNode.physicsBody!.velocity.dy < 0 {
             ringNode.physicsBody!.velocity = CGVector(dx: 0, dy: 0)
         }
-        ringNode.physicsBody!.applyImpulse(impulse)
+        return impulse
     }
     
+    private func getBallVelocity(ballNode: BallNode, screenSide: ScreenSide) -> CGVector {
+        let dx = playableRect.width * Physics.BallImpulseMultiplier
+        return CGVector(
+            dx: screenSide == .Left ? +dx : -dx,
+            dy: 0)
+    }
+
+    private func getBallRandomPosition(ballNode: BallNode, screenSide: ScreenSide) -> CGPoint {
+        let minY = UInt32(ballNode.size.height/2)
+        let maxY = UInt32(playableRect.height - ballNode.size.height/2)
+
+        return CGPoint(
+//            x: screenSide == .Left ? -ballNode.size.width/2 : playableRect.width + ballNode.size.width/2,
+            x: screenSide == .Left ? +ballNode.size.width/2 : playableRect.width - ballNode.size.width/2,
+            y: CGFloat(arc4random_uniform(maxY - minY) + minY))
+    }
     
     
     
