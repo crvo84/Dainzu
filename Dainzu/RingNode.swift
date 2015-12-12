@@ -10,44 +10,41 @@ import SpriteKit
 
 class RingNode: SKSpriteNode {
     
+    private var leftNode: SKCropNode?
+    private var rightNode: SKShapeNode?
+    
+    var ringColor: SKColor {
+        didSet {
+            ringPartsSetup(height: size.height, color: ringColor)
+        }
+    }
+    
+    
     // Designated Initializer
-    init(height: CGFloat, pointToRight: Bool)
+    init(height: CGFloat, color: SKColor, pointToRight: Bool)
     {
-        // left side
-        let leftTexture = SKTexture(imageNamed: ImageFilename.RingLeft)
-        let leftTextureRatio = leftTexture.size().width / leftTexture.size().height
-        let leftNodeSize = CGSize(width: height * leftTextureRatio, height: height)
-        let leftNode = SKSpriteNode(texture: leftTexture, color: SKColor.clearColor(), size: leftNodeSize)
-        leftNode.anchorPoint = CGPoint(x: 1, y: 0.5)
-        leftNode.zPosition = ZPosition.RingAbove // higher zPosition for 3D effect
-
-        // right side
-        let rightTexture = SKTexture(imageNamed: ImageFilename.RingRight)
-        let rightTextureRatio = rightTexture.size().width / rightTexture.size().height
-        let rightNodeSize = CGSize(width: height * rightTextureRatio, height: height)
-        let rightNode = SKSpriteNode(texture: rightTexture, color: SKColor.clearColor(), size: rightNodeSize)
-        rightNode.anchorPoint = CGPoint(x: 0, y: 0.5)
+        ringColor = color
         
-        let ringSize = CGSize(width: leftNodeSize.width + rightNodeSize.width, height: height)
+        let ringSize = CGSize(width: height * Geometry.RingRatio, height: height)
         
         // --------------------------------------------------------------------- //
         super.init(texture: nil, color: SKColor.clearColor(), size: ringSize)
         // --------------------------------------------------------------------- //
+
+        ringPartsSetup(height: height, color: color)
         
-        // add both ring sides to parent sprite node
-        addChild(leftNode)
-        addChild(rightNode)
+        // ring slope
+        zRotation = pointToRight ? Geometry.RingAngle : -Geometry.RingAngle
+        // original texture is pointing right
+        xScale = pointToRight ? 1 : -1
         
-        // original texture is pointing right, rotate to point left
-        zRotation = pointToRight ? 0 : π
-        
-        // physic bodies
-        let bodyRadius = height * Geometry.RingPhysicsBodyRelativeHeight/2
+        // PHYSIC BODY
+        let bodyRadius = height * Geometry.RingRelativeStrokeWidth/2
         // left
-        let lowerBodyCenter = CGPoint(x: 0, y: -height/2 + bodyRadius)
+        let lowerBodyCenter = CGPoint(x: 0, y: -height/2)
         let lowerBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: lowerBodyCenter)
         // right
-        let upperBodyCenter = CGPoint(x: 0, y: +height/2 - bodyRadius)
+        let upperBodyCenter = CGPoint(x: 0, y: +height/2)
         let upperBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: upperBodyCenter)
         
         physicsBody = SKPhysicsBody(bodies: [lowerBody, upperBody])
@@ -60,6 +57,43 @@ class RingNode: SKSpriteNode {
         physicsBody!.contactTestBitMask = PhysicsCategory.Ball | PhysicsCategory.Boundary
         
         name = NodeName.Ring
+    }
+    
+    private func ringPartsSetup(height height: CGFloat, color: SKColor) {
+        leftNode?.removeFromParent()
+        rightNode?.removeFromParent()
+        
+        leftNode = nil
+        rightNode = nil
+        
+        // LEFT PART
+        let ellipseNodeLeft = getEllipseNode(height, color: color)
+        let leftMask = SKSpriteNode(texture: nil, color: SKColor.blackColor(), size: CGSize(
+            width: ellipseNodeLeft.frame.size.width/2,
+            height: ellipseNodeLeft.frame.size.height))
+        leftMask.anchorPoint = CGPoint(x: 0, y: 0.5)
+        leftMask.position = CGPoint(x: -ellipseNodeLeft.frame.size.width/2, y: 0)
+        leftNode = SKCropNode()
+        leftNode!.addChild(ellipseNodeLeft)
+        leftNode!.maskNode = leftMask
+        leftNode!.zPosition = ZPosition.RingAbove // for 3D effect
+        leftNode!.position = CGPoint(x: -leftNode!.frame.size.width/4, y: 0)
+        addChild(leftNode!)
+        
+        // RIGHT PART
+        rightNode = getEllipseNode(height, color: color)
+        rightNode!.position = CGPoint(x: 0, y: 0)
+        addChild(rightNode!)
+    }
+
+    private func getEllipseNode(height: CGFloat, color: SKColor) -> SKShapeNode {
+        let ellipseNode = SKShapeNode(ellipseOfSize: CGSize(
+            width: height * Geometry.RingRatio,
+            height: height))
+        ellipseNode.strokeColor = color
+        ellipseNode.lineWidth = height * Geometry.RingRelativeStrokeWidth
+        ellipseNode.name = NodeName.RingPart
+        return ellipseNode
     }
     
     func startFloatingAnimation(verticalRange: CGFloat, durationPerCycle: Double, startUpward: Bool) {

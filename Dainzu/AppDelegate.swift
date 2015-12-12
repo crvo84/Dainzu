@@ -16,6 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        userDefaultsSetup()
+        
         return true
     }
 
@@ -39,6 +42,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+    
+    // MARK: User Defaults
+    private func userDefaultsSetup()
+    {
+        let defaults = NSUserDefaults.standardUserDefaults()
+        
+        if defaults.objectForKey(UserDefaultsKey.ShowAds) == nil {
+            defaults.setBool(UserDefaults.ShowAds_Initial, forKey: UserDefaultsKey.ShowAds)
+        }
+        
+        if defaults.objectForKey(UserDefaultsKey.MusicOn) == nil {
+            defaults.setBool(UserDefaults.MusicOn_Initial, forKey: UserDefaultsKey.MusicOn)
+        }
+
+        if defaults.objectForKey(UserDefaultsKey.DarkColorsOn) == nil {
+            defaults.setBool(UserDefaults.DarkColorsOn, forKey: UserDefaultsKey.DarkColorsOn)
+        }
+        
+        
     }
 
 

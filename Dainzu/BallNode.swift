@@ -10,23 +10,37 @@ import SpriteKit
 
 class BallNode: SKSpriteNode {
     
+    private var circleNode: SKShapeNode?
+    
+    var ballColor: SKColor? {
+        didSet {
+            if ballColor != nil {
+                circleNode?.fillColor = ballColor!
+            }
+        }
+    }
+    
     var affectedByGravity = false {
         didSet {
             physicsBody?.affectedByGravity = affectedByGravity
         }
     }
 
-    init(texture: SKTexture?, height: CGFloat, color: SKColor) {
+    init(texture: SKTexture?, height: CGFloat, color: SKColor?) {
+        ballColor = color
+        
         let nodeRatio = texture != nil ? texture!.size().width / texture!.size().height : 1.0
         let nodeSize = CGSize(width: height * nodeRatio, height: height)
         
         super.init(texture: texture, color: SKColor.clearColor(), size: nodeSize)
         
         // if no given texture, add circle node
-        if texture == nil {
-            let circleNode = SKShapeNode(circleOfRadius: height/2)
-            circleNode.fillColor = color
-            addChild(circleNode)
+        if texture == nil && color != nil {
+            circleNode = SKShapeNode(circleOfRadius: height/2)
+            circleNode!.fillColor = color!
+            circleNode!.strokeColor = color!
+            circleNode!.lineWidth = 0
+            addChild(circleNode!)
         }
         
         // physics body

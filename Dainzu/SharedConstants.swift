@@ -12,7 +12,9 @@ struct Geometry {
     // rings
     static let RingsRelativeSeparation: CGFloat = 0.07 // total rings separation. Rel to playableRect width
     static let RingRelativeHeight: CGFloat = 0.2 // Rel to playableRect height
-    static let RingPhysicsBodyRelativeHeight: CGFloat = 0.09 // Rel to ringNode height
+    static let RingRatio: CGFloat = 0.25 // ring width/height
+    static let RingRelativeStrokeWidth: CGFloat = 0.1 // Relative to ring height
+    static let RingAngle: CGFloat = π/32 // Angle added to original position
     static let RingRelativeFloatingVerticalRange: CGFloat = 0.1 // relative to ringNode height
     
     // balls
@@ -39,8 +41,7 @@ struct ZPosition {
 }
 
 struct ImageFilename {
-    static let RingLeft = "ringLeft"
-    static let RingRight = "ringRight"
+
 }
 
 struct Physics {
@@ -53,7 +54,7 @@ struct Physics {
     // ball
     static let BallDensity: CGFloat = 4
     static let BallLinearDamping: CGFloat = 0.2
-    static let BallVelocityMultiplier: CGFloat = 0.5 // 0.5
+    static let BallVelocityMultiplier: CGFloat = 0.2 // 0.5
 }
 
 struct PhysicsCategory {
@@ -77,14 +78,30 @@ struct Time {
 struct Color {
     static let BackgroundLight = SKColor(red: 0.9, green: 1, blue: 1, alpha: 1.0)
     static let BackgroundDark = SKColor(red: 0, green: 0, blue: 0.1, alpha: 1.0)
-    static let BottomBar: SKColor = SKColor.orangeColor()
-    static let TopBar: SKColor = SKColor.orangeColor()
-    static let VerticalMiddleBar: SKColor = SKColor.orangeColor()
+    
+    static let BottomBarDark: SKColor = SKColor.orangeColor()
+    static let BottomBarLight: SKColor = SKColor.darkGrayColor()
+    
+    static let TopBarDark: SKColor = SKColor.orangeColor()
+    static let TopBarLight: SKColor = SKColor.darkGrayColor()
+    
+    static let VerticalMiddleBarDark: SKColor = SKColor.orangeColor()
+    static let VerticalMiddleBarLight: SKColor = SKColor.darkGrayColor()
+    
+    static let RingDark: SKColor = SKColor.orangeColor()
+    static let RingLight: SKColor = SKColor.darkGrayColor()
+    
+    static let BallDark: SKColor = SKColor.whiteColor()
+    static let BallLight: SKColor = SKColor.darkGrayColor()
 }
 
 struct NodeName {
     static let Ring = "ringNode"
+    static let RingPart = "ringPartNode"
     static let Ball = "ballNode"
+    
+    // TODO: Test
+    static let TestButton = "testButton"
 }
 
 struct ActionKey {
@@ -94,12 +111,14 @@ struct ActionKey {
 struct UserDefaultsKey {
     static let ShowAds = "showAds"
     static let MusicOn = "musicOn"
+    static let DarkColorsOn = "darkColorsOn"
 }
 
 struct UserDefaults {
     // default values
     static let ShowAds_Initial = true
     static let MusicOn_Initial = true
+    static let DarkColorsOn = true
 }
 
 struct Test {

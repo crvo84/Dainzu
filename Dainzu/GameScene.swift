@@ -24,6 +24,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private var gameState: GameState = .GameWaitingToStart
     
+    // colors
+    private var darkColorsOn: Bool {
+        get {
+            return NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.DarkColorsOn)
+//            return false
+        }
+        set {
+            NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: UserDefaultsKey.DarkColorsOn)
+            updateColors()
+        }
+    }
+    
     // margin bars
     private var topBarHeight: CGFloat = 0
     private var bottomBarHeight: CGFloat = 0
@@ -86,6 +98,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             worldSetup()
             ringsSetup()
             
+            testButtonSetup()
+            
             contentCreated = true
         }
         
@@ -131,7 +145,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         verticalMiddleBarNode = nil
         
         // BOTTOM bar node
-        topBarNode = SKSpriteNode(texture: nil, color: Color.TopBar, size: CGSize(
+        let topBarColor = darkColorsOn ? Color.TopBarDark : Color.TopBarLight
+        topBarNode = SKSpriteNode(texture: nil, color: topBarColor, size: CGSize(
             width: size.width,
             height: topBarHeight))
         topBarNode!.position = CGPoint(
@@ -144,7 +159,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         barsLayer.addChild(topBarNode!)
         
         // TOP (add bannerHeight to size to show bar color while banner is not shown)
-        bottomBarNode = SKSpriteNode(texture: nil, color: Color.BottomBar, size: CGSize(
+        let bottomBarColor = darkColorsOn ? Color.BottomBarDark : Color.BottomBarLight
+        bottomBarNode = SKSpriteNode(texture: nil, color: bottomBarColor, size: CGSize(
             width: size.width,
             height: bottomBarHeight))
         bottomBarNode!.position = CGPoint(x: size.width/2, y: bottomBarHeight/2)
@@ -155,7 +171,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         barsLayer.addChild(bottomBarNode!)
         
         // VERTICAL MIDDLE
-        verticalMiddleBarNode = SKSpriteNode(texture: nil, color: Color.VerticalMiddleBar, size: CGSize(
+        let verticalMiddleBarColor = darkColorsOn ? Color.VerticalMiddleBarDark : Color.VerticalMiddleBarLight
+        verticalMiddleBarNode = SKSpriteNode(texture: nil, color: verticalMiddleBarColor, size: CGSize(
             width: playableRect.width * Geometry.VerticalMiddleBarRelativeWidth,
             height: playableRect.height))
         verticalMiddleBarNode!.position = CGPoint(
@@ -170,7 +187,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private func backgroundSetup() {
         // TODO: add background image instead
-        backgroundColor = SKColor(red: 0.0, green: 0.0, blue: 0.2, alpha: 1.0)
+        backgroundColor = darkColorsOn ? Color.BackgroundDark : Color.BackgroundLight
     }
     
     private func ringsSetup() {
@@ -184,13 +201,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let ringsSeparation = playableRect.width * Geometry.RingsRelativeSeparation
         let verticalRange = ringHeight * Geometry.RingRelativeFloatingVerticalRange
         
+        let ringsColor = darkColorsOn ? Color.RingDark : Color.RingLight
+        
         // left ring
-        leftRing = RingNode(height: ringHeight, pointToRight: false)
+        leftRing = RingNode(height: ringHeight, color: ringsColor, pointToRight: false)
         leftRing.position = CGPoint(x: -ringsSeparation/2 - leftRing.size.width/2, y: 0)
         leftRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: true)
         ringsLayer.addChild(leftRing)
         
-        rightRing = RingNode(height: ringHeight, pointToRight: true)
+        // right ring
+        rightRing = RingNode(height: ringHeight, color: ringsColor, pointToRight: true)
         rightRing.position = CGPoint(x: +ringsSeparation/2 + rightRing.size.width/2, y: 0)
         rightRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: false)
         ringsLayer.addChild(rightRing)
@@ -215,7 +235,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private func createNewBall(screenSide: ScreenSide) {
         let ballHeight = playableRect.height * Geometry.BallRelativeHeight
-        let ballNode = BallNode(texture: nil, height: ballHeight, color: SKColor.whiteColor())
+        let ballNode = BallNode(texture: nil, height: ballHeight, color: darkColorsOn ? Color.BallDark : Color.BallLight)
         ballNode.position = self.getBallRandomPosition(ballNode, screenSide: screenSide)
         ballsLayer.addChild(ballNode)
         ballNode.physicsBody?.velocity = getBallVelocity(ballNode, screenSide: screenSide)
@@ -231,6 +251,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         generateBalls()
     }
     
+    // MARK: Update methods
+    
+    private func updateColors() {
+        let dark = darkColorsOn
+        // background
+        backgroundColor = dark ? Color.BackgroundDark : Color.BackgroundLight
+        // bars
+        topBarNode?.color = dark ? Color.TopBarDark : Color.TopBarLight
+        bottomBarNode?.color = dark ? Color.BottomBarDark : Color.BottomBarLight
+        verticalMiddleBarNode?.color = dark ? Color.VerticalMiddleBarDark : Color.VerticalMiddleBarLight
+        // rings
+        leftRing.ringColor = dark ? Color.RingDark : Color.RingLight
+        rightRing.ringColor = dark ? Color.RingDark : Color.RingLight
+        // balls
+        ballsLayer.enumerateChildNodesWithName(NodeName.Ball) {
+            node, stop in
+            if let ballNode = node as? BallNode {
+                ballNode.ballColor = dark ? Color.BallDark : Color.BallLight
+            }
+        }
+
+        // TODO: score and money labels
+        
+    }
+    
     
     
     // MARK: User interaction
@@ -238,7 +283,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let touch = touches.first!
         let location = touch.locationInNode(self)
-//        let touchedNode = self.nodeAtPoint(location)
+        let touchedNode = self.nodeAtPoint(location)
+        
+        if let nodeName = touchedNode.name {
+            switch nodeName {
+            case NodeName.TestButton:
+                darkColorsOn = !darkColorsOn
+            default:
+                break
+            }
+        }
         
         if gameState == .GameWaitingToStart {
             startGame()
@@ -249,6 +303,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if location.x > size.width/2 {
             rightRing.physicsBody?.applyImpulse(getRingImpulse(rightRing))
         }
+        
     }
     
     // MARK: SKPhysicsContact Delegate
@@ -312,6 +367,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     
+    
+    // MARK: TEST
+    
+    private func testButtonSetup() {
+        let side = topBarHeight * 2
+        let offset: CGFloat = 8
+        let testButton = SKSpriteNode(texture: nil, color: SKColor.grayColor(), size: CGSize(
+            width: side,
+            height: side))
+        testButton.zPosition = 1000
+        testButton.anchorPoint = CGPoint(x: 0, y: 1)
+        testButton.position = CGPoint(x: offset, y: size.height - offset)
+        testButton.name = NodeName.TestButton
+        addChild(testButton)
+    }
     
     
     
