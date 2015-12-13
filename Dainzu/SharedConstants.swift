@@ -22,7 +22,7 @@ struct Geometry {
     static let RingGoalRelativeHeight: CGFloat = 0.7 // Rel to ringNode height
     
     // balls
-    static let BallRelativeHeight: CGFloat = 0.07 // Rel to playableRect height
+    static let BallRelativeHeight: CGFloat = 0.09 // Rel to playableRect height
     static let BallPhysicsBodyRelativeRadius: CGFloat = 0.5 // Rel to ballNode height
     
     // device
@@ -42,7 +42,7 @@ struct Geometry {
     // coins label
     static let CoinNodeRelativeHeight: CGFloat = 0.45 // relative to topBarHeight
     static let CoinNodeRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
-    static let CoinsLabelRelativeSideOffset: CGFloat = 0.01 // relative to playableRect width
+    static let CoinsLabelRelativeSideOffset: CGFloat = 0.25 // relative to coinNode width
     static let CoinsLabelRelativeHeight: CGFloat = 0.5 // relative to topBarHeight
     static let CoinsLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width
 
@@ -110,7 +110,7 @@ struct Color {
     static let RingLight: SKColor = SKColor(red: 2.0/255.0, green: 24.0/255.0, blue: 33.0/255.0, alpha: 1.0)
     
     static let BallDark: SKColor = SKColor.whiteColor()
-    static let BallLight: SKColor = SKColor(red: 25.0/255.0, green: 52.0/255.0, blue: 63.0/255.0, alpha: 1.0)
+    static let BallLight: SKColor = SKColor.orangeColor()
     
     static let BallSpecial: SKColor = SKColor.yellowColor()
 }
@@ -161,7 +161,7 @@ struct UserDefaults {
 
 struct GameOption {
     static let SpecialBallsOn = true
-    static let SpecialBallsRatio: UInt32 = 10 // 1 in X
+    static let SpecialBallsRatio: UInt32 = 20 // 1 in X
 }
 
 struct Test {

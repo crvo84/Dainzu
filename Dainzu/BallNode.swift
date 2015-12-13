@@ -49,7 +49,7 @@ class BallNode: SKSpriteNode {
         let bodyRadius = height * Geometry.BallPhysicsBodyRelativeRadius
         physicsBody = SKPhysicsBody(circleOfRadius: bodyRadius)
         physicsBody!.affectedByGravity = affectedByGravity
-        physicsBody!.allowsRotation = true
+        physicsBody!.allowsRotation = true // TODO: check if this affects performance
         physicsBody!.density = Physics.BallDensity
         physicsBody!.linearDamping = Physics.BallLinearDamping
         physicsBody!.categoryBitMask = PhysicsCategory.Ball

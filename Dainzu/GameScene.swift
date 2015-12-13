@@ -253,7 +253,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         coinNode = BallNode(texture: nil, height: coinNodeHeight, color: Color.BallSpecial)
         coinNode!.physicsBody?.dynamic = false
         coinNode!.position = CGPoint(
-            x: playableRect.width/2 - playableRect.width * Geometry.CoinNodeRelativeSideOffset,
+            x: playableRect.width/2 - coinNode!.size.width/2 - playableRect.width * Geometry.CoinNodeRelativeSideOffset,
             y: playableRect.height/2 + topBarHeight/2)
         generalInfoLayer.addChild(coinNode!)
         
@@ -267,7 +267,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         coinsLabel!.verticalAlignmentMode = .Center
         coinsLabel!.horizontalAlignmentMode = .Right
         coinsLabel!.position = CGPoint(
-            x: coinNode!.position.x - coinNode!.size.width/2 - playableRect.width * Geometry.CoinsLabelRelativeSideOffset,
+            x: coinNode!.position.x - coinNode!.size.width/2 - coinNode!.size.width * Geometry.CoinsLabelRelativeSideOffset,
             y: playableRect.height/2 + topBarHeight/2)
         generalInfoLayer.addChild(coinsLabel!)
     }
@@ -287,7 +287,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // LEFT RING
         leftRing = RingNode(height: ringHeight, ringColor: ringColor, pointToRight: false)
-        leftRing.position = CGPoint(x: -ringsSeparation/2 - leftRing.size.width/2, y: 0)
+        leftRing.position = CGPoint(x: -ringsSeparation/2 - abs(leftRing.size.width)/2, y: 0)
         leftRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: true)
         ringsLayer.addChild(leftRing)
         // left ring goal node
@@ -301,7 +301,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // RIGHT RING
         rightRing = RingNode(height: ringHeight, ringColor: ringColor, pointToRight: true)
-        rightRing.position = CGPoint(x: +ringsSeparation/2 + rightRing.size.width/2, y: 0)
+        rightRing.position = CGPoint(x: +ringsSeparation/2 + abs(rightRing.size.width)/2, y: 0)
         rightRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: false)
         ringsLayer.addChild(rightRing)
         // right ring goal node
@@ -346,13 +346,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private func createNewBall(screenSide: ScreenSide) {
         let isSpecial = GameOption.SpecialBallsOn && arc4random_uniform(GameOption.SpecialBallsRatio) == 0
+        
+        // TODO: choose from available textures
+        var ballTexture: SKTexture?
         let ballColor: SKColor
         if isSpecial {
             ballColor = Color.BallSpecial
         } else {
+            ballTexture = SKTexture(imageNamed: "tennisBall")
             ballColor = darkColorsOn ? Color.BallDark : Color.BallLight
         }
-        let ballNode = BallNode(texture: nil, height: ballHeight, color: ballColor)
+        
+        let ballNode = BallNode(texture: ballTexture, height: ballHeight, color: ballColor)
         ballNode.isSpecial = isSpecial
         ballNode.position = self.getBallRandomPosition(ballNode, screenSide: screenSide)
         ballsLayer.addChild(ballNode)
@@ -522,8 +527,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: TEST
     
     private func testButtonSetup() {
-        let side = topBarHeight * 1.5
-        let offset: CGFloat = 8
+        let side = topBarHeight * 1
+        let offset: CGFloat = 0
         
         // testButton1
         let testButton1 = SKSpriteNode(texture: nil, color: SKColor.grayColor(), size: CGSize(width: side, height: side))
@@ -534,7 +539,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(testButton1)
         
         // testButton2
-        let testButton2 = SKSpriteNode(texture: nil, color: SKColor.grayColor(), size: CGSize(width: side, height: side))
+        let testButton2 = SKSpriteNode(texture: nil, color: SKColor.darkGrayColor(), size: CGSize(width: side, height: side))
         testButton2.zPosition = 1000
         testButton2.anchorPoint = CGPoint(x: 0, y: 1)
         testButton2.position = CGPoint(
@@ -542,6 +547,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             y: testButton1.position.y)
         testButton2.name = NodeName.TestButton2
         addChild(testButton2)
+        
     }
     
     
