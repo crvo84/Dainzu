@@ -45,6 +45,7 @@ struct Geometry {
     static let CoinsLabelRelativeSideOffset: CGFloat = 0.25 // relative to coinNode width
     static let CoinsLabelRelativeHeight: CGFloat = 0.5 // relative to topBarHeight
     static let CoinsLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width
+    static let CoinsLabelFlashActionMaxScale: CGFloat = 1.5
 
 }
 
@@ -91,6 +92,8 @@ struct Time {
     // ball
     static let BallsWait: Double = 1
     static let BallFadeOut: Double = 0.3
+    // coin count
+    static let CoinsLabelFlashAction: Double = 0.2
 }
 
 struct Color {
@@ -100,14 +103,14 @@ struct Color {
     static let BottomBarDark: SKColor = SKColor.orangeColor()
     static let BottomBarLight: SKColor = SKColor(red: 3.0/255.0, green: 41.0/255.0, blue: 56.0/255.0, alpha: 1.0)
     
-    static let TopBarDark: SKColor = SKColor.orangeColor()
+    static let TopBarDark: SKColor = Color.BottomBarDark
     static let TopBarLight: SKColor = Color.BottomBarLight
     
-    static let VerticalMiddleBarDark: SKColor = SKColor.orangeColor()
+    static let VerticalMiddleBarDark: SKColor = Color.BottomBarDark
     static let VerticalMiddleBarLight: SKColor = Color.BottomBarLight
     
-    static let RingDark: SKColor = SKColor.orangeColor()
-    static let RingLight: SKColor = SKColor(red: 2.0/255.0, green: 24.0/255.0, blue: 33.0/255.0, alpha: 1.0)
+    static let RingDark: SKColor = Color.BottomBarDark
+    static let RingLight: SKColor = Color.BottomBarLight
     
     static let BallDark: SKColor = SKColor.whiteColor()
     static let BallLight: SKColor = SKColor.orangeColor()
@@ -115,17 +118,17 @@ struct Color {
     static let BallSpecial: SKColor = SKColor.yellowColor()
 }
 
-struct FontName {
-    static let ScoreLabel = "Arial"
-    static let CoinsLabel = "Arial"
-}
-
 struct FontColor {
-    static let ScoreLabelDark: SKColor = SKColor.whiteColor()
-    static let ScoreLabelLight: SKColor = SKColor.orangeColor()
+    static let ScoreLabelDark: SKColor = Color.BackgroundDark
+    static let ScoreLabelLight: SKColor = Color.BackgroundLight
     
     static let CoinsLabelDark: SKColor = SKColor.whiteColor()
     static let CoinsLabelLight: SKColor = SKColor.whiteColor()
+}
+
+struct FontName {
+    static let ScoreLabel = "Arial"
+    static let CoinsLabel = "Arial"
 }
 
 struct NodeName {
@@ -140,6 +143,7 @@ struct NodeName {
 
 struct ActionKey {
     static let RingFloatingAnimation = "ringFloatingAnimation"
+    static let CoinsLabelFlashAction = "coinsLabelFlashAction"
 }
 
 struct UserDefaultsKey {
@@ -161,7 +165,7 @@ struct UserDefaults {
 
 struct GameOption {
     static let SpecialBallsOn = true
-    static let SpecialBallsRatio: UInt32 = 20 // 1 in X
+    static let SpecialBallsRatio: UInt32 = 10 // 1 in X
 }
 
 struct Test {

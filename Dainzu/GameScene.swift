@@ -75,6 +75,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             coinsLabel?.text = "\(newValue)"
         }
     }
+    private var coinNodeFlashAction: SKAction?
+    private var coinsLabelFlashAction: SKAction?
 
     // playableRect
     private var playableRect: CGRect!
@@ -270,6 +272,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             x: coinNode!.position.x - coinNode!.size.width/2 - coinNode!.size.width * Geometry.CoinsLabelRelativeSideOffset,
             y: playableRect.height/2 + topBarHeight/2)
         generalInfoLayer.addChild(coinsLabel!)
+        
+        let coinsLabelFlash = SKAction.scaleTo(Geometry.CoinsLabelFlashActionMaxScale, duration: Time.CoinsLabelFlashAction/2)
+        let coinsLabelFlashReverse = SKAction.scaleTo(1.0, duration: Time.CoinsLabelFlashAction/2)
+        coinsLabelFlashAction = SKAction.sequence([coinsLabelFlash, coinsLabelFlashReverse])
+        let coinNodeFlash = SKAction.scaleTo(Geometry.CoinsLabelFlashActionMaxScale, duration: Time.CoinsLabelFlashAction/2)
+        let coinNodeFlashReverse = SKAction.scaleTo(1.0, duration: Time.CoinsLabelFlashAction/2)
+        coinNodeFlashAction = SKAction.sequence([coinNodeFlash, coinNodeFlashReverse])
     }
     
     private func ringsSetup() {
@@ -469,6 +478,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 } else if collision == PhysicsCategory.Ball | PhysicsCategory.RingGoal {
                     if ballNode.isSpecial {
                         coinsCount++
+                        if coinNodeFlashAction != nil {
+                            coinNode?.runAction(coinNodeFlashAction!)
+                        }
+                        if coinsLabelFlashAction != nil {
+                            coinsLabel?.runAction(coinsLabelFlashAction!)
+                        }
                     }
                     score++
                 }
