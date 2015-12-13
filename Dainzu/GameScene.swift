@@ -58,12 +58,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var scoreLabel: SKLabelNode?
     private var score: Int = 0 {
         didSet {
+            // TODO: size or glow effect
             scoreLabel?.text = "\(score)"
         }
     }
     // coins
-//    private var coinsNode: SKSpriteNode?
+    private var coinNode: BallNode?
     private var coinsLabel: SKLabelNode?
+    private var coinsCount: Int {
+        get {
+            return NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultsKey.CoinsCount)
+        }
+        set {
+            // TODO: size or glow effect
+            NSUserDefaults.standardUserDefaults().setInteger(newValue, forKey: UserDefaultsKey.CoinsCount)
+            coinsLabel?.text = "\(newValue)"
+        }
+    }
 
     // playableRect
     private var playableRect: CGRect!
@@ -85,6 +96,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // layers
     private let barsLayer = SKNode()
+    private let generalInfoLayer = SKNode()
     private let gameInfoLayer = SKNode()
     private let ringsLayer = SKNode()
     private let ballsLayer = SKNode()
@@ -121,6 +133,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             playableRectSetup()
             barsSetup() // call after playableRectSetup()
+            
+            generalInfoLabelsSetup() // call after barsSetup()
             gameInfoLabelsSetup() // call after barsSetup()
             ringsSetup()
             
@@ -214,6 +228,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             y: playableRectOriginInScene.y + playableRect.height/2)
         addChild(gameInfoLayer)
         
+        // score label
         let scoreLabelHeight = topBarHeight * Geometry.ScoreLabelRelativeHeight
         let scoreLabelWidth = playableRect.width * Geometry.ScoreLabelRelativeWidth
         scoreLabel = SKLabelNode(text: "0")
@@ -224,6 +239,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         adjustFontSizeForLabel(scoreLabel!, tofitSize: CGSize(width: scoreLabelWidth, height: scoreLabelHeight))
         scoreLabel!.position = CGPoint(x: 0, y: +playableRect.height/2 + topBarHeight/2)
         gameInfoLayer.addChild(scoreLabel!)
+    }
+    
+    private func generalInfoLabelsSetup() {
+        generalInfoLayer.zPosition = ZPosition.GeneralInfoLayer
+        generalInfoLayer.position = CGPoint(
+            x: playableRectOriginInScene.x + playableRect.width/2,
+            y: playableRectOriginInScene.y + playableRect.height/2)
+        addChild(generalInfoLayer)
+        
+        // coin node
+        let coinNodeHeight = topBarHeight * Geometry.CoinNodeRelativeHeight
+        coinNode = BallNode(texture: nil, height: coinNodeHeight, color: Color.BallSpecial)
+        coinNode!.physicsBody?.dynamic = false
+        coinNode!.position = CGPoint(
+            x: playableRect.width/2 - playableRect.width * Geometry.CoinNodeRelativeSideOffset,
+            y: playableRect.height/2 + topBarHeight/2)
+        generalInfoLayer.addChild(coinNode!)
+        
+        // coins label
+        let coinsLabelHeight = topBarHeight * Geometry.CoinsLabelRelativeHeight
+        let coinsLabelWidth = playableRect.width * Geometry.CoinsLabelRelativeWidth
+        coinsLabel = SKLabelNode(text: "\(coinsCount)")
+        coinsLabel!.fontColor = darkColorsOn ? FontColor.CoinsLabelDark : FontColor.CoinsLabelLight
+        coinsLabel!.fontName = FontName.CoinsLabel
+        adjustFontSizeForLabel(coinsLabel!, tofitSize: CGSize(width: coinsLabelWidth, height: coinsLabelHeight))
+        coinsLabel!.verticalAlignmentMode = .Center
+        coinsLabel!.horizontalAlignmentMode = .Right
+        coinsLabel!.position = CGPoint(
+            x: coinNode!.position.x - coinNode!.size.width/2 - playableRect.width * Geometry.CoinsLabelRelativeSideOffset,
+            y: playableRect.height/2 + topBarHeight/2)
+        generalInfoLayer.addChild(coinsLabel!)
     }
     
     private func ringsSetup() {
@@ -307,6 +353,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             ballColor = darkColorsOn ? Color.BallDark : Color.BallLight
         }
         let ballNode = BallNode(texture: nil, height: ballHeight, color: ballColor)
+        ballNode.isSpecial = isSpecial
         ballNode.position = self.getBallRandomPosition(ballNode, screenSide: screenSide)
         ballsLayer.addChild(ballNode)
         ballNode.physicsBody?.velocity = getBallVelocity(ballNode, screenSide: screenSide)
@@ -339,7 +386,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ballsLayer.enumerateChildNodesWithName(NodeName.Ball) {
             node, stop in
             if let ballNode = node as? BallNode {
-                ballNode.ballColor = dark ? Color.BallDark : Color.BallLight
+                if ballNode.isSpecial {
+                    ballNode.ballColor = Color.BallSpecial
+                } else {
+                    ballNode.ballColor = dark ? Color.BallDark : Color.BallLight
+                }
             }
         }
         // score label
@@ -371,9 +422,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if let nodeName = touchedNode.name {
             switch nodeName {
-            case NodeName.TestButton:
+            case NodeName.TestButton1:
                 darkColorsOn = !darkColorsOn
-//                gravityNormal = !gravityNormal
+            case NodeName.TestButton2:
+                gravityNormal = !gravityNormal
             default:
                 break
             }
@@ -410,6 +462,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         ballNode.removeFromParent()
                     }
                 } else if collision == PhysicsCategory.Ball | PhysicsCategory.RingGoal {
+                    if ballNode.isSpecial {
+                        coinsCount++
+                    }
                     score++
                 }
             }
@@ -467,16 +522,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: TEST
     
     private func testButtonSetup() {
-        let side = topBarHeight * 2
+        let side = topBarHeight * 1.5
         let offset: CGFloat = 8
-        let testButton = SKSpriteNode(texture: nil, color: SKColor.grayColor(), size: CGSize(
-            width: side,
-            height: side))
-        testButton.zPosition = 1000
-        testButton.anchorPoint = CGPoint(x: 0, y: 1)
-        testButton.position = CGPoint(x: offset, y: size.height - offset)
-        testButton.name = NodeName.TestButton
-        addChild(testButton)
+        
+        // testButton1
+        let testButton1 = SKSpriteNode(texture: nil, color: SKColor.grayColor(), size: CGSize(width: side, height: side))
+        testButton1.zPosition = 1000
+        testButton1.anchorPoint = CGPoint(x: 0, y: 1)
+        testButton1.position = CGPoint(x: offset, y: size.height - offset)
+        testButton1.name = NodeName.TestButton1
+        addChild(testButton1)
+        
+        // testButton2
+        let testButton2 = SKSpriteNode(texture: nil, color: SKColor.grayColor(), size: CGSize(width: side, height: side))
+        testButton2.zPosition = 1000
+        testButton2.anchorPoint = CGPoint(x: 0, y: 1)
+        testButton2.position = CGPoint(
+            x: testButton1.position.x + testButton1.size.width + offset,
+            y: testButton1.position.y)
+        testButton2.name = NodeName.TestButton2
+        addChild(testButton2)
     }
     
     

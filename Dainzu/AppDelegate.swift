@@ -65,6 +65,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             defaults.setBool(UserDefaults.GravityNormal, forKey: UserDefaultsKey.GravityNormal)
         }
         
+        if defaults.objectForKey(UserDefaultsKey.CoinsCount) == nil {
+            defaults.setInteger(UserDefaults.CoinsCount, forKey: UserDefaultsKey.CoinsCount)
+        }
+        
     }
 
 

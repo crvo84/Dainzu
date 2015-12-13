@@ -40,12 +40,16 @@ struct Geometry {
     static let ScoreLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width
     
     // coins label
+    static let CoinNodeRelativeHeight: CGFloat = 0.45 // relative to topBarHeight
+    static let CoinNodeRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
+    static let CoinsLabelRelativeSideOffset: CGFloat = 0.01 // relative to playableRect width
     static let CoinsLabelRelativeHeight: CGFloat = 0.5 // relative to topBarHeight
     static let CoinsLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width
 
 }
 
 struct ZPosition {
+    static let GeneralInfoLayer: CGFloat = 250
     static let GameInfoLayer: CGFloat = 200
     static let RingAbove: CGFloat = 110
     static let BallsLayer: CGFloat = 100
@@ -121,7 +125,7 @@ struct FontColor {
     static let ScoreLabelLight: SKColor = SKColor.orangeColor()
     
     static let CoinsLabelDark: SKColor = SKColor.whiteColor()
-    static let CoinsLabelLight: SKColor = SKColor.orangeColor()
+    static let CoinsLabelLight: SKColor = SKColor.whiteColor()
 }
 
 struct NodeName {
@@ -130,7 +134,8 @@ struct NodeName {
     static let Ball = "ballNode"
     
     // TODO: Test
-    static let TestButton = "testButton"
+    static let TestButton1 = "testButton1"
+    static let TestButton2 = "testButton2"
 }
 
 struct ActionKey {
@@ -142,6 +147,7 @@ struct UserDefaultsKey {
     static let MusicOn = "musicOn"
     static let DarkColorsOn = "darkColorsOn"
     static let GravityNormal = "gravityNormal"
+    static let CoinsCount = "coinsCount"
 }
 
 struct UserDefaults {
@@ -150,6 +156,7 @@ struct UserDefaults {
     static let MusicOn_Initial = true
     static let DarkColorsOn = true
     static let GravityNormal = true
+    static let CoinsCount: Int = 0
 }
 
 struct GameOption {
