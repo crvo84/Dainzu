@@ -61,6 +61,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             defaults.setBool(UserDefaults.DarkColorsOn, forKey: UserDefaultsKey.DarkColorsOn)
         }
         
+        if defaults.objectForKey(UserDefaultsKey.GravityNormal) == nil {
+            defaults.setBool(UserDefaults.GravityNormal, forKey: UserDefaultsKey.GravityNormal)
+        }
         
     }
 

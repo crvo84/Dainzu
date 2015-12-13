@@ -28,11 +28,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var darkColorsOn: Bool {
         get {
             return NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.DarkColorsOn)
-//            return false
         }
         set {
             NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: UserDefaultsKey.DarkColorsOn)
             updateColors()
+        }
+    }
+    
+    // gravity
+    private var gravityNormal: Bool {
+        get {
+            return NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.GravityNormal)
+        }
+        set {
+            NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: UserDefaultsKey.GravityNormal)
+            updateGravity()
         }
     }
     
@@ -56,6 +66,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // rings
     private var leftRing: RingNode!
     private var rightRing: RingNode!
+    
+    // balls
+    private var ballHeight: CGFloat {
+        return playableRect.height * Geometry.BallRelativeHeight
+    }
     
     // layers
     private let barsLayer = SKNode()
@@ -87,16 +102,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Setup your scene here */
         if !contentCreated {
             
-            playableRectSetup()
-            barsSetup() // must be called after playableRectSetup()
-            
             if Test.TestModeOn {
                 print("Scene width: \(size.width), height: \(size.height)")
             }
             
-            backgroundSetup()
-            worldSetup()
+            physicsWorld.contactDelegate = self
+            
+            playableRectSetup()
+            barsSetup() // must be called after playableRectSetup()
             ringsSetup()
+            
+            updateGravity()
+            updateColors()
             
             testButtonSetup()
             
@@ -125,13 +142,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         playableRect = CGRect(
             origin: CGPoint(x: 0, y: topBarHeight),
             size: playableRectSize)
-    }
-    
-    private func worldSetup()
-    {
-        physicsWorld.contactDelegate = self
-        
-        physicsWorld.gravity = CGVector(dx: 0, dy: gravityAdjustedForDevice)
     }
     
     // must be called after playableRectSetup()
@@ -185,11 +195,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         barsLayer.addChild(verticalMiddleBarNode!)
     }
     
-    private func backgroundSetup() {
-        // TODO: add background image instead
-        backgroundColor = darkColorsOn ? Color.BackgroundDark : Color.BackgroundLight
-    }
-    
     private func ringsSetup() {
         ringsLayer.zPosition = ZPosition.RingsLayer
         ringsLayer.position = CGPoint(
@@ -201,16 +206,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let ringsSeparation = playableRect.width * Geometry.RingsRelativeSeparation
         let verticalRange = ringHeight * Geometry.RingRelativeFloatingVerticalRange
         
-        let ringsColor = darkColorsOn ? Color.RingDark : Color.RingLight
+        let ringColor = darkColorsOn ? Color.RingDark : Color.RingLight
         
-        // left ring
-        leftRing = RingNode(height: ringHeight, color: ringsColor, pointToRight: false)
+        // LEFT RING
+        leftRing = RingNode(height: ringHeight, ringColor: ringColor, pointToRight: false)
         leftRing.position = CGPoint(x: -ringsSeparation/2 - leftRing.size.width/2, y: 0)
         leftRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: true)
         ringsLayer.addChild(leftRing)
         
-        // right ring
-        rightRing = RingNode(height: ringHeight, color: ringsColor, pointToRight: true)
+        // RIGHT RING
+        rightRing = RingNode(height: ringHeight, ringColor: ringColor, pointToRight: true)
         rightRing.position = CGPoint(x: +ringsSeparation/2 + rightRing.size.width/2, y: 0)
         rightRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: false)
         ringsLayer.addChild(rightRing)
@@ -234,7 +239,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func createNewBall(screenSide: ScreenSide) {
-        let ballHeight = playableRect.height * Geometry.BallRelativeHeight
         let ballNode = BallNode(texture: nil, height: ballHeight, color: darkColorsOn ? Color.BallDark : Color.BallLight)
         ballNode.position = self.getBallRandomPosition(ballNode, screenSide: screenSide)
         ballsLayer.addChild(ballNode)
@@ -271,9 +275,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 ballNode.ballColor = dark ? Color.BallDark : Color.BallLight
             }
         }
-
         // TODO: score and money labels
+    }
+    
+    private func updateGravity() {
+        if rightRing != nil {
+            rightRing.gravityNormal = gravityNormal
+        }
         
+        if leftRing != nil {
+            leftRing.gravityNormal = gravityNormal
+        }
+        
+        let yGravity = gravityNormal ? gravityAdjustedForDevice : -gravityAdjustedForDevice
+        physicsWorld.gravity = CGVector(dx: 0, dy: yGravity)
     }
     
     
@@ -289,6 +304,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             switch nodeName {
             case NodeName.TestButton:
                 darkColorsOn = !darkColorsOn
+                gravityNormal = !gravityNormal
             default:
                 break
             }
@@ -332,13 +348,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: Helper functions
     
     private func getRingImpulse(ringNode: RingNode) -> CGVector {
+        let yNormalImpulse = ringNode.physicsBody!.mass * playableRect.height * Physics.RingImpulseMultiplier
         let impulse = CGVector(
             dx: 0,
-            dy: ringNode.physicsBody!.mass * playableRect.height * Physics.RingImpulseMultiplier)
+            dy: gravityNormal ? yNormalImpulse : -yNormalImpulse)
         
-        if ringNode.physicsBody!.velocity.dy < 0 {
-            ringNode.physicsBody!.velocity = CGVector(dx: 0, dy: 0)
+        if let vel = ringNode.physicsBody?.velocity.dy {
+            if  (gravityNormal && vel < 0) || (!gravityNormal && vel > 0) {
+                ringNode.physicsBody!.velocity = CGVector(dx: 0, dy: 0)
+            }
         }
+
         return impulse
     }
     
@@ -362,10 +382,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     
-    
-    
-    
-    
+
     
     
     // MARK: TEST

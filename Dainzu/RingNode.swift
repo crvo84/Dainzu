@@ -19,11 +19,24 @@ class RingNode: SKSpriteNode {
         }
     }
     
+    var pointToRight: Bool {
+        didSet {
+            updateXScale()
+        }
+    }
+    
+    var gravityNormal: Bool = true {
+        didSet {
+            updateZRotation()
+        }
+    }
+    
     
     // Designated Initializer
-    init(height: CGFloat, color: SKColor, pointToRight: Bool)
+    init(height: CGFloat, ringColor: SKColor, pointToRight: Bool)
     {
-        ringColor = color
+        self.ringColor = ringColor
+        self.pointToRight = pointToRight
         
         let ringSize = CGSize(width: height * Geometry.RingRatio, height: height)
         
@@ -34,9 +47,10 @@ class RingNode: SKSpriteNode {
         ringPartsSetup(height: height, color: color)
         
         // ring slope
-        zRotation = pointToRight ? Geometry.RingAngle : -Geometry.RingAngle
+        updateZRotation()
+        
         // original texture is pointing right
-        xScale = pointToRight ? 1 : -1
+        updateXScale()
         
         // PHYSIC BODY
         let bodyRadius = height * Geometry.RingRelativeStrokeWidth/2
@@ -59,6 +73,18 @@ class RingNode: SKSpriteNode {
         name = NodeName.Ring
     }
     
+    private func updateXScale() {
+        xScale = pointToRight ? 1 : -1
+    }
+    
+    private func updateZRotation() {
+        if gravityNormal {
+            zRotation = pointToRight ? +Geometry.RingAngle : -Geometry.RingAngle
+        } else {
+            zRotation = pointToRight ? -Geometry.RingAngle : +Geometry.RingAngle
+        }
+    }
+    
     private func ringPartsSetup(height height: CGFloat, color: SKColor) {
         leftNode?.removeFromParent()
         rightNode?.removeFromParent()
@@ -66,7 +92,7 @@ class RingNode: SKSpriteNode {
         leftNode = nil
         rightNode = nil
         
-        // LEFT PART
+        // LEFT PART (half ellipse)
         let ellipseNodeLeft = getEllipseNode(height, color: color)
         let leftMask = SKSpriteNode(texture: nil, color: SKColor.blackColor(), size: CGSize(
             width: ellipseNodeLeft.frame.size.width/2,
@@ -80,7 +106,7 @@ class RingNode: SKSpriteNode {
         leftNode!.position = CGPoint(x: -leftNode!.frame.size.width/4, y: 0)
         addChild(leftNode!)
         
-        // RIGHT PART
+        // RIGHT PART (complete ellipse)
         rightNode = getEllipseNode(height, color: color)
         rightNode!.position = CGPoint(x: 0, y: 0)
         addChild(rightNode!)

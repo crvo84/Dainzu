@@ -20,6 +20,7 @@ struct Geometry {
     // balls
     static let BallRelativeHeight: CGFloat = 0.07 // Rel to playableRect height
     static let BallPhysicsBodyRelativeRadius: CGFloat = 0.45 // Rel to ballNode height
+    static let BallRelativeHeightToCountPoint: CGFloat = 0.8 // Rel to ballNode height
     
     // device
     static let DeviceBaseHeight: CGFloat = 320 // iPhone 5s landscape height (base to calculate gravity)
@@ -49,11 +50,11 @@ struct Physics {
     static let GravityBaseY: CGFloat = -5
     // ring
     static let RingDensity: CGFloat = 10
-    static let RingLinearDamping: CGFloat = 0.2
+    static let RingLinearDamping: CGFloat = 0.0
     static let RingImpulseMultiplier: CGFloat = 0.9
     // ball
     static let BallDensity: CGFloat = 4
-    static let BallLinearDamping: CGFloat = 0.2
+    static let BallLinearDamping: CGFloat = 0.0
     static let BallVelocityMultiplier: CGFloat = 0.2 // 0.5
 }
 
@@ -112,6 +113,7 @@ struct UserDefaultsKey {
     static let ShowAds = "showAds"
     static let MusicOn = "musicOn"
     static let DarkColorsOn = "darkColorsOn"
+    static let GravityNormal = "gravityNormal"
 }
 
 struct UserDefaults {
@@ -119,6 +121,7 @@ struct UserDefaults {
     static let ShowAds_Initial = true
     static let MusicOn_Initial = true
     static let DarkColorsOn = true
+    static let GravityNormal = true
 }
 
 struct Test {
