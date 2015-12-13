@@ -65,6 +65,7 @@ class RingNode: SKSpriteNode {
         physicsBody!.dynamic = false
         physicsBody!.allowsRotation = false
         physicsBody!.density = Physics.RingDensity
+        physicsBody!.restitution = Physics.RingBounciness
         physicsBody!.linearDamping = Physics.RingLinearDamping
         physicsBody!.categoryBitMask = PhysicsCategory.Ring
         physicsBody!.collisionBitMask = PhysicsCategory.Boundary

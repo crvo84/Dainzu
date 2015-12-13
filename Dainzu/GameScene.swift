@@ -53,6 +53,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var topBarNode: SKSpriteNode?
     private var bottomBarNode: SKSpriteNode?
     private var verticalMiddleBarNode: SKSpriteNode?
+    
+    // score
+    private var scoreLabel: SKLabelNode?
+    private var score: Int = 0 {
+        didSet {
+            scoreLabel?.text = "\(score)"
+        }
+    }
+    // coins
+//    private var coinsNode: SKSpriteNode?
+    private var coinsLabel: SKLabelNode?
 
     // playableRect
     private var playableRect: CGRect!
@@ -74,7 +85,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // layers
     private let barsLayer = SKNode()
-    private let initialUI = SKNode()
+    private let gameInfoLayer = SKNode()
     private let ringsLayer = SKNode()
     private let ballsLayer = SKNode()
     
@@ -109,7 +120,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             physicsWorld.contactDelegate = self
             
             playableRectSetup()
-            barsSetup() // must be called after playableRectSetup()
+            barsSetup() // call after playableRectSetup()
+            gameInfoLabelsSetup() // call after barsSetup()
             ringsSetup()
             
             updateGravity()
@@ -195,6 +207,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         barsLayer.addChild(verticalMiddleBarNode!)
     }
     
+    private func gameInfoLabelsSetup() {
+        gameInfoLayer.zPosition = ZPosition.GameInfoLayer
+        gameInfoLayer.position = CGPoint(
+            x: playableRectOriginInScene.x + playableRect.width/2,
+            y: playableRectOriginInScene.y + playableRect.height/2)
+        addChild(gameInfoLayer)
+        
+        let scoreLabelHeight = topBarHeight * Geometry.ScoreLabelRelativeHeight
+        let scoreLabelWidth = playableRect.width * Geometry.ScoreLabelRelativeWidth
+        scoreLabel = SKLabelNode(text: "0")
+        scoreLabel!.verticalAlignmentMode = .Center
+        scoreLabel!.horizontalAlignmentMode = .Center
+        scoreLabel!.fontName = FontName.ScoreLabel
+        scoreLabel!.fontColor = darkColorsOn ? FontColor.ScoreLabelDark : FontColor.ScoreLabelLight
+        adjustFontSizeForLabel(scoreLabel!, tofitSize: CGSize(width: scoreLabelWidth, height: scoreLabelHeight))
+        scoreLabel!.position = CGPoint(x: 0, y: +playableRect.height/2 + topBarHeight/2)
+        gameInfoLayer.addChild(scoreLabel!)
+    }
+    
     private func ringsSetup() {
         ringsLayer.zPosition = ZPosition.RingsLayer
         ringsLayer.position = CGPoint(
@@ -213,12 +244,41 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         leftRing.position = CGPoint(x: -ringsSeparation/2 - leftRing.size.width/2, y: 0)
         leftRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: true)
         ringsLayer.addChild(leftRing)
+        // left ring goal node
+        let leftRingGoal = getRingGoalForRing(leftRing)
+        leftRingGoal.position = CGPoint(x: -ballHeight * Geometry.RingGoalRelativeLengthToCountPoint, y: 0)
+        leftRing.addChild(leftRingGoal)
+
+        // left ring joint
+        let leftRingJoint = SKPhysicsJointFixed.jointWithBodyA(leftRingGoal.physicsBody!, bodyB: leftRing.physicsBody!, anchor: self.convertPoint(leftRingGoal.position, fromNode: leftRingGoal))
+        physicsWorld.addJoint(leftRingJoint)
         
         // RIGHT RING
         rightRing = RingNode(height: ringHeight, ringColor: ringColor, pointToRight: true)
         rightRing.position = CGPoint(x: +ringsSeparation/2 + rightRing.size.width/2, y: 0)
         rightRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: false)
         ringsLayer.addChild(rightRing)
+        // right ring goal node
+        let rightRingGoal = getRingGoalForRing(rightRing)
+        rightRingGoal.position = CGPoint(x: -ballHeight * Geometry.RingGoalRelativeLengthToCountPoint, y: 0)
+        rightRing.addChild(rightRingGoal)
+
+        // right ring joint
+        let rightRingJoint = SKPhysicsJointFixed.jointWithBodyA(rightRingGoal.physicsBody!, bodyB: rightRing.physicsBody!, anchor: self.convertPoint(rightRingGoal.position, fromNode: rightRingGoal))
+        physicsWorld.addJoint(rightRingJoint)
+    }
+    
+    private func getRingGoalForRing(ring: RingNode) -> SKSpriteNode {
+        let ringGoal = SKSpriteNode(texture: nil, color: SKColor.clearColor(), size: CGSize(
+            width: 2,
+            height: ring.size.height * Geometry.RingGoalRelativeHeight))
+        ringGoal.physicsBody = SKPhysicsBody(rectangleOfSize: ringGoal.size)
+        ringGoal.physicsBody!.categoryBitMask = PhysicsCategory.RingGoal
+        ringGoal.physicsBody!.collisionBitMask = PhysicsCategory.None
+        ringGoal.physicsBody!.contactTestBitMask = PhysicsCategory.Ball
+        ringGoal.physicsBody!.affectedByGravity = false
+        
+        return ringGoal
     }
     
     private func generateBalls() {
@@ -239,7 +299,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func createNewBall(screenSide: ScreenSide) {
-        let ballNode = BallNode(texture: nil, height: ballHeight, color: darkColorsOn ? Color.BallDark : Color.BallLight)
+        let isSpecial = GameOption.SpecialBallsOn && arc4random_uniform(GameOption.SpecialBallsRatio) == 0
+        let ballColor: SKColor
+        if isSpecial {
+            ballColor = Color.BallSpecial
+        } else {
+            ballColor = darkColorsOn ? Color.BallDark : Color.BallLight
+        }
+        let ballNode = BallNode(texture: nil, height: ballHeight, color: ballColor)
         ballNode.position = self.getBallRandomPosition(ballNode, screenSide: screenSide)
         ballsLayer.addChild(ballNode)
         ballNode.physicsBody?.velocity = getBallVelocity(ballNode, screenSide: screenSide)
@@ -275,6 +342,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 ballNode.ballColor = dark ? Color.BallDark : Color.BallLight
             }
         }
+        // score label
+        scoreLabel?.fontColor = dark ? FontColor.ScoreLabelDark : FontColor.ScoreLabelLight
         // TODO: score and money labels
     }
     
@@ -304,7 +373,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             switch nodeName {
             case NodeName.TestButton:
                 darkColorsOn = !darkColorsOn
-                gravityNormal = !gravityNormal
+//                gravityNormal = !gravityNormal
             default:
                 break
             }
@@ -340,6 +409,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     ballNode.runAction(SKAction.fadeOutWithDuration(Time.BallFadeOut)) {
                         ballNode.removeFromParent()
                     }
+                } else if collision == PhysicsCategory.Ball | PhysicsCategory.RingGoal {
+                    score++
                 }
             }
         }
@@ -375,9 +446,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         return CGPoint(
             x: screenSide == .Left ? -ballNode.size.width/2 : playableRect.width + ballNode.size.width/2,
-//            x: screenSide == .Left ? +ballNode.size.width/2 : playableRect.width - ballNode.size.width/2,
             y: CGFloat(arc4random_uniform(maxY - minY) + minY))
     }
+    
+    private func adjustFontSizeForLabel(labelNode: SKLabelNode, tofitSize size: CGSize) {
+        // Determine the font scaling factor that should let the label text fit in the given rectangle.
+        let scalingFactor = min(size.width / labelNode.frame.width, size.height / labelNode.frame.height)
+        
+        // Set fit font size
+        labelNode.fontSize = labelNode.fontSize * scalingFactor
+    }
+    
     
     
     

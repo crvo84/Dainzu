@@ -14,13 +14,16 @@ struct Geometry {
     static let RingRelativeHeight: CGFloat = 0.2 // Rel to playableRect height
     static let RingRatio: CGFloat = 0.25 // ring width/height
     static let RingRelativeStrokeWidth: CGFloat = 0.1 // Relative to ring height
-    static let RingAngle: CGFloat = π/32 // Angle added to original position
+    static let RingAngle: CGFloat = 0 // π/32 // Angle added to original position
     static let RingRelativeFloatingVerticalRange: CGFloat = 0.1 // relative to ringNode height
+    
+    // ring goal
+    static let RingGoalRelativeLengthToCountPoint: CGFloat = 0.5 // Rel to ballNode height
+    static let RingGoalRelativeHeight: CGFloat = 0.7 // Rel to ringNode height
     
     // balls
     static let BallRelativeHeight: CGFloat = 0.07 // Rel to playableRect height
-    static let BallPhysicsBodyRelativeRadius: CGFloat = 0.45 // Rel to ballNode height
-    static let BallRelativeHeightToCountPoint: CGFloat = 0.8 // Rel to ballNode height
+    static let BallPhysicsBodyRelativeRadius: CGFloat = 0.5 // Rel to ballNode height
     
     // device
     static let DeviceBaseHeight: CGFloat = 320 // iPhone 5s landscape height (base to calculate gravity)
@@ -31,10 +34,19 @@ struct Geometry {
     // bars
     static let TopRelativeHeightAssignedBeforeBottomBar: CGFloat = 0.1 // relative to playableRect height
     static let VerticalMiddleBarRelativeWidth: CGFloat = 0.02 // relative to playableRect width
+    
+    // score label
+    static let ScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBarHeight
+    static let ScoreLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width
+    
+    // coins label
+    static let CoinsLabelRelativeHeight: CGFloat = 0.5 // relative to topBarHeight
+    static let CoinsLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width
 
 }
 
 struct ZPosition {
+    static let GameInfoLayer: CGFloat = 200
     static let RingAbove: CGFloat = 110
     static let BallsLayer: CGFloat = 100
     static let RingsLayer: CGFloat = 90
@@ -50,6 +62,7 @@ struct Physics {
     static let GravityBaseY: CGFloat = -5
     // ring
     static let RingDensity: CGFloat = 10
+    static let RingBounciness: CGFloat = 0.0
     static let RingLinearDamping: CGFloat = 0.0
     static let RingImpulseMultiplier: CGFloat = 0.9
     // ball
@@ -77,23 +90,38 @@ struct Time {
 }
 
 struct Color {
-    static let BackgroundLight = SKColor(red: 0.9, green: 1, blue: 1, alpha: 1.0)
     static let BackgroundDark = SKColor(red: 0, green: 0, blue: 0.1, alpha: 1.0)
+    static let BackgroundLight = SKColor(red: 202.0/255.0, green: 240.0/255.0, blue: 255.0/255.0, alpha: 1.0)
     
     static let BottomBarDark: SKColor = SKColor.orangeColor()
-    static let BottomBarLight: SKColor = SKColor.darkGrayColor()
+    static let BottomBarLight: SKColor = SKColor(red: 3.0/255.0, green: 41.0/255.0, blue: 56.0/255.0, alpha: 1.0)
     
     static let TopBarDark: SKColor = SKColor.orangeColor()
-    static let TopBarLight: SKColor = SKColor.darkGrayColor()
+    static let TopBarLight: SKColor = Color.BottomBarLight
     
     static let VerticalMiddleBarDark: SKColor = SKColor.orangeColor()
-    static let VerticalMiddleBarLight: SKColor = SKColor.darkGrayColor()
+    static let VerticalMiddleBarLight: SKColor = Color.BottomBarLight
     
     static let RingDark: SKColor = SKColor.orangeColor()
-    static let RingLight: SKColor = SKColor.darkGrayColor()
+    static let RingLight: SKColor = SKColor(red: 2.0/255.0, green: 24.0/255.0, blue: 33.0/255.0, alpha: 1.0)
     
     static let BallDark: SKColor = SKColor.whiteColor()
-    static let BallLight: SKColor = SKColor.darkGrayColor()
+    static let BallLight: SKColor = SKColor(red: 25.0/255.0, green: 52.0/255.0, blue: 63.0/255.0, alpha: 1.0)
+    
+    static let BallSpecial: SKColor = SKColor.yellowColor()
+}
+
+struct FontName {
+    static let ScoreLabel = "Arial"
+    static let CoinsLabel = "Arial"
+}
+
+struct FontColor {
+    static let ScoreLabelDark: SKColor = SKColor.whiteColor()
+    static let ScoreLabelLight: SKColor = SKColor.orangeColor()
+    
+    static let CoinsLabelDark: SKColor = SKColor.whiteColor()
+    static let CoinsLabelLight: SKColor = SKColor.orangeColor()
 }
 
 struct NodeName {
@@ -122,6 +150,11 @@ struct UserDefaults {
     static let MusicOn_Initial = true
     static let DarkColorsOn = true
     static let GravityNormal = true
+}
+
+struct GameOption {
+    static let SpecialBallsOn = true
+    static let SpecialBallsRatio: UInt32 = 10 // 1 in X
 }
 
 struct Test {

@@ -10,6 +10,8 @@ import SpriteKit
 
 class BallNode: SKSpriteNode {
     
+    var isSpecial = false
+    
     private var circleNode: SKShapeNode?
     
     var ballColor: SKColor? {
