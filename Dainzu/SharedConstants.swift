@@ -91,6 +91,7 @@ struct Time {
     static let RingFloatingCycle: Double = 2
     // ball
     static let BallsWait: Double = 3
+    static let BallRotate: Double = 3
     static let BallFadeOut: Double = 0.3
     // coin count
     static let CoinsLabelFlashAction: Double = 0.2
@@ -143,8 +144,8 @@ struct NodeName {
 
 struct ActionKey {
     static let RingFloatingAnimation = "ringFloatingAnimation"
-    static let BallsGenerationAction = "ballsGenerationAction"
-    static let CoinsLabelFlashAction = "coinsLabelFlashAction"
+    static let BallsGeneration = "ballsGenerationAction"
+    static let BallRotate = "ballRotateAction"
 }
 
 struct UserDefaultsKey {

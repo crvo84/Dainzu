@@ -356,21 +356,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         let waitAction = SKAction.waitForDuration(Time.BallsWait)
         
-//        let createLeftBallAction = SKAction.runBlock {
-//            self.createNewBall(.Left)
-//        }
-//        let createRightBallAction = SKAction.runBlock {
-//            self.createNewBall(.Right)
-//        }
-//        let sequenceAction = SKAction.sequence([waitAction, createLeftBallAction, waitAction, createRightBallAction])
-//        runAction(SKAction.repeatActionForever(sequenceAction))
-        
         let createBallsAction = SKAction.runBlock {
             self.createNewBall(.Left)
             self.createNewBall(.Right)
         }
         let sequenceAction = SKAction.sequence([createBallsAction, waitAction])
-        runAction(SKAction.repeatActionForever(sequenceAction), withKey: ActionKey.BallsGenerationAction)
+        runAction(SKAction.repeatActionForever(sequenceAction), withKey: ActionKey.BallsGeneration)
     }
     
     private func createNewBall(screenSide: ScreenSide) {
@@ -391,6 +382,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ballNode.position = self.getBallRandomPosition(ballNode, screenSide: screenSide)
         ballsLayer.addChild(ballNode)
         ballNode.physicsBody?.velocity = getBallVelocity(ballNode, screenSide: screenSide)
+        
+        let rotateAction = SKAction.repeatActionForever(SKAction.rotateByAngle(2*π, duration: Time.BallRotate))
+        ballNode.runAction(rotateAction, withKey: ActionKey.BallRotate)
     }
 
     private func startGame() {

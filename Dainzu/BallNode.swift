@@ -24,6 +24,7 @@ class BallNode: SKSpriteNode {
     
     var affectedByGravity = false {
         didSet {
+            removeAllActions()
             physicsBody?.affectedByGravity = affectedByGravity
         }
     }
