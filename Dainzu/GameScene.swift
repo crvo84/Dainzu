@@ -124,7 +124,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: Game Setup
     override func didMoveToView(view: SKView) {
-        view.multipleTouchEnabled = true
+//        view.multipleTouchEnabled = true
         
         /* Setup your scene here */
         if !contentCreated {
@@ -148,8 +148,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             testButtonSetup()
             
             contentCreated = true
+            
+            printFonts()
         }
         
+    }
+    
+    private func printFonts()
+    {
+        let familyNames = UIFont.familyNames()
+        
+        for familyName in familyNames {
+            print(familyName)
+        }
     }
     
     private func playableRectSetup() {

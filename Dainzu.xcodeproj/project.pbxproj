@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		73DF508C1C1AA2740022312B /* BallNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DF508B1C1AA2740022312B /* BallNode.swift */; };
+		73DF50921C1F3A0F0022312B /* Snaps Taste.otf in Resources */ = {isa = PBXBuildFile; fileRef = 73DF50911C1F39F70022312B /* Snaps Taste.otf */; };
 		73F22FF61C18E68D00EC3762 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F22FF51C18E68D00EC3762 /* AppDelegate.swift */; };
 		73F22FFA1C18E68D00EC3762 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F22FF91C18E68D00EC3762 /* GameScene.swift */; };
 		73F22FFC1C18E68D00EC3762 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F22FFB1C18E68D00EC3762 /* GameViewController.swift */; };
@@ -51,6 +52,7 @@
 
 /* Begin PBXFileReference section */
 		73DF508B1C1AA2740022312B /* BallNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallNode.swift; sourceTree = "<group>"; };
+		73DF50911C1F39F70022312B /* Snaps Taste.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Snaps Taste.otf"; sourceTree = "<group>"; };
 		73F22FF21C18E68D00EC3762 /* Dainzu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dainzu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		73F22FF51C18E68D00EC3762 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		73F22FF91C18E68D00EC3762 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 				73F230461C18F63400EC3762 /* Node */,
 				73F230451C18F62500EC3762 /* Controller */,
 				73F230001C18E68E00EC3762 /* Assets.xcassets */,
+				73DF50911C1F39F70022312B /* Snaps Taste.otf */,
 				73F2302A1C18F5B000EC3762 /* SKTUtils Swift 2.0 */,
 				73F230271C18E79500EC3762 /* Other resources */,
 			);
@@ -317,6 +320,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73DF50921C1F3A0F0022312B /* Snaps Taste.otf in Resources */,
 				73F230041C18E68E00EC3762 /* LaunchScreen.storyboard in Resources */,
 				73F230011C18E68E00EC3762 /* Assets.xcassets in Resources */,
 				73F22FFF1C18E68D00EC3762 /* Main.storyboard in Resources */,

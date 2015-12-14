@@ -127,8 +127,8 @@ struct FontColor {
 }
 
 struct FontName {
-    static let ScoreLabel = "Arial"
-    static let CoinsLabel = "Arial"
+    static let ScoreLabel = "Snaps Taste"
+    static let CoinsLabel = "Snaps Taste"
 }
 
 struct NodeName {
