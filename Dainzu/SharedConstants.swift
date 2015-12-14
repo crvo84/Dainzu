@@ -11,8 +11,8 @@ import SpriteKit
 struct Geometry {
     // rings
     static let RingsRelativeSeparation: CGFloat = 0.07 // total rings separation. Rel to playableRect width
-    static let RingRelativeHeight: CGFloat = 0.2 // Rel to playableRect height
-    static let RingRatio: CGFloat = 0.25 // ring width/height
+    static let RingRelativeHeight: CGFloat = 0.25 // Rel to playableRect height
+    static let RingRatio: CGFloat = 0.3 // ring width/height
     static let RingRelativeStrokeWidth: CGFloat = 0.1 // Relative to ring height
     static let RingAngle: CGFloat = 0 // π/32 // Angle added to original position
     static let RingRelativeFloatingVerticalRange: CGFloat = 0.1 // relative to ringNode height
@@ -22,7 +22,7 @@ struct Geometry {
     static let RingGoalRelativeHeight: CGFloat = 0.7 // Rel to ringNode height
     
     // balls
-    static let BallRelativeHeight: CGFloat = 0.09 // Rel to playableRect height
+    static let BallRelativeHeight: CGFloat = 0.11 // Rel to playableRect height
     static let BallPhysicsBodyRelativeRadius: CGFloat = 0.5 // Rel to ballNode height
     
     // device
@@ -90,7 +90,7 @@ struct Time {
     // ring
     static let RingFloatingCycle: Double = 2
     // ball
-    static let BallsWait: Double = 1
+    static let BallsWait: Double = 3
     static let BallFadeOut: Double = 0.3
     // coin count
     static let CoinsLabelFlashAction: Double = 0.2
@@ -143,6 +143,7 @@ struct NodeName {
 
 struct ActionKey {
     static let RingFloatingAnimation = "ringFloatingAnimation"
+    static let BallsGenerationAction = "ballsGenerationAction"
     static let CoinsLabelFlashAction = "coinsLabelFlashAction"
 }
 

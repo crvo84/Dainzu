@@ -124,6 +124,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: Game Setup
     override func didMoveToView(view: SKView) {
+        view.multipleTouchEnabled = true
+        
         /* Setup your scene here */
         if !contentCreated {
             
@@ -342,15 +344,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(ballsLayer)
 
         let waitAction = SKAction.waitForDuration(Time.BallsWait)
-        let createLeftBallAction = SKAction.runBlock {
+        
+//        let createLeftBallAction = SKAction.runBlock {
+//            self.createNewBall(.Left)
+//        }
+//        let createRightBallAction = SKAction.runBlock {
+//            self.createNewBall(.Right)
+//        }
+//        let sequenceAction = SKAction.sequence([waitAction, createLeftBallAction, waitAction, createRightBallAction])
+//        runAction(SKAction.repeatActionForever(sequenceAction))
+        
+        let createBallsAction = SKAction.runBlock {
             self.createNewBall(.Left)
-        }
-        let createRightBallAction = SKAction.runBlock {
             self.createNewBall(.Right)
         }
-        
-        let sequenceAction = SKAction.sequence([waitAction, createLeftBallAction, waitAction, createRightBallAction])
-        runAction(SKAction.repeatActionForever(sequenceAction))
+        let sequenceAction = SKAction.sequence([createBallsAction, waitAction])
+        runAction(SKAction.repeatActionForever(sequenceAction), withKey: ActionKey.BallsGenerationAction)
     }
     
     private func createNewBall(screenSide: ScreenSide) {
@@ -430,29 +439,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: User interaction
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        let touch = touches.first!
-        let location = touch.locationInNode(self)
-        let touchedNode = self.nodeAtPoint(location)
-        
-        if let nodeName = touchedNode.name {
-            switch nodeName {
-            case NodeName.TestButton1:
-                darkColorsOn = !darkColorsOn
-            case NodeName.TestButton2:
-                gravityNormal = !gravityNormal
-            default:
-                break
+//        let touch = touches.first!
+        for touch in touches {
+            let location = touch.locationInNode(self)
+            let touchedNode = self.nodeAtPoint(location)
+            
+            if let nodeName = touchedNode.name {
+                switch nodeName {
+                case NodeName.TestButton1:
+                    darkColorsOn = !darkColorsOn
+                case NodeName.TestButton2:
+                    gravityNormal = !gravityNormal
+                default:
+                    break
+                }
             }
-        }
-        
-        if gameState == .GameWaitingToStart {
-            startGame()
-        }
-
-        if location.x < size.width/2 {
-            leftRing.physicsBody?.applyImpulse(getRingImpulse(leftRing))
-        } else if location.x > size.width/2 {
-            rightRing.physicsBody?.applyImpulse(getRingImpulse(rightRing))
+            
+            if gameState == .GameWaitingToStart {
+                startGame()
+            }
+            
+            if location.x < size.width/2 {
+                leftRing.physicsBody?.applyImpulse(getRingImpulse(leftRing))
+            } else if location.x > size.width/2 {
+                rightRing.physicsBody?.applyImpulse(getRingImpulse(rightRing))
+            }
         }
         
     }
