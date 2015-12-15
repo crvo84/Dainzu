@@ -55,6 +55,9 @@ struct Geometry {
     static let MainTitleRelativeHeight: CGFloat = 0.25 // relative to playableRect height
     static let MainTitleRelativeWidth: CGFloat = 0.7 // relative to playableRect left side width
     static let MainTitleRelativeYPosition: CGFloat = 0.8 // relative to playableRect height
+    
+    // play button
+    static let PlayButtonRelativeHeight: CGFloat = 0.5 // relative to playableRect height
 }
 
 struct ZPosition {
@@ -68,7 +71,7 @@ struct ZPosition {
 }
 
 struct ImageFilename {
-
+    static let PlayButton = "playButton"
 }
 
 struct Physics {
@@ -126,6 +129,10 @@ struct Color {
     static let BallLight: SKColor = SKColor.orangeColor()
     
     static let BallSpecial: SKColor = SKColor.yellowColor()
+    
+    static let PlayButtonDark: SKColor = Color.BottomBarDark
+    static let PlayButtonLight: SKColor = Color.BottomBarLight
+    static let PlayButtonBlendFactor: CGFloat = 0.5
 }
 
 struct FontColor {
@@ -156,6 +163,7 @@ struct NodeName {
     static let Boundary = "boundaryNode"
     static let BestScoreLabel = "bestScoreLabel"
     static let MainTitleLabel = "mainTitleLabel"
+    static let PlayButton = "playButtonNode"
     
     // TODO: Test
     static let TestButton1 = "testButton1"
@@ -181,7 +189,7 @@ struct UserDefaults {
     // default values
     static let ShowAds_Initial = true
     static let MusicOn_Initial = true
-    static let DarkColorsOn = true
+    static let DarkColorsOn = false
     static let GravityNormal = true
     static let CoinsCount: Int = 0
     static let BestScore: Int = 0
@@ -195,6 +203,7 @@ struct Text {
 struct GameOption {
     static let SpecialBallsOn = true
     static let SpecialBallsRatio: UInt32 = 10 // 1 in X
+    static let ResetVelocityBeforeImpulse = true
 }
 
 struct Test {

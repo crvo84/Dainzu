@@ -52,6 +52,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // main title
     private var mainTitleLabel: SKLabelNode?
+    // play button
+    private var playButtonNode: SKSpriteNode?
     
     // margin bars
     private var topBarHeight: CGFloat = 0
@@ -267,6 +269,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             y: playableRect.height * Geometry.MainTitleRelativeYPosition - playableRect.height/2)
         mainTitleLabel!.name = NodeName.MainTitleLabel
         menuOnlyUILayer.addChild(mainTitleLabel!)
+        
+        // play button node
+        playButtonNode = SKSpriteNode(imageNamed: ImageFilename.PlayButton)
+        let playButtonRatio = playButtonNode!.size.width / playButtonNode!.size.height
+        let playButtonHeight = playableRect.height * Geometry.PlayButtonRelativeHeight
+        playButtonNode!.size = CGSize(
+            width: playButtonHeight * playButtonRatio,
+            height: playButtonHeight)
+        let heightAvailableForPlayButton = playableRect.height/2 + mainTitleLabel!.position.y - mainTitleLabel!.frame.size.height/2
+        playButtonNode!.position = CGPoint(
+            x: mainTitleLabel!.position.x,
+            y: -playableRect.height/2 + heightAvailableForPlayButton/2)
+        playButtonNode!.name = NodeName.PlayButton
+        playButtonNode!.color = darkColorsOn ? Color.PlayButtonDark : Color.PlayButtonLight
+        playButtonNode!.colorBlendFactor = Color.PlayButtonBlendFactor
+        menuOnlyUILayer.addChild(playButtonNode!)
         
         // best label
         let bestScoreLabelHeight = topBarHeight * Geometry.BestScoreLabelRelativeHeight
@@ -484,13 +502,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             if let nodeName = touchedNode.name {
                 switch nodeName {
-                    // TODO: Menu nodes
+                case NodeName.PlayButton:
+                    startGame()
                 default:
                     break
-                }
-            } else {
-                if location.x < size.width/2 {
-                    startGame()
                 }
             }
             
@@ -570,9 +585,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             dx: 0,
             dy: gravityNormal ? yNormalImpulse : -yNormalImpulse)
         
-        if let vel = ringNode.physicsBody?.velocity.dy {
-            if  (gravityNormal && vel < 0) || (!gravityNormal && vel > 0) {
-                ringNode.physicsBody!.velocity = CGVector(dx: 0, dy: 0)
+        if GameOption.ResetVelocityBeforeImpulse {
+            if let vel = ringNode.physicsBody?.velocity.dy {
+                if  (gravityNormal && vel < 0) || (!gravityNormal && vel > 0) {
+                    ringNode.physicsBody!.velocity = CGVector(dx: 0, dy: 0)
+                }
             }
         }
 
