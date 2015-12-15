@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		73DF508C1C1AA2740022312B /* BallNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DF508B1C1AA2740022312B /* BallNode.swift */; };
 		73DF50921C1F3A0F0022312B /* Snaps Taste.otf in Resources */ = {isa = PBXBuildFile; fileRef = 73DF50911C1F39F70022312B /* Snaps Taste.otf */; };
+		73DF50D21C20803D0022312B /* RingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DF50D11C20803D0022312B /* RingView.swift */; };
 		73F22FF61C18E68D00EC3762 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F22FF51C18E68D00EC3762 /* AppDelegate.swift */; };
 		73F22FFA1C18E68D00EC3762 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F22FF91C18E68D00EC3762 /* GameScene.swift */; };
 		73F22FFC1C18E68D00EC3762 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F22FFB1C18E68D00EC3762 /* GameViewController.swift */; };
@@ -53,6 +54,7 @@
 /* Begin PBXFileReference section */
 		73DF508B1C1AA2740022312B /* BallNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallNode.swift; sourceTree = "<group>"; };
 		73DF50911C1F39F70022312B /* Snaps Taste.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Snaps Taste.otf"; sourceTree = "<group>"; };
+		73DF50D11C20803D0022312B /* RingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RingView.swift; sourceTree = "<group>"; };
 		73F22FF21C18E68D00EC3762 /* Dainzu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dainzu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		73F22FF51C18E68D00EC3762 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		73F22FF91C18E68D00EC3762 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -108,6 +110,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		73DF50D31C2092710022312B /* View */ = {
+			isa = PBXGroup;
+			children = (
+				73F22FFD1C18E68D00EC3762 /* Main.storyboard */,
+				73DF50D11C20803D0022312B /* RingView.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
 		73F22FE91C18E68D00EC3762 = {
 			isa = PBXGroup;
 			children = (
@@ -131,9 +142,9 @@
 		73F22FF41C18E68D00EC3762 /* Dainzu */ = {
 			isa = PBXGroup;
 			children = (
-				73F22FFD1C18E68D00EC3762 /* Main.storyboard */,
 				73F22FF51C18E68D00EC3762 /* AppDelegate.swift */,
 				73F230281C18EB4200EC3762 /* SharedConstants.swift */,
+				73DF50D31C2092710022312B /* View */,
 				73F230471C18F63F00EC3762 /* Scene */,
 				73F230461C18F63400EC3762 /* Node */,
 				73F230451C18F62500EC3762 /* Controller */,
@@ -353,6 +364,7 @@
 				73F2303B1C18F5B000EC3762 /* SKAction+Extensions.swift in Sources */,
 				73F230291C18EB4200EC3762 /* SharedConstants.swift in Sources */,
 				73F230391C18F5B000EC3762 /* CGVector+Extensions.swift in Sources */,
+				73DF50D21C20803D0022312B /* RingView.swift in Sources */,
 				73F2303F1C18F5B000EC3762 /* SKTAudio.swift in Sources */,
 				73F230371C18F5B000EC3762 /* CGFloat+Extensions.swift in Sources */,
 				73F2303E1C18F5B000EC3762 /* SKNode+Extensions.swift in Sources */,

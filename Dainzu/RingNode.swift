@@ -8,20 +8,18 @@
 
 import SpriteKit
 
-class RingNode: SKSpriteNode {
+class RingNode: SKNode {
+//    private var leftNode: SKCropNode?
+    private var leftNode: SKSpriteNode?
+    private var rightNode: SKSpriteNode?
     
-    private var leftNode: SKCropNode?
-    private var rightNode: SKShapeNode?
+    let size: CGSize
     
-    var ringColor: SKColor {
+    let pointToRight: Bool
+    
+    var color: SKColor {
         didSet {
-            ringPartsSetup(height: size.height, color: ringColor)
-        }
-    }
-    
-    var pointToRight: Bool {
-        didSet {
-            updateXScale()
+            ringPartsSetup()
         }
     }
     
@@ -31,20 +29,22 @@ class RingNode: SKSpriteNode {
         }
     }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // Designated Initializer
-    init(height: CGFloat, ringColor: SKColor, pointToRight: Bool)
+    init(size: CGSize, color: SKColor, pointToRight: Bool)
     {
-        self.ringColor = ringColor
+        self.size = size
         self.pointToRight = pointToRight
-        
-        let ringSize = CGSize(width: height * Geometry.RingRatio, height: height)
+        self.color = color
         
         // --------------------------------------------------------------------- //
-        super.init(texture: nil, color: SKColor.clearColor(), size: ringSize)
+        super.init()
         // --------------------------------------------------------------------- //
-
-        ringPartsSetup(height: height, color: color)
+        
+        ringPartsSetup()
         
         // ring slope
         updateZRotation()
@@ -53,12 +53,12 @@ class RingNode: SKSpriteNode {
         updateXScale()
         
         // PHYSIC BODY
-        let bodyRadius = height * Geometry.RingRelativeStrokeWidth/2
+        let bodyRadius = size.height * Geometry.RingRelativeStrokeWidth/2
         // left
-        let lowerBodyCenter = CGPoint(x: 0, y: -height/2)
+        let lowerBodyCenter = CGPoint(x: 0, y: -size.height/2 + bodyRadius)
         let lowerBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: lowerBodyCenter)
         // right
-        let upperBodyCenter = CGPoint(x: 0, y: +height/2)
+        let upperBodyCenter = CGPoint(x: 0, y: +size.height/2 - bodyRadius)
         let upperBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: upperBodyCenter)
         
         physicsBody = SKPhysicsBody(bodies: [lowerBody, upperBody])
@@ -86,43 +86,46 @@ class RingNode: SKSpriteNode {
         }
     }
     
-    private func ringPartsSetup(height height: CGFloat, color: SKColor) {
+    private func ringPartsSetup() {
         leftNode?.removeFromParent()
         rightNode?.removeFromParent()
         
         leftNode = nil
         rightNode = nil
         
-        // LEFT PART (half ellipse)
-        let ellipseNodeLeft = getEllipseNode(height, color: color)
-        let leftMask = SKSpriteNode(texture: nil, color: SKColor.blackColor(), size: CGSize(
-            width: ellipseNodeLeft.frame.size.width/2,
-            height: ellipseNodeLeft.frame.size.height))
-        leftMask.anchorPoint = CGPoint(x: 0, y: 0.5)
-        leftMask.position = CGPoint(x: -ellipseNodeLeft.frame.size.width/2, y: 0)
-        leftNode = SKCropNode()
-        leftNode!.addChild(ellipseNodeLeft)
-        leftNode!.maskNode = leftMask
-        leftNode!.zPosition = ZPosition.RingAbove // for 3D effect
-        leftNode!.position = CGPoint(x: -leftNode!.frame.size.width/4, y: 0)
-        addChild(leftNode!)
+        // TODO: crop node is very expensive
+        // LEFT PART
+        leftNode = getOvalNode(leftHalfOnly: true)
+        if leftNode != nil {
+            leftNode!.zPosition = ZPosition.RingAbove // for 3D effect
+            addChild(leftNode!)
+        }
         
-        // RIGHT PART (complete ellipse)
-        rightNode = getEllipseNode(height, color: color)
-        rightNode!.position = CGPoint(x: 0, y: 0)
-        addChild(rightNode!)
-    }
-
-    private func getEllipseNode(height: CGFloat, color: SKColor) -> SKShapeNode {
-        let ellipseNode = SKShapeNode(ellipseOfSize: CGSize(
-            width: height * Geometry.RingRatio,
-            height: height))
-        ellipseNode.strokeColor = color
-        ellipseNode.lineWidth = height * Geometry.RingRelativeStrokeWidth
-        ellipseNode.name = NodeName.RingPart
-        return ellipseNode
+        // RIGHT PART
+        rightNode = getOvalNode(leftHalfOnly: false)
+        if rightNode != nil {
+            addChild(rightNode!)
+        }
     }
     
+    private func getOvalNode(leftHalfOnly leftHalfOnly: Bool) -> SKSpriteNode?
+    {
+        let ovalRect = CGRect(origin: CGPoint(x: -size.width/2, y: -size.height/2), size: size)
+
+        let halfRingView = RingView(frame: ovalRect, halfRing: leftHalfOnly, leftHalf: true)
+        halfRingView.lineWidth = size.height * Geometry.RingRelativeStrokeWidth
+        halfRingView.color = color
+        
+        var ovalNode: SKSpriteNode?
+        if let halfRingImage = getImageWithView(halfRingView) {
+            let halfRingTexture = SKTexture(image: halfRingImage)
+            ovalNode = SKSpriteNode(texture: halfRingTexture)
+            ovalNode?.name = NodeName.RingPart
+        }
+        
+        return ovalNode
+    }
+
     func startFloatingAnimation(verticalRange: CGFloat, durationPerCycle: Double, startUpward: Bool) {
         stopFloatingAnimation()
         
@@ -144,8 +147,21 @@ class RingNode: SKSpriteNode {
         removeActionForKey(ActionKey.RingFloatingAnimation)
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    // MARK: Helper methods
+    
+    private func getImageWithView(view: UIView) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0)
+        
+        var img: UIImage?
+        if let context = UIGraphicsGetCurrentContext() {
+            view.layer.renderInContext(context)
+            img = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext()
+        }
+
+        return img
     }
+    
+    
     
 }

@@ -137,30 +137,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             playableRectSetup()
             barsSetup() // call after playableRectSetup()
-            
+
             generalInfoLabelsSetup() // call after barsSetup()
             gameInfoLabelsSetup() // call after barsSetup()
             ringsSetup()
             
             updateGravity()
             updateColors()
-            
+
             testButtonSetup()
             
             contentCreated = true
-            
-            printFonts()
         }
         
-    }
-    
-    private func printFonts()
-    {
-        let familyNames = UIFont.familyNames()
-        
-        for familyName in familyNames {
-            print(familyName)
-        }
     }
     
     private func playableRectSetup() {
@@ -302,13 +291,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(ringsLayer)
         
         let ringHeight = playableRect.height * Geometry.RingRelativeHeight
+        let ringSize = CGSize(
+            width: ringHeight * Geometry.RingRatio,
+            height: ringHeight)
         let ringsSeparation = playableRect.width * Geometry.RingsRelativeSeparation
         let verticalRange = ringHeight * Geometry.RingRelativeFloatingVerticalRange
         
         let ringColor = darkColorsOn ? Color.RingDark : Color.RingLight
         
         // LEFT RING
-        leftRing = RingNode(height: ringHeight, ringColor: ringColor, pointToRight: false)
+        leftRing = RingNode(size: ringSize, color: ringColor, pointToRight: false)
         leftRing.position = CGPoint(x: -ringsSeparation/2 - abs(leftRing.size.width)/2, y: 0)
         leftRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: true)
         ringsLayer.addChild(leftRing)
@@ -322,7 +314,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.addJoint(leftRingJoint)
         
         // RIGHT RING
-        rightRing = RingNode(height: ringHeight, ringColor: ringColor, pointToRight: true)
+        rightRing = RingNode(size: ringSize, color: ringColor, pointToRight: true)
         rightRing.position = CGPoint(x: +ringsSeparation/2 + abs(rightRing.size.width)/2, y: 0)
         rightRing.startFloatingAnimation(verticalRange, durationPerCycle: Time.RingFloatingCycle, startUpward: false)
         ringsLayer.addChild(rightRing)
@@ -408,8 +400,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bottomBarNode?.color = dark ? Color.BottomBarDark : Color.BottomBarLight
         verticalMiddleBarNode?.color = dark ? Color.VerticalMiddleBarDark : Color.VerticalMiddleBarLight
         // rings
-        leftRing.ringColor = dark ? Color.RingDark : Color.RingLight
-        rightRing.ringColor = dark ? Color.RingDark : Color.RingLight
+        leftRing.color = dark ? Color.RingDark : Color.RingLight
+        rightRing.color = dark ? Color.RingDark : Color.RingLight
         // balls
         ballsLayer.enumerateChildNodesWithName(NodeName.Ball) {
             node, stop in
