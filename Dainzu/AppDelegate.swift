@@ -69,6 +69,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             defaults.setInteger(UserDefaults.CoinsCount, forKey: UserDefaultsKey.CoinsCount)
         }
         
+        if defaults.objectForKey(UserDefaultsKey.BestScore) == nil {
+            defaults.setInteger(UserDefaults.BestScore, forKey: UserDefaultsKey.BestScore)
+        }
+        
     }
 
 

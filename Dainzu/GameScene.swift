@@ -9,7 +9,7 @@
 import SpriteKit
 
 enum GameState {
-    case GameWaitingToStart, GameRunning, GamePaused, GameOver, GamePreview
+    case GameMenu, GameRunning, GamePaused, GameOver
 }
 
 enum ScreenSide {
@@ -22,7 +22,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var contentCreated = false
     private let bannerHeight: CGFloat
     
-    private var gameState: GameState = .GameWaitingToStart
+    private var gameState: GameState = .GameMenu {
+        didSet {
+            updateShownLayers()
+        }
+    }
     
     // colors
     private var darkColorsOn: Bool {
@@ -46,6 +50,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    // main title
+    private var mainTitleLabel: SKLabelNode?
+    
     // margin bars
     private var topBarHeight: CGFloat = 0
     private var bottomBarHeight: CGFloat = 0
@@ -62,6 +69,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scoreLabel?.text = "\(score)"
         }
     }
+    private var bestScoreLabel: SKLabelNode?
+    private var bestScore: Int {
+        get {
+            return NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultsKey.BestScore)
+        }
+        set {
+            NSUserDefaults.standardUserDefaults().setInteger(newValue, forKey: UserDefaultsKey.BestScore)
+            bestScoreLabel?.text = Text.BestScore + ": \(newValue)"
+        }
+    }
+    
     // coins
     private var coinNode: BallNode?
     private var coinsLabel: SKLabelNode?
@@ -70,7 +88,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             return NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultsKey.CoinsCount)
         }
         set {
-            // TODO: size or glow effect
             NSUserDefaults.standardUserDefaults().setInteger(newValue, forKey: UserDefaultsKey.CoinsCount)
             coinsLabel?.text = "\(newValue)"
         }
@@ -98,8 +115,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // layers
     private let barsLayer = SKNode()
-    private let generalInfoLayer = SKNode()
-    private let gameInfoLayer = SKNode()
+    private let alwaysVisibleUILayer = SKNode()
+    private let gameOnlyUILayer = SKNode()
+    private let menuOnlyUILayer = SKNode()
     private let ringsLayer = SKNode()
     private let ballsLayer = SKNode()
     
@@ -124,7 +142,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: Game Setup
     override func didMoveToView(view: SKView) {
-//        view.multipleTouchEnabled = true
+        view.multipleTouchEnabled = true
         
         /* Setup your scene here */
         if !contentCreated {
@@ -137,19 +155,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             playableRectSetup()
             barsSetup() // call after playableRectSetup()
-
-            generalInfoLabelsSetup() // call after barsSetup()
-            gameInfoLabelsSetup() // call after barsSetup()
-            ringsSetup()
             
-            updateGravity()
-            updateColors()
-
-            testButtonSetup()
+            alwaysVisibleUISetup() // call after barsSetup()
+            menuOnlyUISetup() // call after barsSetup()
+            gameOnlyUISetup() // call after barsSetup()
+            
+            ringsSetup()
             
             contentCreated = true
         }
         
+        updateShownLayers()
+        updateGravity()
+        updateColors()
     }
     
     private func playableRectSetup() {
@@ -196,6 +214,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         topBarNode!.physicsBody = SKPhysicsBody(rectangleOfSize: topBarNode!.size)
         topBarNode!.physicsBody!.dynamic = false
         topBarNode!.physicsBody!.categoryBitMask = PhysicsCategory.Boundary
+        topBarNode!.name = NodeName.Boundary
         barsLayer.addChild(topBarNode!)
         
         // TOP (add bannerHeight to size to show bar color while banner is not shown)
@@ -208,6 +227,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bottomBarNode!.physicsBody = SKPhysicsBody(rectangleOfSize: bottomBarNode!.size)
         bottomBarNode!.physicsBody!.dynamic = false
         bottomBarNode!.physicsBody!.categoryBitMask = PhysicsCategory.Boundary
+        bottomBarNode!.name = NodeName.Boundary
         barsLayer.addChild(bottomBarNode!)
         
         // VERTICAL MIDDLE
@@ -222,15 +242,54 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         verticalMiddleBarNode!.physicsBody = SKPhysicsBody(rectangleOfSize: verticalMiddleBarNode!.size)
         verticalMiddleBarNode!.physicsBody!.dynamic = false
         verticalMiddleBarNode!.physicsBody!.categoryBitMask = PhysicsCategory.MiddleBar
+        verticalMiddleBarNode!.name = NodeName.Boundary
         barsLayer.addChild(verticalMiddleBarNode!)
     }
     
-    private func gameInfoLabelsSetup() {
-        gameInfoLayer.zPosition = ZPosition.GameInfoLayer
-        gameInfoLayer.position = CGPoint(
+    private func menuOnlyUISetup() {
+        menuOnlyUILayer.zPosition = ZPosition.MenuOnlyUILayer
+        menuOnlyUILayer.position = CGPoint(
             x: playableRectOriginInScene.x + playableRect.width/2,
             y: playableRectOriginInScene.y + playableRect.height/2)
-        addChild(gameInfoLayer)
+        addChild(menuOnlyUILayer)
+        
+        // main title label
+        let mainTitleHeight = playableRect.height * Geometry.MainTitleRelativeHeight
+        let mainTitleWidth = (playableRect.width - verticalMiddleBarNode!.size.width)/2 * Geometry.MainTitleRelativeWidth
+        mainTitleLabel = SKLabelNode(text: Text.MainTitle)
+        mainTitleLabel!.verticalAlignmentMode = .Center
+        mainTitleLabel!.horizontalAlignmentMode = .Center
+        mainTitleLabel!.fontName = FontName.MainTitle
+        mainTitleLabel!.fontColor = darkColorsOn ? FontColor.MainTitleDark : FontColor.MainTitleLight
+        adjustFontSizeForLabel(mainTitleLabel!, tofitSize: CGSize(width: mainTitleWidth, height: mainTitleHeight))
+        mainTitleLabel!.position = CGPoint(
+            x: -(playableRect.width - verticalMiddleBarNode!.size.width)/4 - verticalMiddleBarNode!.size.width/2,
+            y: playableRect.height * Geometry.MainTitleRelativeYPosition - playableRect.height/2)
+        mainTitleLabel!.name = NodeName.MainTitleLabel
+        menuOnlyUILayer.addChild(mainTitleLabel!)
+        
+        // best label
+        let bestScoreLabelHeight = topBarHeight * Geometry.BestScoreLabelRelativeHeight
+        let bestScoreLabelWidth = playableRect.width * Geometry.BestScoreLabelRelativeWidth
+        bestScoreLabel = SKLabelNode(text: Text.BestScore + ": \(bestScore)")
+        bestScoreLabel!.verticalAlignmentMode = .Center
+        bestScoreLabel!.horizontalAlignmentMode = .Center
+        bestScoreLabel!.fontName = FontName.BestScore
+        bestScoreLabel!.fontColor = darkColorsOn ? FontColor.BestScoreDark : FontColor.BestScoreLight
+        adjustFontSizeForLabel(bestScoreLabel!, tofitSize: CGSize(
+            width: bestScoreLabelWidth,
+            height: bestScoreLabelHeight))
+        bestScoreLabel!.position = CGPoint(x: 0, y: +playableRect.height/2 + topBarHeight/2)
+        bestScoreLabel!.name = NodeName.BestScoreLabel
+        menuOnlyUILayer.addChild(bestScoreLabel!)
+    }
+    
+    private func gameOnlyUISetup() {
+        gameOnlyUILayer.zPosition = ZPosition.GameOnlyUILayer
+        gameOnlyUILayer.position = CGPoint(
+            x: playableRectOriginInScene.x + playableRect.width/2,
+            y: playableRectOriginInScene.y + playableRect.height/2)
+        addChild(gameOnlyUILayer)
         
         // score label
         let scoreLabelHeight = topBarHeight * Geometry.ScoreLabelRelativeHeight
@@ -238,19 +297,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel = SKLabelNode(text: "0")
         scoreLabel!.verticalAlignmentMode = .Center
         scoreLabel!.horizontalAlignmentMode = .Center
-        scoreLabel!.fontName = FontName.ScoreLabel
-        scoreLabel!.fontColor = darkColorsOn ? FontColor.ScoreLabelDark : FontColor.ScoreLabelLight
+        scoreLabel!.fontName = FontName.Score
+        scoreLabel!.fontColor = darkColorsOn ? FontColor.ScoreDark : FontColor.ScoreLight
         adjustFontSizeForLabel(scoreLabel!, tofitSize: CGSize(width: scoreLabelWidth, height: scoreLabelHeight))
         scoreLabel!.position = CGPoint(x: 0, y: +playableRect.height/2 + topBarHeight/2)
-        gameInfoLayer.addChild(scoreLabel!)
+        gameOnlyUILayer.addChild(scoreLabel!)
     }
     
-    private func generalInfoLabelsSetup() {
-        generalInfoLayer.zPosition = ZPosition.GeneralInfoLayer
-        generalInfoLayer.position = CGPoint(
+    private func alwaysVisibleUISetup() {
+        alwaysVisibleUILayer.zPosition = ZPosition.AlwaysVisibleUILayer
+        alwaysVisibleUILayer.position = CGPoint(
             x: playableRectOriginInScene.x + playableRect.width/2,
             y: playableRectOriginInScene.y + playableRect.height/2)
-        addChild(generalInfoLayer)
+        addChild(alwaysVisibleUILayer)
         
         // coin node
         let coinNodeHeight = topBarHeight * Geometry.CoinNodeRelativeHeight
@@ -259,21 +318,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         coinNode!.position = CGPoint(
             x: playableRect.width/2 - coinNode!.size.width/2 - playableRect.width * Geometry.CoinNodeRelativeSideOffset,
             y: playableRect.height/2 + topBarHeight/2)
-        generalInfoLayer.addChild(coinNode!)
+        alwaysVisibleUILayer.addChild(coinNode!)
         
         // coins label
         let coinsLabelHeight = topBarHeight * Geometry.CoinsLabelRelativeHeight
         let coinsLabelWidth = playableRect.width * Geometry.CoinsLabelRelativeWidth
         coinsLabel = SKLabelNode(text: "\(coinsCount)")
-        coinsLabel!.fontColor = darkColorsOn ? FontColor.CoinsLabelDark : FontColor.CoinsLabelLight
-        coinsLabel!.fontName = FontName.CoinsLabel
+        coinsLabel!.fontColor = darkColorsOn ? FontColor.CoinsDark : FontColor.CoinsLight
+        coinsLabel!.fontName = FontName.Coins
         adjustFontSizeForLabel(coinsLabel!, tofitSize: CGSize(width: coinsLabelWidth, height: coinsLabelHeight))
         coinsLabel!.verticalAlignmentMode = .Center
         coinsLabel!.horizontalAlignmentMode = .Right
         coinsLabel!.position = CGPoint(
             x: coinNode!.position.x - coinNode!.size.width/2 - coinNode!.size.width * Geometry.CoinsLabelRelativeSideOffset,
             y: playableRect.height/2 + topBarHeight/2)
-        generalInfoLayer.addChild(coinsLabel!)
+        alwaysVisibleUILayer.addChild(coinsLabel!)
         
         let coinsLabelFlash = SKAction.scaleTo(Geometry.CoinsLabelFlashActionMaxScale, duration: Time.CoinsLabelFlashAction/2)
         let coinsLabelFlashReverse = SKAction.scaleTo(1.0, duration: Time.CoinsLabelFlashAction/2)
@@ -328,19 +387,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.addJoint(rightRingJoint)
     }
     
-    private func getRingGoalForRing(ring: RingNode) -> SKSpriteNode {
-        let ringGoal = SKSpriteNode(texture: nil, color: SKColor.clearColor(), size: CGSize(
-            width: 2,
-            height: ring.size.height * Geometry.RingGoalRelativeHeight))
-        ringGoal.physicsBody = SKPhysicsBody(rectangleOfSize: ringGoal.size)
-        ringGoal.physicsBody!.categoryBitMask = PhysicsCategory.RingGoal
-        ringGoal.physicsBody!.collisionBitMask = PhysicsCategory.None
-        ringGoal.physicsBody!.contactTestBitMask = PhysicsCategory.Ball
-        ringGoal.physicsBody!.affectedByGravity = false
-        
-        return ringGoal
-    }
-    
     private func generateBalls() {
         ballsLayer.position = playableRectOriginInScene
         ballsLayer.zPosition = ZPosition.BallsLayer
@@ -355,29 +401,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let sequenceAction = SKAction.sequence([createBallsAction, waitAction])
         runAction(SKAction.repeatActionForever(sequenceAction), withKey: ActionKey.BallsGeneration)
     }
-    
-    private func createNewBall(screenSide: ScreenSide) {
-        let isSpecial = GameOption.SpecialBallsOn && arc4random_uniform(GameOption.SpecialBallsRatio) == 0
-        
-        // TODO: choose from available textures
-        var ballTexture: SKTexture?
-        let ballColor: SKColor
-        if isSpecial {
-            ballColor = Color.BallSpecial
-        } else {
-            ballTexture = SKTexture(imageNamed: "tennisBall")
-            ballColor = darkColorsOn ? Color.BallDark : Color.BallLight
-        }
-        
-        let ballNode = BallNode(texture: ballTexture, height: ballHeight, color: ballColor)
-        ballNode.isSpecial = isSpecial
-        ballNode.position = self.getBallRandomPosition(ballNode, screenSide: screenSide)
-        ballsLayer.addChild(ballNode)
-        ballNode.physicsBody?.velocity = getBallVelocity(ballNode, screenSide: screenSide)
-        
-        let rotateAction = SKAction.repeatActionForever(SKAction.rotateByAngle(2*π, duration: Time.BallRotate))
-        ballNode.runAction(rotateAction, withKey: ActionKey.BallRotate)
-    }
 
     private func startGame() {
         gameState = .GameRunning
@@ -390,6 +413,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     // MARK: Update methods
+    
+    private func updateShownLayers() {
+        switch gameState {
+        case .GameMenu:
+            gameOnlyUILayer.hidden = true
+            menuOnlyUILayer.hidden = false
+            ballsLayer.hidden = false
+            
+        case .GameRunning:
+            gameOnlyUILayer.hidden = false
+            menuOnlyUILayer.hidden = true
+            ballsLayer.hidden = false
+            
+        default:
+            break
+        }
+    }
     
     private func updateColors() {
         let dark = darkColorsOn
@@ -414,7 +454,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         // score label
-        scoreLabel?.fontColor = dark ? FontColor.ScoreLabelDark : FontColor.ScoreLabelLight
+        scoreLabel?.fontColor = dark ? FontColor.ScoreDark : FontColor.ScoreLight
         // TODO: score and money labels
     }
     
@@ -435,34 +475,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: User interaction
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-//        let touch = touches.first!
-        for touch in touches {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
+    {
+        if gameState == .GameMenu {
+            let touch = touches.first!
             let location = touch.locationInNode(self)
             let touchedNode = self.nodeAtPoint(location)
             
             if let nodeName = touchedNode.name {
                 switch nodeName {
-                case NodeName.TestButton1:
-                    darkColorsOn = !darkColorsOn
-                case NodeName.TestButton2:
-                    gravityNormal = !gravityNormal
+                    // TODO: Menu nodes
                 default:
                     break
                 }
+            } else {
+                if location.x < size.width/2 {
+                    startGame()
+                }
             }
             
-            if gameState == .GameWaitingToStart {
-                startGame()
-            }
-            
-            if location.x < size.width/2 {
-                leftRing.physicsBody?.applyImpulse(getRingImpulse(leftRing))
-            } else if location.x > size.width/2 {
-                rightRing.physicsBody?.applyImpulse(getRingImpulse(rightRing))
+        } else if gameState == .GameRunning {
+            for touch in touches {
+                let location = touch.locationInNode(self)
+                let touchedNode = self.nodeAtPoint(location)
+                
+                if let nodeName = touchedNode.name {
+                    switch nodeName {
+                    case NodeName.TestButton1:
+                        darkColorsOn = !darkColorsOn
+                    case NodeName.TestButton2:
+                        gravityNormal = !gravityNormal
+                    default:
+                        applyRingImpulse(touchLocation: location)
+                    }
+                } else {
+                    applyRingImpulse(touchLocation: location)
+                }
             }
         }
-        
     }
     
     // MARK: SKPhysicsContact Delegate
@@ -501,6 +551,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: Helper functions
     
+    
+      // ---------------------- //
+     // -------- Ring -------- //
+    // ---------------------- //
+    
+    private func applyRingImpulse(touchLocation location: CGPoint) {
+        if location.x < size.width/2 {
+            leftRing.physicsBody?.applyImpulse(getRingImpulse(leftRing))
+        } else if location.x > size.width/2 {
+            rightRing.physicsBody?.applyImpulse(getRingImpulse(rightRing))
+        }
+    }
+    
     private func getRingImpulse(ringNode: RingNode) -> CGVector {
         let yNormalImpulse = ringNode.physicsBody!.mass * playableRect.height * Physics.RingImpulseMultiplier
         let impulse = CGVector(
@@ -514,6 +577,47 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         return impulse
+    }
+    
+    private func getRingGoalForRing(ring: RingNode) -> SKSpriteNode {
+        let ringGoal = SKSpriteNode(texture: nil, color: SKColor.clearColor(), size: CGSize(
+            width: 2,
+            height: ring.size.height * Geometry.RingGoalRelativeHeight))
+        ringGoal.physicsBody = SKPhysicsBody(rectangleOfSize: ringGoal.size)
+        ringGoal.physicsBody!.categoryBitMask = PhysicsCategory.RingGoal
+        ringGoal.physicsBody!.collisionBitMask = PhysicsCategory.None
+        ringGoal.physicsBody!.contactTestBitMask = PhysicsCategory.Ball
+        ringGoal.physicsBody!.affectedByGravity = false
+        
+        return ringGoal
+    }
+    
+    
+      // ---------------------- //
+     // -------- Ball -------- //
+    // ---------------------- //
+    
+    private func createNewBall(screenSide: ScreenSide) {
+        let isSpecial = GameOption.SpecialBallsOn && arc4random_uniform(GameOption.SpecialBallsRatio) == 0
+        
+        // TODO: choose from available textures
+        var ballTexture: SKTexture?
+        let ballColor: SKColor
+        if isSpecial {
+            ballColor = Color.BallSpecial
+        } else {
+            ballTexture = SKTexture(imageNamed: "tennisBall")
+            ballColor = darkColorsOn ? Color.BallDark : Color.BallLight
+        }
+        
+        let ballNode = BallNode(texture: ballTexture, height: ballHeight, color: ballColor)
+        ballNode.isSpecial = isSpecial
+        ballNode.position = self.getBallRandomPosition(ballNode, screenSide: screenSide)
+        ballsLayer.addChild(ballNode)
+        ballNode.physicsBody?.velocity = getBallVelocity(ballNode, screenSide: screenSide)
+        
+        let rotateAction = SKAction.repeatActionForever(SKAction.rotateByAngle(2*π, duration: Time.BallRotate))
+        ballNode.runAction(rotateAction, withKey: ActionKey.BallRotate)
     }
     
     private func getBallVelocity(ballNode: BallNode, screenSide: ScreenSide) -> CGVector {
@@ -532,6 +636,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             y: CGFloat(arc4random_uniform(maxY - minY) + minY))
     }
     
+    
+      // ------------------------ //
+     // -------- Others -------- //
+    // ------------------------ //
+    
     private func adjustFontSizeForLabel(labelNode: SKLabelNode, tofitSize size: CGSize) {
         // Determine the font scaling factor that should let the label text fit in the given rectangle.
         let scalingFactor = min(size.width / labelNode.frame.width, size.height / labelNode.frame.height)
@@ -539,8 +648,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Set fit font size
         labelNode.fontSize = labelNode.fontSize * scalingFactor
     }
-    
-    
+
     
     
     

@@ -37,7 +37,11 @@ struct Geometry {
     
     // score label
     static let ScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBarHeight
-    static let ScoreLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width
+    static let ScoreLabelRelativeWidth: CGFloat = 0.30 // relative to playableRect width
+    
+    // best score label
+    static let BestScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBarHeight
+    static let BestScoreLabelRelativeWidth: CGFloat = 0.5 // relative to playableRect width
     
     // coins label
     static let CoinNodeRelativeHeight: CGFloat = 0.45 // relative to topBarHeight
@@ -47,11 +51,16 @@ struct Geometry {
     static let CoinsLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width
     static let CoinsLabelFlashActionMaxScale: CGFloat = 1.5
 
+    // main title label
+    static let MainTitleRelativeHeight: CGFloat = 0.25 // relative to playableRect height
+    static let MainTitleRelativeWidth: CGFloat = 0.7 // relative to playableRect left side width
+    static let MainTitleRelativeYPosition: CGFloat = 0.8 // relative to playableRect height
 }
 
 struct ZPosition {
-    static let GeneralInfoLayer: CGFloat = 250
-    static let GameInfoLayer: CGFloat = 200
+    static let AlwaysVisibleUILayer: CGFloat = 250
+    static let GameOnlyUILayer: CGFloat = 200
+    static let MenuOnlyUILayer: CGFloat = 200
     static let RingAbove: CGFloat = 110
     static let BallsLayer: CGFloat = 100
     static let RingsLayer: CGFloat = 90
@@ -120,22 +129,33 @@ struct Color {
 }
 
 struct FontColor {
-    static let ScoreLabelDark: SKColor = Color.BackgroundDark
-    static let ScoreLabelLight: SKColor = Color.BackgroundLight
+    static let MainTitleDark: SKColor = Color.BackgroundLight
+    static let MainTitleLight: SKColor = Color.BackgroundDark
     
-    static let CoinsLabelDark: SKColor = SKColor.whiteColor()
-    static let CoinsLabelLight: SKColor = SKColor.whiteColor()
+    static let ScoreDark: SKColor = Color.BackgroundDark
+    static let ScoreLight: SKColor = Color.BackgroundLight
+    
+    static let BestScoreDark: SKColor = Color.BackgroundDark
+    static let BestScoreLight: SKColor = Color.BackgroundLight
+    
+    static let CoinsDark: SKColor = SKColor.whiteColor()
+    static let CoinsLight: SKColor = SKColor.whiteColor()
 }
 
 struct FontName {
-    static let ScoreLabel = "Snaps Taste"
-    static let CoinsLabel = "Snaps Taste"
+    static let MainTitle = "Snaps Taste"
+    static let Score = "Snaps Taste"
+    static let BestScore = "Snaps Taste"
+    static let Coins = "Snaps Taste"
 }
 
 struct NodeName {
     static let Ring = "ringNode"
     static let RingPart = "ringPartNode"
     static let Ball = "ballNode"
+    static let Boundary = "boundaryNode"
+    static let BestScoreLabel = "bestScoreLabel"
+    static let MainTitleLabel = "mainTitleLabel"
     
     // TODO: Test
     static let TestButton1 = "testButton1"
@@ -154,6 +174,7 @@ struct UserDefaultsKey {
     static let DarkColorsOn = "darkColorsOn"
     static let GravityNormal = "gravityNormal"
     static let CoinsCount = "coinsCount"
+    static let BestScore = "bestScore"
 }
 
 struct UserDefaults {
@@ -163,6 +184,12 @@ struct UserDefaults {
     static let DarkColorsOn = true
     static let GravityNormal = true
     static let CoinsCount: Int = 0
+    static let BestScore: Int = 0
+}
+
+struct Text {
+    static let BestScore = "Best"
+    static let MainTitle = "Dainzu"
 }
 
 struct GameOption {
