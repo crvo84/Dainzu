@@ -161,6 +161,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             alwaysVisibleUISetup() // call after barsSetup()
             menuOnlyUISetup() // call after barsSetup()
             gameOnlyUISetup() // call after barsSetup()
+            adjustLabelsSize()
             
             ringsSetup()
             
@@ -657,6 +658,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
       // ------------------------ //
      // -------- Others -------- //
     // ------------------------ //
+    
+    private func adjustLabelsSize() {
+        if mainTitleLabel != nil {
+            let maxFontSize = mainTitleLabel!.fontSize
+            if scoreLabel != nil {
+                scoreLabel!.fontSize = min(scoreLabel!.fontSize, maxFontSize)
+            }
+            if bestScoreLabel != nil {
+                bestScoreLabel!.fontSize = min(bestScoreLabel!.fontSize, maxFontSize)
+            }
+            if coinsLabel != nil {
+                coinsLabel!.fontSize = min(coinsLabel!.fontSize, maxFontSize)
+            }
+        }
+    }
     
     private func adjustFontSizeForLabel(labelNode: SKLabelNode, tofitSize size: CGSize) {
         // Determine the font scaling factor that should let the label text fit in the given rectangle.
