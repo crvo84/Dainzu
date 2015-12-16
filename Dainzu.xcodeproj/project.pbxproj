@@ -34,6 +34,7 @@
 		73F230441C18F62100EC3762 /* RingNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F230431C18F62100EC3762 /* RingNode.swift */; };
 		73FA39281C213A55008381D0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73FA39271C213A55008381D0 /* LaunchScreen.storyboard */; };
 		73FA392A1C214877008381D0 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FA39291C214877008381D0 /* iAd.framework */; };
+		73FA392C1C215259008381D0 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FA392B1C215259008381D0 /* StoreKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +88,7 @@
 		73F230431C18F62100EC3762 /* RingNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RingNode.swift; sourceTree = "<group>"; };
 		73FA39271C213A55008381D0 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		73FA39291C214877008381D0 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
+		73FA392B1C215259008381D0 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73FA392C1C215259008381D0 /* StoreKit.framework in Frameworks */,
 				73FA392A1C214877008381D0 /* iAd.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -127,6 +130,7 @@
 		73F22FE91C18E68D00EC3762 = {
 			isa = PBXGroup;
 			children = (
+				73FA392B1C215259008381D0 /* StoreKit.framework */,
 				73FA39291C214877008381D0 /* iAd.framework */,
 				73F22FF41C18E68D00EC3762 /* Dainzu */,
 				73F2300D1C18E68E00EC3762 /* DainzuTests */,
@@ -302,6 +306,7 @@
 				TargetAttributes = {
 					73F22FF11C18E68D00EC3762 = {
 						CreatedOnToolsVersion = 7.1.1;
+						DevelopmentTeam = 9F26XL4W94;
 					};
 					73F230091C18E68E00EC3762 = {
 						CreatedOnToolsVersion = 7.1.1;
@@ -519,10 +524,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Dainzu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.villou.Dainzu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -531,10 +539,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Dainzu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.villou.Dainzu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

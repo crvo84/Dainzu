@@ -95,6 +95,7 @@ struct ImageFilename {
     static let GravityNormalOff = "arrowUp"
     static let DarkColorsOn = "moon"
     static let DarkColorsOff = "sun"
+    static let RemoveAdsButton = "shoppingCart"
 }
 
 struct Physics {
@@ -210,6 +211,7 @@ struct NodeName {
     static let MusicOnOffButton = "musicOnOffButtonNode"
     static let DarkColorsOnOffButton = "darkColorsOnOffButtonNode"
     static let GravityNormalOnOffButton = "gravityNormalOnOffButtonNode"
+    static let RemoveAdsButton = "removeAdsButtonNode"
 }
 
 struct ActionKey {
@@ -240,6 +242,18 @@ struct UserDefaults {
 struct Text {
     static let BestScore = "Best"
     static let MainTitle = "Dainzu"
+    
+    static let RemoveAds = NSLocalizedString("Remove Ads", comment: "For a button, to pay to remove advertising.")
+    static let Purchase = NSLocalizedString("Purchase", comment: "Verb. For a button, to purchase a product")
+    static let Restore = NSLocalizedString("Restore", comment: "Verb. For a button to restore previous purchases.")
+    static let Cancel = NSLocalizedString("Cancel", comment: "Verb. For a button to cancel an operation")
+    static let PurchasesRestored = NSLocalizedString("Purchases restored successfully.", comment: "For an alert view message.")
+    static let NoPreviousPurchases = NSLocalizedString("No previous purchases could be restored.", comment: "For an alert view message.")
+    static let Ok = NSLocalizedString("Ok", comment: "For a button to close an alert view.")
+}
+
+struct InAppPurchase {
+    static let RemoveAdsProductId = "DainzuRemoveAds"
 }
 
 struct GameOption {

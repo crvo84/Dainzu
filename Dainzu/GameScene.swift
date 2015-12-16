@@ -29,6 +29,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    // iAd
+    private var showAds: Bool {
+        return NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.ShowAds)
+    }
+    
     // music
     private var isMusicOn: Bool {
         get {
@@ -68,6 +73,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var darkColorsButtonNode: SKSpriteNode?
     private var gravityNormalButtonNode: SKSpriteNode?
     private var musicOnButtonNode: SKSpriteNode?
+    private var removeAdsButtonNode: SKSpriteNode?
     
     // pause
     private var pauseButtonNode: SKSpriteNode?
@@ -366,6 +372,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gravityNormalButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
         gravityNormalButtonNode!.name = NodeName.GravityNormalOnOffButton
         menuOnlyUILayer.addChild(gravityNormalButtonNode!)
+        
+        // remove ads button
+        if showAds {
+            removeAdsButtonNode = SKSpriteNode(imageNamed: ImageFilename.RemoveAdsButton)
+            let removeAdsButtonRatio = removeAdsButtonNode!.size.width / removeAdsButtonNode!.size.height
+            removeAdsButtonNode!.size = CGSize(width: removeAdsButtonRatio * configButtonHeight, height: configButtonHeight)
+            removeAdsButtonNode!.position = CGPoint(
+                x: firstConfigButtonX,
+                y: -configButtonY)
+            removeAdsButtonNode!.color = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+            removeAdsButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+            removeAdsButtonNode!.name = NodeName.RemoveAdsButton
+            menuOnlyUILayer.addChild(removeAdsButtonNode!)
+        }
+
     }
     
     private func gameOnlyUISetup() {
@@ -573,6 +594,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         darkColorsButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
         musicOnButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
         gravityNormalButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        removeAdsButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
         
         // GAME RUNNING
         // score label
@@ -636,6 +658,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if let musicOnOffNode = touchedNode as? SKSpriteNode {
                         musicOnOffNode.texture = SKTexture(imageNamed: isMusicOn ? ImageFilename.MusicOnButton : ImageFilename.MusicOffButton)
                     }
+                    
+                case NodeName.RemoveAdsButton:
+                    removeAdsRequest()
+                    
                 default:
                     break
                 }
@@ -926,8 +952,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         view?.presentScene(newGameScene)
     }
     
+    private func removeAdsRequest() {
+        if let gameViewController = viewController as? GameViewController {
+            if view != nil && removeAdsButtonNode != nil && removeAdsButtonNode!.parent != nil {
+                let sourceOriginInScene = self.convertPoint(removeAdsButtonNode!.frame.origin, fromNode: removeAdsButtonNode!.parent!)
+                let sourceOriginInView = self.convertPointToView(sourceOriginInScene)
+                let sourceRect = CGRect(origin: sourceOriginInView, size: removeAdsButtonNode!.size)
+                gameViewController.removeAdsButtonPressed(view!, sourceRect: sourceRect)
+            }
+        }
+    }
     
-    
+    func removeRemoveAdsButton() {
+        removeAdsButtonNode?.removeFromParent()
+        removeAdsButtonNode = nil
+    }
     
     
 
