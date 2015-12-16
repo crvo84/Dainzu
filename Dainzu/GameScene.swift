@@ -64,6 +64,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // game menu
     private var mainTitleLabel: SKLabelNode?
     private var playButtonNode: SKSpriteNode?
+    private var darkColorsButtonNode: SKSpriteNode?
+    private var gravityNormalButtonNode: SKSpriteNode?
+    private var musicOnButtonNode: SKSpriteNode?
     
     // pause
     private var pauseButtonNode: SKSpriteNode?
@@ -317,6 +320,47 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bestScoreLabel!.position = CGPoint(x: 0, y: +playableRect.height/2 + topBarHeight/2)
         bestScoreLabel!.name = NodeName.BestScoreLabel
         menuOnlyUILayer.addChild(bestScoreLabel!)
+        
+        let configButtonHeight = mainTitleLabel!.frame.size.height * Geometry.ConfigButtonRelativeHeight
+        let configButtonY = mainTitleLabel!.position.y
+        let configButtonSeparation = (playableRect.width - verticalMiddleBarNode!.size.width)/2 * 1/4
+        let firstConfigButtonX = verticalMiddleBarNode!.size.width/2 + configButtonSeparation
+        
+        // dark colors button
+        darkColorsButtonNode = SKSpriteNode(imageNamed: darkColorsOn ? ImageFilename.DarkColorsOn : ImageFilename.DarkColorsOff)
+        let darkColorsButtonRatio = darkColorsButtonNode!.size.width / darkColorsButtonNode!.size.height
+        darkColorsButtonNode!.size = CGSize(width: darkColorsButtonRatio * configButtonHeight, height: configButtonHeight)
+        darkColorsButtonNode!.position = CGPoint(
+            x: firstConfigButtonX,
+            y: configButtonY)
+        darkColorsButtonNode!.color = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        darkColorsButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+        darkColorsButtonNode!.name = NodeName.DarkColorsOnOffButton
+        menuOnlyUILayer.addChild(darkColorsButtonNode!)
+        
+        // music on button
+        musicOnButtonNode = SKSpriteNode(imageNamed: ImageFilename.MusicOnButton)
+        let musicOnButtonRatio = musicOnButtonNode!.size.width / musicOnButtonNode!.size.height
+        musicOnButtonNode!.size = CGSize(width: musicOnButtonRatio * configButtonHeight, height: configButtonHeight)
+        musicOnButtonNode!.position = CGPoint(
+            x: firstConfigButtonX + configButtonSeparation,
+            y: configButtonY)
+        musicOnButtonNode!.color = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        musicOnButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+        musicOnButtonNode!.name = NodeName.MusicOnOffButton
+        menuOnlyUILayer.addChild(musicOnButtonNode!)
+        
+        // gravity normal button
+        gravityNormalButtonNode = SKSpriteNode(imageNamed: gravityNormal ? ImageFilename.GravityNormalOn : ImageFilename.GravityNormalOff)
+        let gravityNormalButtonRatio = gravityNormalButtonNode!.size.width / gravityNormalButtonNode!.size.height
+        gravityNormalButtonNode!.size = CGSize(width: gravityNormalButtonRatio * configButtonHeight, height: configButtonHeight)
+        gravityNormalButtonNode!.position = CGPoint(
+            x: firstConfigButtonX + configButtonSeparation * 2,
+            y: configButtonY)
+        gravityNormalButtonNode!.color = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        gravityNormalButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+        gravityNormalButtonNode!.name = NodeName.GravityNormalOnOffButton
+        menuOnlyUILayer.addChild(gravityNormalButtonNode!)
     }
     
     private func gameOnlyUISetup() {
@@ -481,15 +525,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private func updateColors() {
         let dark = darkColorsOn
+        
+        // ALWAYS SHOWN
         // background
         backgroundColor = dark ? Color.BackgroundDark : Color.BackgroundLight
+        
         // bars
         topBarNode?.color = dark ? Color.TopBarDark : Color.TopBarLight
         bottomBarNode?.color = dark ? Color.BottomBarDark : Color.BottomBarLight
         verticalMiddleBarNode?.color = dark ? Color.VerticalMiddleBarDark : Color.VerticalMiddleBarLight
+        
         // rings
         leftRing.color = dark ? Color.RingDark : Color.RingLight
         rightRing.color = dark ? Color.RingDark : Color.RingLight
+        
+        // coins label
+        coinsLabel?.fontColor = dark ? FontColor.CoinsDark : FontColor.CoinsLight
+        
         // balls
         ballsLayer.enumerateChildNodesWithName(NodeName.Ball) {
             node, stop in
@@ -501,9 +553,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
         }
+        
+        // GAME MENU
+        // main title
+        mainTitleLabel?.fontColor = dark ? FontColor.MainTitleDark : FontColor.MainTitleLight
+        
+        // best score label
+        bestScoreLabel?.fontColor = dark ? FontColor.BestScoreDark : FontColor.BestScoreLight
+        
+        // play button
+        playButtonNode?.color = dark ? Color.PlayButtonDark : Color.PlayButtonLight
+        
+        // config buttons
+        darkColorsButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        musicOnButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        gravityNormalButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        
+        // GAME RUNNING
         // score label
         scoreLabel?.fontColor = dark ? FontColor.ScoreDark : FontColor.ScoreLight
-        // TODO: score and money labels
+        
+        // pause button
+        pauseButtonNode?.color = dark ? Color.PauseButtonDark : Color.PauseButtonLight
+        
     }
     
     private func updateGravity() {
@@ -525,15 +597,40 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
-        if gameState == .GameMenu {
+        if gameState == .GameMenu || gameState == .GamePaused {
             let touch = touches.first!
             let location = touch.locationInNode(self)
             let touchedNode = self.nodeAtPoint(location)
             
             if let nodeName = touchedNode.name {
                 switch nodeName {
+                    
                 case NodeName.PlayButton:
                     startGame()
+                    
+                case NodeName.QuitButton:
+                    startNewGame()
+                    
+                case NodeName.ContinueButton:
+                    unpauseGame()
+                    
+                case NodeName.DarkColorsOnOffButton:
+                    darkColorsOn = !darkColorsOn
+                    if let darkColorsNode = touchedNode as? SKSpriteNode {
+                        darkColorsNode.texture = SKTexture(imageNamed: darkColorsOn ? ImageFilename.DarkColorsOn : ImageFilename.DarkColorsOff)
+                    }
+                    
+                case NodeName.GravityNormalOnOffButton:
+                    gravityNormal = !gravityNormal
+                    if let gravityNormalNode = touchedNode as? SKSpriteNode {
+                        gravityNormalNode.texture = SKTexture(imageNamed: gravityNormal ? ImageFilename.GravityNormalOn : ImageFilename.GravityNormalOff)
+                    }
+                    
+                case NodeName.MusicOnOffButton:
+                    isMusicOn = !isMusicOn
+                    if let musicOnOffNode = touchedNode as? SKSpriteNode {
+                        musicOnOffNode.texture = SKTexture(imageNamed: isMusicOn ? ImageFilename.MusicOnButton : ImageFilename.MusicOffButton)
+                    }
                 default:
                     break
                 }
@@ -546,37 +643,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 if let nodeName = touchedNode.name {
                     switch nodeName {
+                        
                     case NodeName.PauseButton:
                         pauseGame()
-//                    case NodeName.TestButton1:
-//                        darkColorsOn = !darkColorsOn
-//                    case NodeName.TestButton2:
-//                        gravityNormal = !gravityNormal
+                        
                     default:
                         applyRingImpulse(touchLocation: location)
                     }
                 } else {
                     applyRingImpulse(touchLocation: location)
-                }
-            }
-        } else if gameState == .GamePaused {
-            let touch = touches.first!
-            let location = touch.locationInNode(self)
-            let touchedNode = self.nodeAtPoint(location)
-            
-            if let nodeName = touchedNode.name {
-                switch nodeName {
-                case NodeName.QuitButton:
-                    startNewGame()
-                case NodeName.ContinueButton:
-                    unpauseGame()
-                case NodeName.MusicOnOffButton:
-                    isMusicOn = !isMusicOn
-                    if let musicOnOffNode = touchedNode as? SKSpriteNode {
-                        musicOnOffNode.texture = SKTexture(imageNamed: isMusicOn ? ImageFilename.MusicOnButton : ImageFilename.MusicOffButton)
-                    }
-                default:
-                    break
                 }
             }
         }
@@ -762,7 +837,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //                let pauseNodePosition = CGPoint(x: size.width / 2.0, y: size.height / 2.0 + bannerHeight / 2.0)
                 let pauseNodeSize = CGSize(width: size.width, height: size.height)
                 let pauseNodePosition = CGPoint(x: size.width / 2.0, y: size.height / 2.0)
-                pauseNode = PauseNode(size: pauseNodeSize, musicOn: isMusicOn)
+                pauseNode = PauseNode(size: pauseNodeSize, musicOn: isMusicOn, darkColorsOn: darkColorsOn, gravityNormal: gravityNormal)
                 pauseNode!.position = pauseNodePosition
                 pauseNode!.zPosition = ZPosition.PauseNode
                 addChild(pauseNode!)

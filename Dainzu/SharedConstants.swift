@@ -57,16 +57,20 @@ struct Geometry {
     static let MainTitleRelativeYPosition: CGFloat = 0.8 // relative to playableRect height
     
     // play button
-    static let PlayButtonRelativeHeight: CGFloat = 0.35 // relative to playableRect height
+    static let PlayButtonRelativeHeight: CGFloat = 0.28 // relative to playableRect height
+    
+    // config buttons
+    static let ConfigButtonRelativeHeight: CGFloat = 0.7 // relative to mainTitleLabel height
     
     // pause button
-    static let PauseButtonRelativeHeight: CGFloat = 0.7 // relative to topBar height
+    static let PauseButtonRelativeHeight: CGFloat = 0.9 // relative to topBar height
     static let PauseButtonRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
     
     // pause node
-    static let PauseNodeSmallButtonRelativeHeight: CGFloat = 0.15 // relative to pauseNode height
-    static let PauseNodeSmallButtonRelativeSideOffset: CGFloat = 0.02 // relative to pauseNode height
-    static let PauseNodeLargeButtonRelativeHeight: CGFloat = 0.3 // relative to pauseNode height
+    static let PauseNodeSmallButtonRelativeHeight: CGFloat = 0.10 // relative to pauseNode height
+    static let PauseNodeSmallButtonRelativeSideOffset: CGFloat = 0.04 // relative to pauseNode height
+    static let PauseNodeSmallButtonRelativeVerticalOffset: CGFloat = 0.07
+    static let PauseNodeLargeButtonRelativeHeight: CGFloat = 0.2 // relative to pauseNode height
 }
 
 struct ZPosition {
@@ -81,12 +85,16 @@ struct ZPosition {
 }
 
 struct ImageFilename {
-    static let PlayButton = "playButton"
-    static let PauseButton = "pauseButton"
-    static let QuitButton = "homeButton"
-    static let ContinueButton = "playButton"
-    static let MusicOnButton = "musicOnButton"
-    static let MusicOffButton = "musicOffButton"
+    static let PlayButton = "play"
+    static let PauseButton = "pause"
+    static let QuitButton = "home"
+    static let ContinueButton = "play"
+    static let MusicOnButton = "musicOn"
+    static let MusicOffButton = "musicOff"
+    static let GravityNormalOn = "arrowDown"
+    static let GravityNormalOff = "arrowUp"
+    static let DarkColorsOn = "moon"
+    static let DarkColorsOff = "sun"
 }
 
 struct Physics {
@@ -147,12 +155,24 @@ struct Color {
     
     static let PlayButtonDark: SKColor = Color.BottomBarDark
     static let PlayButtonLight: SKColor = Color.BottomBarLight
-    static let PlayButtonBlendFactor: CGFloat = 0.5
+    static let PlayButtonBlendFactor: CGFloat = 1.0
     
     static let PauseButtonDark: SKColor = Color.BackgroundDark
     static let PauseButtonLight: SKColor = Color.BackgroundLight
-    static let PauseButtonBlendFactor: CGFloat = 0.5
+    static let PauseButtonBlendFactor: CGFloat = 1.0
+    
+    // Pause node
     static let PauseNodeBackground: SKColor = SKColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.95)
+    static let PauseNodeSmallButtonDark: SKColor = Color.BottomBarDark
+    static let PauseNodeSmallButtonLight: SKColor = Color.BackgroundLight
+    static let PauseNodeSmallButtonBlendFactor: CGFloat = 1.0
+    static let PauseNodeLargeButtonDark: SKColor = Color.BottomBarDark
+    static let PauseNodeLargeButtonLight: SKColor = Color.BackgroundLight
+    static let PauseNodeLargeButtonBlendFactor: CGFloat = 1.0
+    
+    static let ConfigButtonDark: SKColor = Color.BottomBarDark
+    static let ConfigButtonLight: SKColor = Color.BottomBarLight
+    static let ConfigButtonBlendFactor: CGFloat = Color.PlayButtonBlendFactor
 }
 
 struct FontColor {
@@ -188,10 +208,8 @@ struct NodeName {
     static let QuitButton = "quitButtonNode"
     static let ContinueButton = "continueButtonNode"
     static let MusicOnOffButton = "musicOnOffButtonNode"
-    
-    // TODO: Test
-    static let TestButton1 = "testButton1"
-    static let TestButton2 = "testButton2"
+    static let DarkColorsOnOffButton = "darkColorsOnOffButtonNode"
+    static let GravityNormalOnOffButton = "gravityNormalOnOffButtonNode"
 }
 
 struct ActionKey {
@@ -211,8 +229,8 @@ struct UserDefaultsKey {
 
 struct UserDefaults {
     // default values
-    static let ShowAds_Initial = true
-    static let MusicOn_Initial = true
+    static let ShowAds = true
+    static let MusicOn = true
     static let DarkColorsOn = false
     static let GravityNormal = true
     static let CoinsCount: Int = 0

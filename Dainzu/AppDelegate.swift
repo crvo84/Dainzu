@@ -50,11 +50,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let defaults = NSUserDefaults.standardUserDefaults()
         
         if defaults.objectForKey(UserDefaultsKey.ShowAds) == nil {
-            defaults.setBool(UserDefaults.ShowAds_Initial, forKey: UserDefaultsKey.ShowAds)
+            defaults.setBool(UserDefaults.ShowAds, forKey: UserDefaultsKey.ShowAds)
         }
         
         if defaults.objectForKey(UserDefaultsKey.MusicOn) == nil {
-            defaults.setBool(UserDefaults.MusicOn_Initial, forKey: UserDefaultsKey.MusicOn)
+            defaults.setBool(UserDefaults.MusicOn, forKey: UserDefaultsKey.MusicOn)
         }
 
         if defaults.objectForKey(UserDefaultsKey.DarkColorsOn) == nil {
