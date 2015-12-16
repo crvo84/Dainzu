@@ -57,6 +57,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var ballCatchSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallCatch, waitForCompletion: false)
     private var ballFailedSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallFailed, waitForCompletion: false)
     private var gameOverSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.GameOver, waitForCompletion: false)
+    private var successSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Success, waitForCompletion: false)
     
     // colors
     private var darkColorsOn: Bool {
@@ -881,11 +882,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if isSoundActivated { runAction(ballFailedSound) }
         } else {
             gameState = .GameOver
-            if isSoundActivated {
-                runAction(self.gameOverSound) { self.startNewGame() }
+            if score > bestScore {
+                bestScore = score
+                if isSoundActivated {
+                    runAction(self.successSound) { self.startNewGame() }
+                } else {
+                    startNewGame()
+                }
             } else {
-                startNewGame()
+                if isSoundActivated {
+                    runAction(self.gameOverSound) { self.startNewGame() }
+                } else {
+                    startNewGame()
+                }
             }
+
         }
     }
     
@@ -998,7 +1009,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func applicationDidEnterBackground() {
 //        backgroundMusicPlayer.stop()
-        self.view?.paused = true
+        if gameState == .GamePaused {
+            self.view?.paused = true
+        }
+//        self.view?.paused = true
     }
     
     // Unpausing the view automatically unpauses the scene (and the physics simulation). Therefore, we must manually pause the scene again, if the game is supposed to be in a paused state.

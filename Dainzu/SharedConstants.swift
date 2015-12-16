@@ -98,6 +98,7 @@ struct SoundFilename {
     static let ButtonSmall = "slime.wav"
     static let BallFailed = "failed-laser.mp3"
     static let GameOver = "gameOver1.wav"
+    static let Success = "success7.mp3"
 }
 
 struct ImageFilename {
