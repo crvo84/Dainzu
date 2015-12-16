@@ -19,6 +19,7 @@ enum ScreenSide {
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // -------------- Instance variables -------------------//
+    weak var viewController: UIViewController?
     private var contentCreated = false
     private let bannerHeight: CGFloat
     
@@ -190,6 +191,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         updateShownLayers()
         updateGravity()
         updateColors()
+        
+        if let gameViewController = viewController as? GameViewController {
+            gameViewController.requestInterstitialAdIfNeeded()
+        }
     }
     
     private func playableRectSetup() {
@@ -917,7 +922,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Create and configure new scene
         let newGameScene = GameScene(size: size, bannerHeight: bannerHeight)
         newGameScene.scaleMode = scaleMode
-//        newGameScene.viewController = viewController
+        newGameScene.viewController = viewController
         view?.presentScene(newGameScene)
     }
     
@@ -925,13 +930,5 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
 }

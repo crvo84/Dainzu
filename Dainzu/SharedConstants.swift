@@ -29,7 +29,7 @@ struct Geometry {
     static let DeviceBaseHeight: CGFloat = 320 // iPhone 5s landscape height (base to calculate gravity)
     
     // playableRect
-    static let PlayableRectRatio: CGFloat = 2.25
+    static let PlayableRectRatio: CGFloat = 2.2
     
     // bars
     static let TopRelativeHeightAssignedBeforeBottomBar: CGFloat = 0.1 // relative to playableRect height

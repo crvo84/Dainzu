@@ -19,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         userDefaultsSetup()
         
+        UIViewController.prepareInterstitialAds()
+        
         return true
     }
 
