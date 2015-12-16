@@ -38,6 +38,7 @@ struct Geometry {
     // score label
     static let ScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBar height
     static let ScoreLabelRelativeWidth: CGFloat = 0.30 // relative to playableRect width
+    static let ScoreLabelMaxRelativeFontSize: CGFloat = 0.8 // relative to mainTitle font size
     
     // best score label
     static let BestScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBar height
@@ -46,6 +47,7 @@ struct Geometry {
     // coins label
     static let CoinNodeRelativeHeight: CGFloat = 0.45 // relative to topBar height
     static let CoinNodeRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
+    static let CoinsLabelMaxRelativeFontSize: CGFloat = 0.7 // relative to mainTitle font size
     static let CoinsLabelRelativeSideOffset: CGFloat = 0.25 // relative to coinNode width
     static let CoinsLabelRelativeHeight: CGFloat = 0.5 // relative to topBar height
     static let CoinsLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width

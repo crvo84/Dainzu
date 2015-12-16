@@ -821,13 +821,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if mainTitleLabel != nil {
             let maxFontSize = mainTitleLabel!.fontSize
             if scoreLabel != nil {
-                scoreLabel!.fontSize = min(scoreLabel!.fontSize, maxFontSize)
+                scoreLabel!.fontSize = min(scoreLabel!.fontSize, maxFontSize * Geometry.ScoreLabelMaxRelativeFontSize)
             }
             if bestScoreLabel != nil {
-                bestScoreLabel!.fontSize = min(bestScoreLabel!.fontSize, maxFontSize)
+                bestScoreLabel!.fontSize = min(bestScoreLabel!.fontSize, maxFontSize * Geometry.ScoreLabelMaxRelativeFontSize)
             }
             if coinsLabel != nil {
-                coinsLabel!.fontSize = min(coinsLabel!.fontSize, maxFontSize)
+                coinsLabel!.fontSize = min(coinsLabel!.fontSize, maxFontSize * Geometry.CoinsLabelMaxRelativeFontSize)
             }
             if pauseButtonNode != nil {
                 let pauseButtonRatio = pauseButtonNode!.size.width / pauseButtonNode!.size.height
