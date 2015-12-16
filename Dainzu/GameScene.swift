@@ -34,7 +34,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.ShowAds)
     }
     
-    // music
+    // SOUND
     private var isMusicOn: Bool {
         get {
             return NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.MusicOn)
@@ -42,8 +42,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         set {
             NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: UserDefaultsKey.MusicOn)
             // TODO: update music config
+            isSoundActivated = newValue
         }
     }
+    // to avoid accessing user defaults every time a sound is played
+    private var isSoundActivated: Bool = true
+
+    // sound actions
+    private var buttonLargeSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.ButtonLarge, waitForCompletion: false)
+    private var buttonSmallSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.ButtonSmall, waitForCompletion: false)
+    private var impulseSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Impulse, waitForCompletion: false)
+    private var moneySound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Money, waitForCompletion: false)
+    private var ballTouchSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallTouch, waitForCompletion: false)
+    private var ballCatchSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallCatch, waitForCompletion: false)
+    private var ballFailedSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallFailed, waitForCompletion: false)
+    private var gameOverSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.GameOver, waitForCompletion: false)
     
     // colors
     private var darkColorsOn: Bool {
@@ -82,12 +95,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // margin bars
     private var topBarHeight: CGFloat = 0
     private var bottomBarHeight: CGFloat = 0
-    private var verticalMiddleBar: CGFloat = 0
     private var topBarNode: SKSpriteNode?
     private var bottomBarNode: SKSpriteNode?
     private var verticalMiddleBarNode: SKSpriteNode?
     
     // score
+    private var livesLeft: Int = GameOption.LivesNum
     private var scoreLabel: SKLabelNode?
     private var score: Int = 0 {
         didSet {
@@ -135,6 +148,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var rightRing: RingNode!
     
     // balls
+    private var ballSelected: String {
+        get {
+            let userDefaults = NSUserDefaults.standardUserDefaults()
+            return userDefaults.stringForKey(UserDefaultsKey.BallSelected) ?? UserDefaults.BallSelected
+        }
+        set {
+            if BallImage.Balls.contains(newValue) {
+                let userDefaults = NSUserDefaults.standardUserDefaults()
+                userDefaults.setObject(newValue, forKey: UserDefaultsKey.BallSelected)
+            }
+        }
+    }
     private var ballHeight: CGFloat {
         return playableRect.height * Geometry.BallRelativeHeight
     }
@@ -169,6 +194,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: Game Setup
     override func didMoveToView(view: SKView) {
         view.multipleTouchEnabled = true
+        isSoundActivated = isMusicOn
         
         /* Setup your scene here */
         if !contentCreated {
@@ -315,6 +341,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         playButtonNode!.name = NodeName.PlayButton
         playButtonNode!.color = darkColorsOn ? Color.PlayButtonDark : Color.PlayButtonLight
         playButtonNode!.colorBlendFactor = Color.PlayButtonBlendFactor
+        if let playButtonTexture = playButtonNode!.texture {
+            playButtonNode!.physicsBody = SKPhysicsBody(texture: playButtonTexture, size: playButtonNode!.size)
+            playButtonNode!.physicsBody?.categoryBitMask = PhysicsCategory.MenuBoundary
+            playButtonNode!.physicsBody?.dynamic = false
+        }
         menuOnlyUILayer.addChild(playButtonNode!)
         
         // best label
@@ -386,7 +417,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             removeAdsButtonNode!.name = NodeName.RemoveAdsButton
             menuOnlyUILayer.addChild(removeAdsButtonNode!)
         }
-
     }
     
     private func gameOnlyUISetup() {
@@ -504,6 +534,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let rightRingJoint = SKPhysicsJointFixed.jointWithBodyA(rightRingGoal.physicsBody!, bodyB: rightRing.physicsBody!, anchor: self.convertPoint(rightRingGoal.position, fromNode: rightRingGoal))
         physicsWorld.addJoint(rightRingJoint)
     }
+
     
     private func generateBalls() {
         ballsLayer.position = playableRectOriginInScene
@@ -535,11 +566,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private func updateShownLayers() {
         switch gameState {
         case .GameMenu:
+            
             gameOnlyUILayer.hidden = true
             menuOnlyUILayer.hidden = false
             ballsLayer.hidden = false
             
         case .GameRunning:
+
             gameOnlyUILayer.hidden = false
             menuOnlyUILayer.hidden = true
             ballsLayer.hidden = false
@@ -631,23 +664,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             if let nodeName = touchedNode.name {
                 switch nodeName {
-                    
+            
                 case NodeName.PlayButton:
+                    if isSoundActivated { runAction(buttonLargeSound) }
                     startGame()
                     
                 case NodeName.QuitButton:
+                    // no sound actions can be played when game is paused
                     startNewGame()
                     
                 case NodeName.ContinueButton:
+                    if isSoundActivated { runAction(buttonLargeSound) }
                     unpauseGame()
                     
                 case NodeName.DarkColorsOnOffButton:
+                    if isSoundActivated { runAction(buttonSmallSound) }
                     darkColorsOn = !darkColorsOn
                     if let darkColorsNode = touchedNode as? SKSpriteNode {
                         darkColorsNode.texture = SKTexture(imageNamed: darkColorsOn ? ImageFilename.DarkColorsOn : ImageFilename.DarkColorsOff)
                     }
                     
                 case NodeName.GravityNormalOnOffButton:
+                    if isSoundActivated { runAction(buttonSmallSound) }
                     gravityNormal = !gravityNormal
                     if let gravityNormalNode = touchedNode as? SKSpriteNode {
                         gravityNormalNode.texture = SKTexture(imageNamed: gravityNormal ? ImageFilename.GravityNormalOn : ImageFilename.GravityNormalOff)
@@ -658,16 +696,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if let musicOnOffNode = touchedNode as? SKSpriteNode {
                         musicOnOffNode.texture = SKTexture(imageNamed: isMusicOn ? ImageFilename.MusicOnButton : ImageFilename.MusicOffButton)
                     }
+                    if isSoundActivated { runAction(buttonSmallSound) }
                     
                 case NodeName.RemoveAdsButton:
+                    if isSoundActivated { runAction(buttonSmallSound) }
                     removeAdsRequest()
                     
                 default:
                     break
                 }
+
             }
             
         } else if gameState == .GameRunning {
+            var shouldPlayImpulseSound = false // to avoid multiple actions on simultaneous touches
             for touch in touches {
                 let location = touch.locationInNode(self)
                 let touchedNode = self.nodeAtPoint(location)
@@ -676,14 +718,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     switch nodeName {
                         
                     case NodeName.PauseButton:
-                        pauseGame()
+                        if isSoundActivated {
+                            runAction(buttonSmallSound) {
+                                self.pauseGame()
+                            }
+                        } else {
+                            pauseGame()
+                        }
                         
                     default:
                         applyRingImpulse(touchLocation: location)
+                        shouldPlayImpulseSound = true
                     }
                 } else {
                     applyRingImpulse(touchLocation: location)
+                    shouldPlayImpulseSound = true
                 }
+            }
+            if shouldPlayImpulseSound  && isSoundActivated {
+                runAction(impulseSound)
             }
         }
     }
@@ -698,16 +751,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 if collision == PhysicsCategory.Ball | PhysicsCategory.Ring {
                     ballNode.affectedByGravity = true
+                    if isSoundActivated { runAction(ballTouchSound) }
                     
                 } else if collision == PhysicsCategory.Ball | PhysicsCategory.MiddleBar {
                     ballNode.removeFromParent()
+                    ballFailed()
                     
                 } else if collision == PhysicsCategory.Ball | PhysicsCategory.Boundary {
-                    ballNode.runAction(SKAction.fadeOutWithDuration(Time.BallFadeOut)) {
-                        ballNode.removeFromParent()
-                    }
+//                    ballNode.runAction(SKAction.fadeOutWithDuration(Time.BallFadeOut)) {
+//                        ballNode.removeFromParent()
+//                    }
+                    ballNode.removeFromParent()
+                    ballFailed()
                 } else if collision == PhysicsCategory.Ball | PhysicsCategory.RingGoal {
-                    if ballNode.isSpecial {
+                    let isSpecial = ballNode.isSpecial
+                    ballNode.removeFromParent()
+                    if isSpecial {
                         coinsCount++
                         if coinNodeFlashAction != nil {
                             coinNode?.runAction(coinNodeFlashAction!)
@@ -715,6 +774,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         if coinsLabelFlashAction != nil {
                             coinsLabel?.runAction(coinsLabelFlashAction!)
                         }
+                        if isSoundActivated { runAction(moneySound) }
+                        
+                    } else {
+                        if isSoundActivated { runAction(ballCatchSound) }
                     }
                     score++
                 }
@@ -782,7 +845,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if isSpecial {
             ballColor = Color.BallSpecial
         } else {
-            ballTexture = SKTexture(imageNamed: "tennisBall")
+            ballTexture = SKTexture(imageNamed: ballSelected)
             ballColor = darkColorsOn ? Color.BallDark : Color.BallLight
         }
         
@@ -812,9 +875,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             y: CGFloat(arc4random_uniform(maxY - minY) + minY))
     }
     
+    private func ballFailed() {
+        if gameState != .GameRunning { return }
+        if --livesLeft > 0 {
+            if isSoundActivated { runAction(ballFailedSound) }
+        } else {
+            gameState = .GameOver
+            if isSoundActivated {
+                runAction(self.gameOverSound) { self.startNewGame() }
+            } else {
+                startNewGame()
+            }
+        }
+    }
+    
     
       // ------------------------ //
-     // -------- Others -------- //
+     // -------- Labels -------- //
     // ------------------------ //
     
     private func adjustLabelsSize() {
@@ -943,7 +1020,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     // MARK: Navigation
-    
+
     private func startNewGame() {
         // Create and configure new scene
         let newGameScene = GameScene(size: size, bannerHeight: bannerHeight)

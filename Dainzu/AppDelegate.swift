@@ -75,6 +75,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             defaults.setInteger(UserDefaults.BestScore, forKey: UserDefaultsKey.BestScore)
         }
         
+        if defaults.objectForKey(UserDefaultsKey.BallSelected) == nil {
+            defaults.setObject(UserDefaults.BallSelected, forKey: UserDefaultsKey.BallSelected)
+        }
+        
     }
 
 

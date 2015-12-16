@@ -25,6 +25,9 @@ struct Geometry {
     static let BallRelativeHeight: CGFloat = 0.11 // Rel to playableRect height
     static let BallPhysicsBodyRelativeRadius: CGFloat = 0.5 // Rel to ballNode height
     
+    // menu ball
+    static let MenuBallRelativeHeight: CGFloat = 0.17 // relative to playableRect height
+    
     // device
     static let DeviceBaseHeight: CGFloat = 320 // iPhone 5s landscape height (base to calculate gravity)
     
@@ -49,7 +52,7 @@ struct Geometry {
     static let CoinNodeRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
     static let CoinsLabelMaxRelativeFontSize: CGFloat = 0.7 // relative to mainTitle font size
     static let CoinsLabelRelativeSideOffset: CGFloat = 0.25 // relative to coinNode width
-    static let CoinsLabelRelativeHeight: CGFloat = 0.5 // relative to topBar height
+    static let CoinsLabelRelativeHeight: CGFloat = 0.6 // relative to topBar height
     static let CoinsLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width
     static let CoinsLabelFlashActionMaxScale: CGFloat = 1.5
 
@@ -86,6 +89,17 @@ struct ZPosition {
     static let BarsLayer: CGFloat = 80
 }
 
+struct SoundFilename {
+    static let Impulse = "impulse.wav"
+    static let Money = "money4.wav"
+    static let BallCatch = "pop5.wav"
+    static let BallTouch = "pop3.wav"
+    static let ButtonLarge = "largeButton.wav"
+    static let ButtonSmall = "slime.wav"
+    static let BallFailed = "failed-laser.mp3"
+    static let GameOver = "gameOver1.wav"
+}
+
 struct ImageFilename {
     static let PlayButton = "play"
     static let PauseButton = "pause"
@@ -98,6 +112,12 @@ struct ImageFilename {
     static let DarkColorsOn = "moon"
     static let DarkColorsOff = "sun"
     static let RemoveAdsButton = "shoppingCart"
+}
+
+struct BallImage {
+    static let Ball_1 = "tennisBall"
+    
+    static let Balls = [BallImage.Ball_1]
 }
 
 struct Physics {
@@ -121,6 +141,7 @@ struct PhysicsCategory {
     static let Boundary:    UInt32 = 0b100
     static let MiddleBar:   UInt32 = 0b1000
     static let Ball:        UInt32 = 0b10000
+    static let MenuBoundary:UInt32 = 0b100000
     static let All:         UInt32 = UInt32.max
 }
 
@@ -131,6 +152,8 @@ struct Time {
     static let BallsWait: Double = 3
     static let BallRotate: Double = 3
     static let BallFadeOut: Double = 0.3
+    // menu ball
+    static let MenuBallWait: Double = 2
     // coin count
     static let CoinsLabelFlashAction: Double = 0.2
 }
@@ -203,6 +226,7 @@ struct NodeName {
     static let Ring = "ringNode"
     static let RingPart = "ringPartNode"
     static let Ball = "ballNode"
+    static let MenuBall = "menuBallNode"
     static let Boundary = "boundaryNode"
     static let BestScoreLabel = "bestScoreLabel"
     static let MainTitleLabel = "mainTitleLabel"
@@ -229,6 +253,7 @@ struct UserDefaultsKey {
     static let GravityNormal = "gravityNormal"
     static let CoinsCount = "coinsCount"
     static let BestScore = "bestScore"
+    static let BallSelected = "ballSelected"
 }
 
 struct UserDefaults {
@@ -239,6 +264,7 @@ struct UserDefaults {
     static let GravityNormal = true
     static let CoinsCount: Int = 0
     static let BestScore: Int = 0
+    static let BallSelected: String = BallImage.Ball_1
 }
 
 struct Text {
@@ -262,6 +288,7 @@ struct GameOption {
     static let SpecialBallsOn = true
     static let SpecialBallsRatio: UInt32 = 10 // 1 in X
     static let ResetVelocityBeforeImpulse = true
+    static let LivesNum: Int = 3
 }
 
 struct Test {

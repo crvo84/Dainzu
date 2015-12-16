@@ -35,6 +35,14 @@
 		73FA39281C213A55008381D0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73FA39271C213A55008381D0 /* LaunchScreen.storyboard */; };
 		73FA392A1C214877008381D0 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FA39291C214877008381D0 /* iAd.framework */; };
 		73FA392C1C215259008381D0 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FA392B1C215259008381D0 /* StoreKit.framework */; };
+		73FC1FE31C21DE5200BF3766 /* impulse.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73FC1FE21C21DE5200BF3766 /* impulse.wav */; };
+		73FC1FE71C21E50700BF3766 /* money4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73FC1FE61C21E50700BF3766 /* money4.wav */; };
+		73FC1FE91C21E57000BF3766 /* pop5.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73FC1FE81C21E57000BF3766 /* pop5.wav */; };
+		73FC1FED1C21EF2C00BF3766 /* pop3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73FC1FEC1C21EF2C00BF3766 /* pop3.wav */; };
+		73FC1FEF1C21EF6A00BF3766 /* largeButton.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73FC1FEE1C21EF6A00BF3766 /* largeButton.wav */; };
+		73FC1FF11C21F67E00BF3766 /* failed-laser.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 73FC1FF01C21F67E00BF3766 /* failed-laser.mp3 */; };
+		73FC1FF31C21F6E600BF3766 /* gameOver1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73FC1FF21C21F6E600BF3766 /* gameOver1.wav */; };
+		73FC1FF71C21FF6300BF3766 /* slime.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73FC1FF61C21FF6300BF3766 /* slime.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +97,14 @@
 		73FA39271C213A55008381D0 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		73FA39291C214877008381D0 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		73FA392B1C215259008381D0 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		73FC1FE21C21DE5200BF3766 /* impulse.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = impulse.wav; sourceTree = "<group>"; };
+		73FC1FE61C21E50700BF3766 /* money4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = money4.wav; sourceTree = "<group>"; };
+		73FC1FE81C21E57000BF3766 /* pop5.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = pop5.wav; sourceTree = "<group>"; };
+		73FC1FEC1C21EF2C00BF3766 /* pop3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = pop3.wav; sourceTree = "<group>"; };
+		73FC1FEE1C21EF6A00BF3766 /* largeButton.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = largeButton.wav; sourceTree = "<group>"; };
+		73FC1FF01C21F67E00BF3766 /* failed-laser.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "failed-laser.mp3"; sourceTree = "<group>"; };
+		73FC1FF21C21F6E600BF3766 /* gameOver1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gameOver1.wav; sourceTree = "<group>"; };
+		73FC1FF61C21FF6300BF3766 /* slime.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = slime.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,6 +204,14 @@
 			isa = PBXGroup;
 			children = (
 				73F230051C18E68E00EC3762 /* Info.plist */,
+				73FC1FE21C21DE5200BF3766 /* impulse.wav */,
+				73FC1FE61C21E50700BF3766 /* money4.wav */,
+				73FC1FEC1C21EF2C00BF3766 /* pop3.wav */,
+				73FC1FE81C21E57000BF3766 /* pop5.wav */,
+				73FC1FEE1C21EF6A00BF3766 /* largeButton.wav */,
+				73FC1FF01C21F67E00BF3766 /* failed-laser.mp3 */,
+				73FC1FF21C21F6E600BF3766 /* gameOver1.wav */,
+				73FC1FF61C21FF6300BF3766 /* slime.wav */,
 				73FA39271C213A55008381D0 /* LaunchScreen.storyboard */,
 			);
 			name = "Other resources";
@@ -343,10 +367,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73FC1FE71C21E50700BF3766 /* money4.wav in Resources */,
+				73FC1FE91C21E57000BF3766 /* pop5.wav in Resources */,
 				73DF50921C1F3A0F0022312B /* Snaps Taste.otf in Resources */,
+				73FC1FEF1C21EF6A00BF3766 /* largeButton.wav in Resources */,
+				73FC1FE31C21DE5200BF3766 /* impulse.wav in Resources */,
 				73FA39281C213A55008381D0 /* LaunchScreen.storyboard in Resources */,
 				73F230011C18E68E00EC3762 /* Assets.xcassets in Resources */,
+				73FC1FED1C21EF2C00BF3766 /* pop3.wav in Resources */,
 				73F22FFF1C18E68D00EC3762 /* Main.storyboard in Resources */,
+				73FC1FF71C21FF6300BF3766 /* slime.wav in Resources */,
+				73FC1FF11C21F67E00BF3766 /* failed-laser.mp3 in Resources */,
+				73FC1FF31C21F6E600BF3766 /* gameOver1.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
