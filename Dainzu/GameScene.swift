@@ -28,6 +28,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    // music
+    private var isMusicOn: Bool {
+        get {
+            return NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.MusicOn)
+        }
+        set {
+            NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: UserDefaultsKey.MusicOn)
+            // TODO: update music config
+        }
+    }
+    
     // colors
     private var darkColorsOn: Bool {
         get {
@@ -50,10 +61,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    // main title
+    // game menu
     private var mainTitleLabel: SKLabelNode?
-    // play button
     private var playButtonNode: SKSpriteNode?
+    
+    // pause
+    private var pauseButtonNode: SKSpriteNode?
+    private var pauseNode: PauseNode?
     
     // margin bars
     private var topBarHeight: CGFloat = 0
@@ -148,6 +162,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Setup your scene here */
         if !contentCreated {
+            
+            registerAppTransitionObservers()
             
             if Test.TestModeOn {
                 print("Scene width: \(size.width), height: \(size.height)")
@@ -321,6 +337,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         adjustFontSizeForLabel(scoreLabel!, tofitSize: CGSize(width: scoreLabelWidth, height: scoreLabelHeight))
         scoreLabel!.position = CGPoint(x: 0, y: +playableRect.height/2 + topBarHeight/2)
         gameOnlyUILayer.addChild(scoreLabel!)
+        
+        // pause button node
+        pauseButtonNode = SKSpriteNode(imageNamed: ImageFilename.PauseButton)
+        let pauseButtonRatio = pauseButtonNode!.size.width / pauseButtonNode!.size.height
+        let pauseButtonHeight = topBarHeight * Geometry.PauseButtonRelativeHeight
+        pauseButtonNode!.size = CGSize(width: pauseButtonHeight * pauseButtonRatio, height: pauseButtonHeight)
+        pauseButtonNode!.position = CGPoint(
+            x: -playableRect.width/2 + playableRect.width * Geometry.PauseButtonRelativeSideOffset + pauseButtonNode!.size.width/2,
+            y: +playableRect.height/2 + topBarHeight / 2)
+        pauseButtonNode!.name = NodeName.PauseButton
+        pauseButtonNode!.color = darkColorsOn ? Color.PauseButtonDark : Color.PauseButtonLight
+        pauseButtonNode!.colorBlendFactor = Color.PauseButtonBlendFactor
+        gameOnlyUILayer.addChild(pauseButtonNode!)
     }
     
     private func alwaysVisibleUISetup() {
@@ -517,15 +546,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 if let nodeName = touchedNode.name {
                     switch nodeName {
-                    case NodeName.TestButton1:
-                        darkColorsOn = !darkColorsOn
-                    case NodeName.TestButton2:
-                        gravityNormal = !gravityNormal
+                    case NodeName.PauseButton:
+                        pauseGame()
+//                    case NodeName.TestButton1:
+//                        darkColorsOn = !darkColorsOn
+//                    case NodeName.TestButton2:
+//                        gravityNormal = !gravityNormal
                     default:
                         applyRingImpulse(touchLocation: location)
                     }
                 } else {
                     applyRingImpulse(touchLocation: location)
+                }
+            }
+        } else if gameState == .GamePaused {
+            let touch = touches.first!
+            let location = touch.locationInNode(self)
+            let touchedNode = self.nodeAtPoint(location)
+            
+            if let nodeName = touchedNode.name {
+                switch nodeName {
+                case NodeName.QuitButton:
+                    startNewGame()
+                case NodeName.ContinueButton:
+                    unpauseGame()
+                case NodeName.MusicOnOffButton:
+                    isMusicOn = !isMusicOn
+                    if let musicOnOffNode = touchedNode as? SKSpriteNode {
+                        musicOnOffNode.texture = SKTexture(imageNamed: isMusicOn ? ImageFilename.MusicOnButton : ImageFilename.MusicOffButton)
+                    }
+                default:
+                    break
                 }
             }
         }
@@ -564,6 +615,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
+    
     
     // MARK: Helper functions
     
@@ -671,6 +723,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if coinsLabel != nil {
                 coinsLabel!.fontSize = min(coinsLabel!.fontSize, maxFontSize)
             }
+            if pauseButtonNode != nil {
+                let pauseButtonRatio = pauseButtonNode!.size.width / pauseButtonNode!.size.height
+                let pauseButtonHeight = min(pauseButtonNode!.size.height, mainTitleLabel!.frame.size.height)
+                pauseButtonNode!.size = CGSize(
+                    width: pauseButtonHeight * pauseButtonRatio,
+                    height: pauseButtonHeight)
+            }
         }
     }
     
@@ -684,34 +743,107 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     
     
+      // ----------------------------- //
+     // ------- MARK: Pausing ------- //
+    // ----------------------------- //
     
+    func pauseGame() {
+        if gameState == .GameRunning {
+            gameState = .GamePaused
+            paused = true
+//            if backgroundMusicPlayer.playing {
+//                backgroundMusicPlayer.pause()
+//            }
+            
+            // Display pause screen etc
+            if pauseNode == nil {
+                pauseButtonNode?.hidden = true
+                //                let pauseNodeSize = CGSize(width: size.width, height: size.height - bannerHeight)
+                //                let pauseNodePosition = CGPoint(x: size.width / 2.0, y: size.height / 2.0 + bannerHeight / 2.0)
+                let pauseNodeSize = CGSize(width: size.width, height: size.height)
+                let pauseNodePosition = CGPoint(x: size.width / 2.0, y: size.height / 2.0)
+                pauseNode = PauseNode(size: pauseNodeSize, musicOn: isMusicOn)
+                pauseNode!.position = pauseNodePosition
+                pauseNode!.zPosition = ZPosition.PauseNode
+                addChild(pauseNode!)
+            }
+        }
+    }
+    
+    func unpauseGame() {
+        if gameState == .GamePaused
+        {
+            gameState = .GameRunning
+            paused = false
+            
+//            if isMusicOn {
+//                if !backgroundMusicPlayer.playing { backgroundMusicPlayer.play() }
+//            }
+            
+            // Hide pause screen etc
+            pauseNode?.removeFromParent()
+            pauseNode = nil
+            pauseButtonNode?.hidden = false
+        }
+    }
+    
+    
+    private func registerAppTransitionObservers() {
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        
+        notificationCenter.addObserver(self, selector: "applicationWillResignActive", name:UIApplicationWillResignActiveNotification , object: nil)
+        
+        notificationCenter.addObserver(self, selector: "applicationDidBecomeActive", name: UIApplicationDidBecomeActiveNotification, object: nil)
+        
+        notificationCenter.addObserver(self, selector: "applicationDidEnterBackground", name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        
+        notificationCenter.addObserver(self, selector: "applicationWillEnterForeground", name: UIApplicationWillEnterForegroundNotification, object: nil)
+    }
+    
+    func applicationWillResignActive() {
+        if gameState == .GameRunning { // Pause the game if necessary
+            pauseGame()
+        }
+    }
+    
+    func applicationDidBecomeActive() {
+        self.view?.paused = false // Unpause SKView. This is safe to call even if the view is not paused.
+        if gameState == .GamePaused {
+            paused = true
+        }
+    }
+    
+    func applicationDidEnterBackground() {
+//        backgroundMusicPlayer.stop()
+        self.view?.paused = true
+    }
+    
+    // Unpausing the view automatically unpauses the scene (and the physics simulation). Therefore, we must manually pause the scene again, if the game is supposed to be in a paused state.
+    func applicationWillEnterForeground() {
+        self.view?.paused = false //Unpause SKView. This is safe to call even if the view is not paused.
+        if gameState == .GamePaused {
+            paused = true
+        }
+    }
+    
+    // MARK: Deallocation
+    
+    override func willMoveFromView(view: SKView) {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
 
+    // MARK: Navigation
     
-    
-    // MARK: TEST
-    
-    private func testButtonSetup() {
-        let side = topBarHeight * 1
-        let offset: CGFloat = 0
-        
-        // testButton1
-        let testButton1 = SKSpriteNode(texture: nil, color: SKColor.grayColor(), size: CGSize(width: side, height: side))
-        testButton1.zPosition = 1000
-        testButton1.anchorPoint = CGPoint(x: 0, y: 1)
-        testButton1.position = CGPoint(x: offset, y: size.height - offset)
-        testButton1.name = NodeName.TestButton1
-        addChild(testButton1)
-        
-        // testButton2
-        let testButton2 = SKSpriteNode(texture: nil, color: SKColor.darkGrayColor(), size: CGSize(width: side, height: side))
-        testButton2.zPosition = 1000
-        testButton2.anchorPoint = CGPoint(x: 0, y: 1)
-        testButton2.position = CGPoint(
-            x: testButton1.position.x + testButton1.size.width + offset,
-            y: testButton1.position.y)
-        testButton2.name = NodeName.TestButton2
-        addChild(testButton2)
-        
+    private func startNewGame() {
+        // Create and configure new scene
+        let newGameScene = GameScene(size: size, bannerHeight: bannerHeight)
+        newGameScene.scaleMode = scaleMode
+//        newGameScene.viewController = viewController
+        view?.presentScene(newGameScene)
     }
     
     

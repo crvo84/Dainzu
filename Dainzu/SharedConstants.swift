@@ -36,18 +36,18 @@ struct Geometry {
     static let VerticalMiddleBarRelativeWidth: CGFloat = 0.02 // relative to playableRect width
     
     // score label
-    static let ScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBarHeight
+    static let ScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBar height
     static let ScoreLabelRelativeWidth: CGFloat = 0.30 // relative to playableRect width
     
     // best score label
-    static let BestScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBarHeight
+    static let BestScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBar height
     static let BestScoreLabelRelativeWidth: CGFloat = 0.5 // relative to playableRect width
     
     // coins label
-    static let CoinNodeRelativeHeight: CGFloat = 0.45 // relative to topBarHeight
+    static let CoinNodeRelativeHeight: CGFloat = 0.45 // relative to topBar height
     static let CoinNodeRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
     static let CoinsLabelRelativeSideOffset: CGFloat = 0.25 // relative to coinNode width
-    static let CoinsLabelRelativeHeight: CGFloat = 0.5 // relative to topBarHeight
+    static let CoinsLabelRelativeHeight: CGFloat = 0.5 // relative to topBar height
     static let CoinsLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width
     static let CoinsLabelFlashActionMaxScale: CGFloat = 1.5
 
@@ -57,10 +57,20 @@ struct Geometry {
     static let MainTitleRelativeYPosition: CGFloat = 0.8 // relative to playableRect height
     
     // play button
-    static let PlayButtonRelativeHeight: CGFloat = 0.5 // relative to playableRect height
+    static let PlayButtonRelativeHeight: CGFloat = 0.35 // relative to playableRect height
+    
+    // pause button
+    static let PauseButtonRelativeHeight: CGFloat = 0.7 // relative to topBar height
+    static let PauseButtonRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
+    
+    // pause node
+    static let PauseNodeSmallButtonRelativeHeight: CGFloat = 0.15 // relative to pauseNode height
+    static let PauseNodeSmallButtonRelativeSideOffset: CGFloat = 0.02 // relative to pauseNode height
+    static let PauseNodeLargeButtonRelativeHeight: CGFloat = 0.3 // relative to pauseNode height
 }
 
 struct ZPosition {
+    static let PauseNode: CGFloat = 300
     static let AlwaysVisibleUILayer: CGFloat = 250
     static let GameOnlyUILayer: CGFloat = 200
     static let MenuOnlyUILayer: CGFloat = 200
@@ -72,6 +82,11 @@ struct ZPosition {
 
 struct ImageFilename {
     static let PlayButton = "playButton"
+    static let PauseButton = "pauseButton"
+    static let QuitButton = "homeButton"
+    static let ContinueButton = "playButton"
+    static let MusicOnButton = "musicOnButton"
+    static let MusicOffButton = "musicOffButton"
 }
 
 struct Physics {
@@ -133,6 +148,11 @@ struct Color {
     static let PlayButtonDark: SKColor = Color.BottomBarDark
     static let PlayButtonLight: SKColor = Color.BottomBarLight
     static let PlayButtonBlendFactor: CGFloat = 0.5
+    
+    static let PauseButtonDark: SKColor = Color.BackgroundDark
+    static let PauseButtonLight: SKColor = Color.BackgroundLight
+    static let PauseButtonBlendFactor: CGFloat = 0.5
+    static let PauseNodeBackground: SKColor = SKColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.95)
 }
 
 struct FontColor {
@@ -164,6 +184,10 @@ struct NodeName {
     static let BestScoreLabel = "bestScoreLabel"
     static let MainTitleLabel = "mainTitleLabel"
     static let PlayButton = "playButtonNode"
+    static let PauseButton = "pauseButtonNode"
+    static let QuitButton = "quitButtonNode"
+    static let ContinueButton = "continueButtonNode"
+    static let MusicOnOffButton = "musicOnOffButtonNode"
     
     // TODO: Test
     static let TestButton1 = "testButton1"
