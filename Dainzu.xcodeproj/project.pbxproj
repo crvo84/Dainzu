@@ -16,7 +16,6 @@
 		73F22FFC1C18E68D00EC3762 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F22FFB1C18E68D00EC3762 /* GameViewController.swift */; };
 		73F22FFF1C18E68D00EC3762 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73F22FFD1C18E68D00EC3762 /* Main.storyboard */; };
 		73F230011C18E68E00EC3762 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 73F230001C18E68E00EC3762 /* Assets.xcassets */; };
-		73F230041C18E68E00EC3762 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73F230021C18E68E00EC3762 /* LaunchScreen.storyboard */; };
 		73F2300F1C18E68E00EC3762 /* DainzuTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F2300E1C18E68E00EC3762 /* DainzuTests.swift */; };
 		73F2301A1C18E68E00EC3762 /* DainzuUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F230191C18E68E00EC3762 /* DainzuUITests.swift */; };
 		73F230291C18EB4200EC3762 /* SharedConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F230281C18EB4200EC3762 /* SharedConstants.swift */; };
@@ -33,6 +32,7 @@
 		73F230411C18F5B000EC3762 /* SKTTimingFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F230351C18F5B000EC3762 /* SKTTimingFunctions.swift */; };
 		73F230421C18F5B000EC3762 /* Vector3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F230361C18F5B000EC3762 /* Vector3.swift */; };
 		73F230441C18F62100EC3762 /* RingNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F230431C18F62100EC3762 /* RingNode.swift */; };
+		73FA39281C213A55008381D0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73FA39271C213A55008381D0 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,7 +63,6 @@
 		73F22FFB1C18E68D00EC3762 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		73F22FFE1C18E68D00EC3762 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		73F230001C18E68E00EC3762 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		73F230031C18E68E00EC3762 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		73F230051C18E68E00EC3762 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		73F2300A1C18E68E00EC3762 /* DainzuTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DainzuTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		73F2300E1C18E68E00EC3762 /* DainzuTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DainzuTests.swift; sourceTree = "<group>"; };
@@ -85,6 +84,7 @@
 		73F230351C18F5B000EC3762 /* SKTTimingFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTTimingFunctions.swift; sourceTree = "<group>"; };
 		73F230361C18F5B000EC3762 /* Vector3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vector3.swift; sourceTree = "<group>"; };
 		73F230431C18F62100EC3762 /* RingNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RingNode.swift; sourceTree = "<group>"; };
+		73FA39271C213A55008381D0 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,7 +180,7 @@
 			isa = PBXGroup;
 			children = (
 				73F230051C18E68E00EC3762 /* Info.plist */,
-				73F230021C18E68E00EC3762 /* LaunchScreen.storyboard */,
+				73FA39271C213A55008381D0 /* LaunchScreen.storyboard */,
 			);
 			name = "Other resources";
 			sourceTree = "<group>";
@@ -335,7 +335,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				73DF50921C1F3A0F0022312B /* Snaps Taste.otf in Resources */,
-				73F230041C18E68E00EC3762 /* LaunchScreen.storyboard in Resources */,
+				73FA39281C213A55008381D0 /* LaunchScreen.storyboard in Resources */,
 				73F230011C18E68E00EC3762 /* Assets.xcassets in Resources */,
 				73F22FFF1C18E68D00EC3762 /* Main.storyboard in Resources */,
 			);
@@ -423,14 +423,6 @@
 				73F22FFE1C18E68D00EC3762 /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		73F230021C18E68E00EC3762 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				73F230031C18E68E00EC3762 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
