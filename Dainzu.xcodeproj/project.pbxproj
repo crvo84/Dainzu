@@ -44,6 +44,8 @@
 		73FC1FF31C21F6E600BF3766 /* gameOver1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73FC1FF21C21F6E600BF3766 /* gameOver1.wav */; };
 		73FC1FF71C21FF6300BF3766 /* slime.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73FC1FF61C21FF6300BF3766 /* slime.wav */; };
 		73FC1FF91C220E0500BF3766 /* success7.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 73FC1FF81C220E0500BF3766 /* success7.mp3 */; };
+		73FC1FFB1C22104800BF3766 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC1FFA1C22104800BF3766 /* GameKit.framework */; };
+		73FC1FFD1C22218500BF3766 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73FC1FFC1C22218500BF3766 /* AboutViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,6 +109,8 @@
 		73FC1FF21C21F6E600BF3766 /* gameOver1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gameOver1.wav; sourceTree = "<group>"; };
 		73FC1FF61C21FF6300BF3766 /* slime.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = slime.wav; sourceTree = "<group>"; };
 		73FC1FF81C220E0500BF3766 /* success7.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = success7.mp3; sourceTree = "<group>"; };
+		73FC1FFA1C22104800BF3766 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		73FC1FFC1C22218500BF3766 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +118,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73FC1FFB1C22104800BF3766 /* GameKit.framework in Frameworks */,
 				73FA392C1C215259008381D0 /* StoreKit.framework in Frameworks */,
 				73FA392A1C214877008381D0 /* iAd.framework in Frameworks */,
 			);
@@ -148,6 +153,7 @@
 		73F22FE91C18E68D00EC3762 = {
 			isa = PBXGroup;
 			children = (
+				73FC1FFA1C22104800BF3766 /* GameKit.framework */,
 				73FA392B1C215259008381D0 /* StoreKit.framework */,
 				73FA39291C214877008381D0 /* iAd.framework */,
 				73F22FF41C18E68D00EC3762 /* Dainzu */,
@@ -243,6 +249,7 @@
 			isa = PBXGroup;
 			children = (
 				73F22FFB1C18E68D00EC3762 /* GameViewController.swift */,
+				73FC1FFC1C22218500BF3766 /* AboutViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -334,6 +341,11 @@
 					73F22FF11C18E68D00EC3762 = {
 						CreatedOnToolsVersion = 7.1.1;
 						DevelopmentTeam = 9F26XL4W94;
+						SystemCapabilities = {
+							com.apple.GameCenter = {
+								enabled = 1;
+							};
+						};
 					};
 					73F230091C18E68E00EC3762 = {
 						CreatedOnToolsVersion = 7.1.1;
@@ -410,6 +422,7 @@
 				73F2303D1C18F5B000EC3762 /* SKColor+Extensions.swift in Sources */,
 				73F230411C18F5B000EC3762 /* SKTTimingFunctions.swift in Sources */,
 				73DF50D51C20E46C0022312B /* PauseNode.swift in Sources */,
+				73FC1FFD1C22218500BF3766 /* AboutViewController.swift in Sources */,
 				73F2303B1C18F5B000EC3762 /* SKAction+Extensions.swift in Sources */,
 				73F230291C18EB4200EC3762 /* SharedConstants.swift in Sources */,
 				73F230391C18F5B000EC3762 /* CGVector+Extensions.swift in Sources */,

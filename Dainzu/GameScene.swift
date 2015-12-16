@@ -88,6 +88,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var gravityNormalButtonNode: SKSpriteNode?
     private var musicOnButtonNode: SKSpriteNode?
     private var removeAdsButtonNode: SKSpriteNode?
+    private var gameCenterButtonNode: SKSpriteNode?
+    private var moreGamesButtonNode: SKSpriteNode?
     
     // pause
     private var pauseButtonNode: SKSpriteNode?
@@ -418,6 +420,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             removeAdsButtonNode!.name = NodeName.RemoveAdsButton
             menuOnlyUILayer.addChild(removeAdsButtonNode!)
         }
+        
+        // game center button
+        gameCenterButtonNode = SKSpriteNode(imageNamed: ImageFilename.GameCenterButton)
+        let gameCenterButtonRatio = gameCenterButtonNode!.size.width / gameCenterButtonNode!.size.height
+        gameCenterButtonNode!.size = CGSize(width: gameCenterButtonRatio * configButtonHeight, height: configButtonHeight)
+        gameCenterButtonNode!.position = CGPoint(
+            x: firstConfigButtonX + configButtonSeparation,
+            y: -configButtonY)
+        gameCenterButtonNode!.color = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        gameCenterButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+        gameCenterButtonNode!.name = NodeName.GameCenterButton
+        menuOnlyUILayer.addChild(gameCenterButtonNode!)
+        
+        // more games button
+        moreGamesButtonNode = SKSpriteNode(imageNamed: ImageFilename.MoreGamesButton)
+        let moreGamesButtonRatio = moreGamesButtonNode!.size.width / moreGamesButtonNode!.size.height
+        moreGamesButtonNode!.size = CGSize(width: moreGamesButtonRatio * configButtonHeight, height: configButtonHeight)
+        moreGamesButtonNode!.position = CGPoint(
+            x: firstConfigButtonX + configButtonSeparation * 2,
+            y: -configButtonY)
+        moreGamesButtonNode!.color = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        moreGamesButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+        moreGamesButtonNode!.name = NodeName.MoreGamesButton
+        menuOnlyUILayer.addChild(moreGamesButtonNode!)
     }
     
     private func gameOnlyUISetup() {
@@ -629,6 +655,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         musicOnButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
         gravityNormalButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
         removeAdsButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        gameCenterButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
         
         // GAME RUNNING
         // score label
@@ -702,6 +729,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 case NodeName.RemoveAdsButton:
                     if isSoundActivated { runAction(buttonSmallSound) }
                     removeAdsRequest()
+                    
+                case NodeName.GameCenterButton:
+                    if isSoundActivated { runAction(buttonSmallSound) }
+                    gameCenterRequest()
+                    
+                case NodeName.MoreGamesButton:
+                    if isSoundActivated { runAction(buttonSmallSound) }
+                    moreGamesRequest()
                     
                 default:
                     break
@@ -881,22 +916,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if --livesLeft > 0 {
             if isSoundActivated { runAction(ballFailedSound) }
         } else {
-            gameState = .GameOver
-            if score > bestScore {
-                bestScore = score
-                if isSoundActivated {
-                    runAction(self.successSound) { self.startNewGame() }
-                } else {
-                    startNewGame()
-                }
+            gameOver()
+        }
+    }
+    
+    private func gameOver() {
+        gameState = .GameOver
+        if let gameViewController = viewController as? GameViewController {
+            gameViewController.reportScore(score)
+        }
+        if score > bestScore {
+            bestScore = score
+            if isSoundActivated {
+                runAction(self.successSound) { self.startNewGame() }
             } else {
-                if isSoundActivated {
-                    runAction(self.gameOverSound) { self.startNewGame() }
-                } else {
-                    startNewGame()
-                }
+                startNewGame()
             }
-
+        } else {
+            if isSoundActivated {
+                runAction(self.gameOverSound) { self.startNewGame() }
+            } else {
+                startNewGame()
+            }
         }
     }
     
@@ -1009,10 +1050,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func applicationDidEnterBackground() {
 //        backgroundMusicPlayer.stop()
-        if gameState == .GamePaused {
-            self.view?.paused = true
-        }
-//        self.view?.paused = true
+//        if gameState == .GamePaused {
+//            self.view?.paused = true
+//        }
+        self.view?.paused = true
     }
     
     // Unpausing the view automatically unpauses the scene (and the physics simulation). Therefore, we must manually pause the scene again, if the game is supposed to be in a paused state.
@@ -1059,6 +1100,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         removeAdsButtonNode = nil
     }
     
+    private func gameCenterRequest() {
+        if let gameViewController = viewController as? GameViewController {
+            gameViewController.leaderboardButtonPressed(self)
+        }
+    }
     
+    private func moreGamesRequest() {
+        if let gameViewController = viewController as? GameViewController {
+            gameViewController.moreGamesButtonPressed()
+        }
+    }
 
 }

@@ -76,6 +76,9 @@ struct Geometry {
     static let PauseNodeSmallButtonRelativeSideOffset: CGFloat = 0.04 // relative to pauseNode height
     static let PauseNodeSmallButtonRelativeVerticalOffset: CGFloat = 0.07
     static let PauseNodeLargeButtonRelativeHeight: CGFloat = 0.2 // relative to pauseNode height
+    
+    // about app buttons
+    static let AboutAppButtonsRelativeCornerRadius: CGFloat = 0.2 // relative to button width
 }
 
 struct ZPosition {
@@ -113,6 +116,8 @@ struct ImageFilename {
     static let DarkColorsOn = "moon"
     static let DarkColorsOff = "sun"
     static let RemoveAdsButton = "shoppingCart"
+    static let GameCenterButton = "leaderboard"
+    static let MoreGamesButton = "iphone"
 }
 
 struct BallImage {
@@ -239,6 +244,13 @@ struct NodeName {
     static let DarkColorsOnOffButton = "darkColorsOnOffButtonNode"
     static let GravityNormalOnOffButton = "gravityNormalOnOffButtonNode"
     static let RemoveAdsButton = "removeAdsButtonNode"
+    static let GameCenterButton = "gameCenterButtonNode"
+    static let MoreGamesButton = "moreGamesButtonNode"
+}
+
+struct SegueId {
+    static let About = "aboutSegue"
+    static let ExitAbout = "exitAboutSegue"
 }
 
 struct ActionKey {
@@ -268,6 +280,19 @@ struct UserDefaults {
     static let BallSelected: String = BallImage.Ball_1
 }
 
+struct URLString {
+    static let AppStoreRate = "itms-apps://itunes.apple.com/app/id1068384300"
+    
+    static let FacebookFromApp = "fb://profile/800203350077160"
+    static let Facebook = "https://www.facebook.com/800203350077160"
+    static let TwitterFromApp = "twitter:///user?screen_name=Villou_Apps"
+    static let Twitter = "https://twitter.com/Villou_Apps"
+    static let Villou = "http://www.villou.com"
+    
+    static let MrMarketAppStore = "itms-apps://itunes.apple.com/app/id1033738154"
+    static let HiInvestAppStore = "itms-apps://itunes.apple.com/app/id1009148607"
+}
+
 struct Text {
     static let BestScore = "Best"
     static let MainTitle = "Dainzu"
@@ -283,6 +308,10 @@ struct Text {
 
 struct InAppPurchase {
     static let RemoveAdsProductId = "DainzuRemoveAds"
+}
+
+struct GameCenter {
+    static let LeaderboardId = "Dainzu_001"
 }
 
 struct GameOption {

@@ -10,8 +10,9 @@ import UIKit
 import SpriteKit
 import iAd
 import StoreKit
+import GameKit
 
-class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTransactionObserver, SKProductsRequestDelegate {
+class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTransactionObserver, SKProductsRequestDelegate, GKGameCenterControllerDelegate {
     
     // iAd Banner
     var adBanner: ADBannerView?
@@ -20,6 +21,9 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     // In-App Purchases
     var product: SKProduct?
     var waitingForProduct = false
+    
+    // Game Center
+//    var isGameCenterEnabled = false
     
     private var showAds: Bool {
         get {
@@ -52,6 +56,9 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // game center
+        authenticatePlayer()
         
         if showAds {
             SKPaymentQueue.defaultQueue().addTransactionObserver(self)
@@ -256,7 +263,84 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     }
 
     
+    // ---------------------------- //
+    // ----- MARK: GameCenter ---- //
+    // -------------------------- //
     
+    func reportScore(score: Int) {
+        let gkScore = GKScore(leaderboardIdentifier: GameCenter.LeaderboardId)
+        
+        gkScore.value = Int64(score)
+        
+        GKScore.reportScores([gkScore], withCompletionHandler: { (error) -> Void in
+            if error != nil {
+                print("Failed to report score: \(error)")
+            } else {
+                print("Successfully logged score!")
+            }
+        })
+    }
+    
+    // Game Kit Delegate
+    
+    func authenticatePlayer()
+    {
+        let localPlayer = GKLocalPlayer.localPlayer()
+        // Assigning a block to the localPlayer's
+        // authenticateHandler kicks off the process
+        // of authenticating the user with Game Center.
+        localPlayer.authenticateHandler = { (viewController, error) in
+            
+            if viewController != nil {
+                // We need to present a view controller
+                // to finish the authentication process
+                self.presentViewController(viewController!, animated: true, completion: nil)
+                
+            } else if localPlayer.authenticated {
+                // We're authenticated, and can now use Game Center features
+                print("Authenticated")
+//                self.isGameCenterEnabled = true
+                
+            } else if let theError = error {
+                // We're not authenticated.
+                print("Error! \(theError)")
+//                self.isGameCenterEnabled = false
+            }
+            
+        }
+    }
+    
+    @IBAction func leaderboardButtonPressed(sender: AnyObject)
+    {
+        let gameCenterViewController: GKGameCenterViewController = GKGameCenterViewController()
+        gameCenterViewController.gameCenterDelegate = self
+        gameCenterViewController.viewState = GKGameCenterViewControllerState.Leaderboards
+        gameCenterViewController.leaderboardIdentifier = GameCenter.LeaderboardId
+        self.presentViewController(gameCenterViewController, animated: true, completion: nil)
+    }
+    
+    func gameCenterViewControllerDidFinish(gameCenterViewController: GKGameCenterViewController) {
+        gameCenterViewController.dismissViewControllerAnimated(true, completion: nil)
+    }
+
+    
+    // ---------------------------- //
+    // ----- MARK: Navigation ---- //
+    // -------------------------- //
+    
+    @IBAction func moreGamesButtonPressed() {
+        performSegueWithIdentifier(SegueId.About, sender: self)
+    }
+    
+    @IBAction func unwindToInitialViewController(segue: UIStoryboardSegue)
+    {
+        if let segueName = segue.identifier {
+            switch segueName {
+            default:
+                break
+            }
+        }
+    }
     
     
     
