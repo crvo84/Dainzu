@@ -2,17 +2,16 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "heart105x100.png",
+      "filename" : "heart53x50.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "heart211x200.png",
+      "filename" : "heart105x100.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "heart316x300.png",
       "scale" : "3x"
     }
   ],

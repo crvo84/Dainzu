@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "musicOff133x100.png",
+      "filename" : "musicOff67x50.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "musicOff267x200.png",
+      "filename" : "musicOff133x100.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "musicOff400x300.png",
+      "filename" : "musicOff200x150.png",
       "scale" : "3x"
     }
   ],

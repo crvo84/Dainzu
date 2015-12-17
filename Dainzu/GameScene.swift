@@ -666,6 +666,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gravityNormalButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
         removeAdsButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
         gameCenterButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        moreGamesButtonNode?.color = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
         
         // GAME RUNNING
         // score label
@@ -676,7 +677,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // live left nodes
         updateLiveLeftNodes()
-        
     }
     
     private func updateGravity() {
