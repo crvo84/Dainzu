@@ -27,6 +27,8 @@ struct Geometry {
     
     // menu ball
     static let MenuBallRelativeHeight: CGFloat = 0.17 // relative to playableRect height
+    static let MenuBallAnimationMaxScale: CGFloat = 1.1
+    static let MenuBallAnimationMinScale: CGFloat = 1.0
     
     // device
     static let DeviceBaseHeight: CGFloat = 320 // iPhone 5s landscape height (base to calculate gravity)
@@ -73,7 +75,7 @@ struct Geometry {
     static let ConfigButtonRelativeHeight: CGFloat = 0.7 // relative to mainTitleLabel height
     
     // pause button
-    static let PauseButtonRelativeHeight: CGFloat = 0.9 // relative to topBar height
+    static let PauseButtonRelativeHeight: CGFloat = 0.95 // relative to topBar height
     static let PauseButtonRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
     
     // pause node
@@ -89,6 +91,7 @@ struct Geometry {
 struct ZPosition {
     static let PauseNode: CGFloat = 300
     static let AlwaysVisibleUILayer: CGFloat = 250
+    static let MenuBall: CGFloat = 250
     static let GameOnlyUILayer: CGFloat = 200
     static let MenuOnlyUILayer: CGFloat = 200
     static let RingAbove: CGFloat = 110
@@ -127,6 +130,7 @@ struct ImageFilename {
 }
 
 struct BallImage {
+    static let Ball_Special = "pacman"
     static let Ball_1 = "tennisBall"
     
     static let Balls = [BallImage.Ball_1]
@@ -144,6 +148,7 @@ struct Physics {
     static let BallDensity: CGFloat = 4
     static let BallLinearDamping: CGFloat = 0.0
     static let BallVelocityMultiplier: CGFloat = 0.2 // 0.5
+    static let BallBounciness: CGFloat = 0.4
 }
 
 struct PhysicsCategory {
@@ -165,7 +170,7 @@ struct Time {
     static let BallRotate: Double = 3
     static let BallFadeOut: Double = 0.3
     // menu ball
-    static let MenuBallWait: Double = 2
+    static let MenuBallSizeAnimation: Double = 2
     // coin count
     static let CoinsLabelFlashAction: Double = 0.2
 }
@@ -190,10 +195,10 @@ struct Color {
     static let RingDark: SKColor = Color.BottomBarDark
     static let RingLight: SKColor = Color.BottomBarLight
     
-    static let BallDark: SKColor = SKColor.whiteColor()
-    static let BallLight: SKColor = SKColor.orangeColor()
-    
-    static let BallSpecial: SKColor = SKColor.yellowColor()
+//    static let BallDark: SKColor = SKColor.whiteColor()
+//    static let BallLight: SKColor = SKColor.orangeColor()
+//    
+//    static let BallSpecial: SKColor = SKColor.yellowColor()
     
     static let PlayButtonDark: SKColor = Color.BottomBarDark
     static let PlayButtonLight: SKColor = Color.BottomBarLight
@@ -268,6 +273,7 @@ struct ActionKey {
     static let RingFloatingAnimation = "ringFloatingAnimation"
     static let BallsGeneration = "ballsGenerationAction"
     static let BallRotate = "ballRotateAction"
+    static let MenuBallSizeAnimation = "menuBallSizeAnimation"
 }
 
 struct UserDefaultsKey {

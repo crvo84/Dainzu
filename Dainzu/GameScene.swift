@@ -9,7 +9,7 @@
 import SpriteKit
 
 enum GameState {
-    case GameMenu, GameRunning, GamePaused, GameOver
+    case GameMenu, GameBallSelection, GameRunning, GamePaused, GameOver
 }
 
 enum ScreenSide {
@@ -90,6 +90,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var removeAdsButtonNode: SKSpriteNode?
     private var gameCenterButtonNode: SKSpriteNode?
     private var moreGamesButtonNode: SKSpriteNode?
+    private var menuBallNode: BallNode?
     
     // pause
     private var pauseButtonNode: SKSpriteNode?
@@ -451,6 +452,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         moreGamesButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
         moreGamesButtonNode!.name = NodeName.MoreGamesButton
         menuOnlyUILayer.addChild(moreGamesButtonNode!)
+        
+        // menu ball
+        menuBallNode = getNewBall(configButtonHeight, isSpecial: false)
+        menuBallNode!.position = CGPoint(
+            x: firstConfigButtonX + configButtonSeparation,
+            y: 0)
+        menuBallNode!.name = NodeName.MenuBall
+        menuBallNode!.zPosition = ZPosition.MenuBall
+        let scaleUpAction = SKAction.scaleTo(Geometry.MenuBallAnimationMaxScale, duration: Time.MenuBallSizeAnimation/2)
+        let scaleDownAction = SKAction.scaleTo(Geometry.MenuBallAnimationMinScale, duration: Time.MenuBallSizeAnimation/2)
+        let scaleAnimation = SKAction.repeatActionForever(SKAction.sequence([scaleUpAction, scaleDownAction]))
+        menuBallNode!.runAction(scaleAnimation, withKey: ActionKey.MenuBallSizeAnimation)
+        menuOnlyUILayer.addChild(menuBallNode!)
     }
     
     private func gameOnlyUISetup() {
@@ -498,7 +512,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // coin node
         let coinNodeHeight = topBarHeight * Geometry.CoinNodeRelativeHeight
-        coinNode = BallNode(texture: nil, height: coinNodeHeight, color: Color.BallSpecial)
+        coinNode = getNewBall(coinNodeHeight, isSpecial: true)
         coinNode!.physicsBody?.dynamic = false
         coinNode!.position = CGPoint(
             x: playableRect.width/2 - coinNode!.size.width/2 - playableRect.width * Geometry.CoinNodeRelativeSideOffset,
@@ -581,8 +595,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let waitAction = SKAction.waitForDuration(Time.BallsWait)
         
         let createBallsAction = SKAction.runBlock {
-            self.createNewBall(.Left)
-            self.createNewBall(.Right)
+            self.createNewBallForGame(.Left)
+            self.createNewBallForGame(.Right)
         }
         let sequenceAction = SKAction.sequence([createBallsAction, waitAction])
         runAction(SKAction.repeatActionForever(sequenceAction), withKey: ActionKey.BallsGeneration)
@@ -590,10 +604,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     private func startGame() {
         gameState = .GameRunning
-        leftRing.stopFloatingAnimation()
-        rightRing.stopFloatingAnimation()
-        leftRing.physicsBody!.dynamic = true
-        rightRing.physicsBody!.dynamic = true
+        
+        activateRingsPhysics()
         
         generateBalls()
     }
@@ -610,6 +622,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         case .GameRunning:
 
+            menuBallNode?.removeFromParent()
+            menuBallNode =  nil
+            
             gameOnlyUILayer.hidden = false
             menuOnlyUILayer.hidden = true
             ballsLayer.hidden = false
@@ -638,17 +653,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // coins label
         coinsLabel?.fontColor = dark ? FontColor.CoinsDark : FontColor.CoinsLight
         
-        // balls
-        ballsLayer.enumerateChildNodesWithName(NodeName.Ball) {
-            node, stop in
-            if let ballNode = node as? BallNode {
-                if ballNode.isSpecial {
-                    ballNode.ballColor = Color.BallSpecial
-                } else {
-                    ballNode.ballColor = dark ? Color.BallDark : Color.BallLight
-                }
-            }
-        }
+//        // balls
+//        ballsLayer.enumerateChildNodesWithName(NodeName.Ball) {
+//            node, stop in
+//            if let ballNode = node as? BallNode {
+//                if ballNode.isSpecial {
+//                    ballNode.ballColor = Color.BallSpecial
+//                } else {
+//                    ballNode.ballColor = dark ? Color.BallDark : Color.BallLight
+//                }
+//            }
+//        }
         
         // GAME MENU
         // main title
@@ -770,6 +785,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if let gravityNormalNode = touchedNode as? SKSpriteNode {
                         gravityNormalNode.texture = SKTexture(imageNamed: gravityNormal ? ImageFilename.GravityNormalOn : ImageFilename.GravityNormalOff)
                     }
+                    activateMenuBallPhysics()
+                    activateRingsPhysics()
                     
                 case NodeName.MusicOnOffButton:
                     isMusicOn = !isMusicOn
@@ -789,6 +806,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 case NodeName.MoreGamesButton:
                     if isSoundActivated { runAction(buttonSmallSound) }
                     moreGamesRequest()
+                    
                     
                 default:
                     break
@@ -846,9 +864,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     ballFailed()
                     
                 } else if collision == PhysicsCategory.Ball | PhysicsCategory.Boundary {
-//                    ballNode.runAction(SKAction.fadeOutWithDuration(Time.BallFadeOut)) {
-//                        ballNode.removeFromParent()
-//                    }
                     ballNode.removeFromParent()
                     ballFailed()
                 } else if collision == PhysicsCategory.Ball | PhysicsCategory.RingGoal {
@@ -919,32 +934,48 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return ringGoal
     }
     
+    private func activateRingsPhysics() {
+        if leftRing != nil && rightRing != nil {
+            leftRing.stopFloatingAnimation()
+            rightRing.stopFloatingAnimation()
+            leftRing.physicsBody!.dynamic = true
+            rightRing.physicsBody!.dynamic = true
+            let leftRingImpulse = arc4random_uniform(UInt32(2)) == 0
+            if leftRingImpulse {
+                applyRingImpulse(touchLocation: CGPoint(x: size.width * 0.25, y: size.height/2))
+            } else {
+                applyRingImpulse(touchLocation: CGPoint(x: size.width * 0.75, y: size.height/2))
+            }
+        }
+    }
     
       // ---------------------- //
      // -------- Ball -------- //
     // ---------------------- //
     
-    private func createNewBall(screenSide: ScreenSide) {
+    private func createNewBallForGame(screenSide: ScreenSide) {
         let isSpecial = GameOption.SpecialBallsOn && arc4random_uniform(GameOption.SpecialBallsRatio) == 0
-        
-        // TODO: choose from available textures
-        var ballTexture: SKTexture?
-        let ballColor: SKColor
-        if isSpecial {
-            ballColor = Color.BallSpecial
-        } else {
-            ballTexture = SKTexture(imageNamed: ballSelected)
-            ballColor = darkColorsOn ? Color.BallDark : Color.BallLight
-        }
-        
-        let ballNode = BallNode(texture: ballTexture, height: ballHeight, color: ballColor)
-        ballNode.isSpecial = isSpecial
+        let ballNode = getNewBall(ballHeight, isSpecial: isSpecial)
         ballNode.position = self.getBallRandomPosition(ballNode, screenSide: screenSide)
         ballsLayer.addChild(ballNode)
-        ballNode.physicsBody?.velocity = getBallVelocity(ballNode, screenSide: screenSide)
         
+        ballNode.physicsBody?.velocity = getBallVelocity(ballNode, screenSide: screenSide)
+
         let rotateAction = SKAction.repeatActionForever(SKAction.rotateByAngle(2*π, duration: Time.BallRotate))
         ballNode.runAction(rotateAction, withKey: ActionKey.BallRotate)
+    }
+    
+    // creates a new BallNode with the selected ball texture
+    private func getNewBall(height: CGFloat, isSpecial: Bool) -> BallNode {
+        var ballTexture: SKTexture?
+        if isSpecial {
+            ballTexture = SKTexture(imageNamed: BallImage.Ball_Special)
+        } else {
+            ballTexture = SKTexture(imageNamed: ballSelected)
+        }
+        let ballNode = BallNode(texture: ballTexture, height: height, color: nil)
+        ballNode.isSpecial = isSpecial
+        return ballNode
     }
     
     private func getBallVelocity(ballNode: BallNode, screenSide: ScreenSide) -> CGVector {
@@ -961,6 +992,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return CGPoint(
             x: screenSide == .Left ? -ballNode.size.width/2 : playableRect.width + ballNode.size.width/2,
             y: CGFloat(arc4random_uniform(maxY - minY) + minY))
+    }
+    
+    private func activateMenuBallPhysics() {
+        menuBallNode?.removeActionForKey(ActionKey.MenuBallSizeAnimation)
+        menuBallNode?.xScale = 1
+        menuBallNode?.yScale = 1
+        menuBallNode?.physicsBody?.affectedByGravity = true
     }
     
     private func ballFailed() {
