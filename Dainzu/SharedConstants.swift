@@ -178,18 +178,20 @@ struct Time {
 }
 
 struct Color {
+    // -------------------------------------------------------------------------------- //
     static let BackgroundDark = SKColor(red: 0, green: 0, blue: 0.1, alpha: 1.0)
     static let BackgroundLight = SKColor(red: 202.0/255.0, green: 240.0/255.0, blue: 255.0/255.0, alpha: 1.0)
 
     static let BarDark: SKColor = SKColor.orangeColor()
     static let BarLight: SKColor = SKColor(red: 3.0/255.0, green: 41.0/255.0, blue: 56.0/255.0, alpha: 1.0)
     
+    static let RingDark: SKColor = SKColor(red: 43.0/255.0, green: 150.0/255.0, blue: 192.0/255.0, alpha: 1.0)
+    static let RingLight: SKColor = SKColor(red: 255.0/255.0, green: 64.0/255.0, blue: 82.0/255.0, alpha: 1.0)
+    // -------------------------------------------------------------------------------- //
+    
     static let LiveLeftDark: SKColor = Color.BackgroundDark
     static let LiveLeftLight: SKColor = Color.BackgroundLight
     static let LiveLeftBlendFactor: CGFloat = 1.0
-    
-    static let RingDark: SKColor = Color.BarDark
-    static let RingLight: SKColor = Color.BarLight
     
     static let PlayButtonDark: SKColor = Color.BarDark
     static let PlayButtonLight: SKColor = Color.BarLight
@@ -214,8 +216,8 @@ struct Color {
 }
 
 struct FontColor {
-    static let MainTitleDark: SKColor = Color.BackgroundLight
-    static let MainTitleLight: SKColor = Color.BackgroundDark
+    static let MainTitleDark: SKColor = Color.RingDark
+    static let MainTitleLight: SKColor = Color.RingLight
     
     static let ScoreDark: SKColor = Color.BackgroundDark
     static let ScoreLight: SKColor = Color.BackgroundLight
@@ -223,8 +225,8 @@ struct FontColor {
     static let BestScoreDark: SKColor = Color.BackgroundDark
     static let BestScoreLight: SKColor = Color.BackgroundLight
     
-    static let CoinsDark: SKColor = SKColor.whiteColor()
-    static let CoinsLight: SKColor = SKColor.whiteColor()
+    static let CoinsDark: SKColor = Color.BackgroundDark
+    static let CoinsLight: SKColor = Color.BackgroundLight
 }
 
 struct FontName {
