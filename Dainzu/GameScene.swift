@@ -81,7 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    // game menu
+    // game menu UI
     private var mainTitleLabel: SKLabelNode?
     private var playButtonNode: SKSpriteNode?
     private var darkColorsButtonNode: SKSpriteNode?
@@ -91,6 +91,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var gameCenterButtonNode: SKSpriteNode?
     private var moreGamesButtonNode: SKSpriteNode?
     private var menuBallNode: BallNode?
+    
+    // ball selection UI
+    private var homeButtonNode: SKSpriteNode?
     
     // pause
     private var pauseButtonNode: SKSpriteNode?
@@ -180,6 +183,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let alwaysVisibleUILayer = SKNode()
     private let gameOnlyUILayer = SKNode()
     private let menuOnlyUILayer = SKNode()
+    private let ballSelectionUILayer = SKNode()
     private let ringsLayer = SKNode()
     private let ballsLayer = SKNode()
     
@@ -221,12 +225,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playableRectSetup()
             barsSetup() // call after playableRectSetup()
             
-            alwaysVisibleUISetup() // call after barsSetup()
-            menuOnlyUISetup() // call after barsSetup()
-            gameOnlyUISetup() // call after barsSetup()
-            adjustLabelsSize()
+            // ----- This methods must be called after barsSetup ----- //
             
+            alwaysVisibleUISetup()
+            menuOnlyUISetup()
+            gameOnlyUISetup()
+            ballSelectionUISetup()
             ringsSetup()
+            
+            adjustLabelsSize()
             
             contentCreated = true
         }
@@ -272,9 +279,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bottomBarNode = nil
         verticalMiddleBarNode = nil
         
+        let barColor = darkColorsOn ? Color.BarDark : Color.BarLight
         // BOTTOM bar node
-        let topBarColor = darkColorsOn ? Color.TopBarDark : Color.TopBarLight
-        topBarNode = SKSpriteNode(texture: nil, color: topBarColor, size: CGSize(
+        topBarNode = SKSpriteNode(texture: nil, color: barColor, size: CGSize(
             width: size.width,
             height: topBarHeight))
         topBarNode!.position = CGPoint(
@@ -288,8 +295,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         barsLayer.addChild(topBarNode!)
         
         // TOP (add bannerHeight to size to show bar color while banner is not shown)
-        let bottomBarColor = darkColorsOn ? Color.BottomBarDark : Color.BottomBarLight
-        bottomBarNode = SKSpriteNode(texture: nil, color: bottomBarColor, size: CGSize(
+        bottomBarNode = SKSpriteNode(texture: nil, color: barColor, size: CGSize(
             width: size.width,
             height: bottomBarHeight))
         bottomBarNode!.position = CGPoint(x: size.width/2, y: bottomBarHeight/2)
@@ -301,8 +307,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         barsLayer.addChild(bottomBarNode!)
         
         // VERTICAL MIDDLE
-        let verticalMiddleBarColor = darkColorsOn ? Color.VerticalMiddleBarDark : Color.VerticalMiddleBarLight
-        verticalMiddleBarNode = SKSpriteNode(texture: nil, color: verticalMiddleBarColor, size: CGSize(
+        verticalMiddleBarNode = SKSpriteNode(texture: nil, color: barColor, size: CGSize(
             width: playableRect.width * Geometry.VerticalMiddleBarRelativeWidth,
             height: playableRect.height))
         verticalMiddleBarNode!.position = CGPoint(
@@ -454,7 +459,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         menuOnlyUILayer.addChild(moreGamesButtonNode!)
         
         // menu ball
-        menuBallNode = getNewBall(configButtonHeight, isSpecial: false)
+        let menuBallHeight = configButtonHeight * Geometry.MenuBallRelativeHeight
+        menuBallNode = getNewBall(menuBallHeight, isSpecial: false)
         menuBallNode!.position = CGPoint(
             x: firstConfigButtonX + configButtonSeparation,
             y: 0)
@@ -489,14 +495,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // pause button node
         pauseButtonNode = SKSpriteNode(imageNamed: ImageFilename.PauseButton)
         let pauseButtonRatio = pauseButtonNode!.size.width / pauseButtonNode!.size.height
-        let pauseButtonHeight = topBarHeight * Geometry.PauseButtonRelativeHeight
+        let pauseButtonHeight = topBarHeight * Geometry.TopLeftButtonRelativeHeight
         pauseButtonNode!.size = CGSize(width: pauseButtonHeight * pauseButtonRatio, height: pauseButtonHeight)
         pauseButtonNode!.position = CGPoint(
-            x: -playableRect.width/2 + playableRect.width * Geometry.PauseButtonRelativeSideOffset + pauseButtonNode!.size.width/2,
+            x: -playableRect.width/2 + playableRect.width * Geometry.TopLeftButtonRelativeSideOffset + pauseButtonNode!.size.width/2,
             y: +playableRect.height/2 + topBarHeight / 2)
         pauseButtonNode!.name = NodeName.PauseButton
-        pauseButtonNode!.color = darkColorsOn ? Color.PauseButtonDark : Color.PauseButtonLight
-        pauseButtonNode!.colorBlendFactor = Color.PauseButtonBlendFactor
+        pauseButtonNode!.color = darkColorsOn ? Color.TopLeftButtonDark : Color.TopLeftButtonLight
+        pauseButtonNode!.colorBlendFactor = Color.TopLeftButtonBlendFactor
         gameOnlyUILayer.addChild(pauseButtonNode!)
         
         // live left nodes
@@ -539,6 +545,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let coinNodeFlash = SKAction.scaleTo(Geometry.CoinsLabelFlashActionMaxScale, duration: Time.CoinsLabelFlashAction/2)
         let coinNodeFlashReverse = SKAction.scaleTo(1.0, duration: Time.CoinsLabelFlashAction/2)
         coinNodeFlashAction = SKAction.sequence([coinNodeFlash, coinNodeFlashReverse])
+    }
+    
+    private func ballSelectionUISetup() {
+        ballSelectionUILayer.zPosition = ZPosition.BallSelectionUILayer
+        ballSelectionUILayer.position = CGPoint(
+            x: playableRectOriginInScene.x + playableRect.width/2,
+            y: playableRectOriginInScene.y + playableRect.height/2)
+        addChild(ballSelectionUILayer)
+        
+        // home button
+        homeButtonNode = SKSpriteNode(imageNamed: ImageFilename.HomeButton)
+        let homeButtonRatio = homeButtonNode!.size.width / homeButtonNode!.size.height
+        let homeButtonHeight = topBarHeight * Geometry.TopLeftButtonRelativeHeight
+        homeButtonNode!.size = CGSize(width: homeButtonRatio * homeButtonHeight, height: homeButtonHeight)
+        homeButtonNode!.position = CGPoint(
+            x: -playableRect.width/2 + playableRect.width * Geometry.TopLeftButtonRelativeSideOffset + homeButtonNode!.size.width/2,
+            y: +playableRect.height/2 + topBarHeight / 2)
+        homeButtonNode!.name = NodeName.HomeButton
+        homeButtonNode!.color = darkColorsOn ? Color.TopLeftButtonDark : Color.TopLeftButtonLight
+        homeButtonNode!.colorBlendFactor = Color.TopLeftButtonBlendFactor
+        ballSelectionUILayer.addChild(homeButtonNode!)
     }
     
     private func ringsSetup() {
@@ -616,9 +643,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         switch gameState {
         case .GameMenu:
             
-            gameOnlyUILayer.hidden = true
             menuOnlyUILayer.hidden = false
-            ballsLayer.hidden = false
+            gameOnlyUILayer.hidden = true
+            ballSelectionUILayer.hidden = true
+            
+            ringsLayer.hidden = false
+            ballsLayer.hidden = true
             
         case .GameRunning:
 
@@ -627,7 +657,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             gameOnlyUILayer.hidden = false
             menuOnlyUILayer.hidden = true
+            ballSelectionUILayer.hidden = true
+            
+            ringsLayer.hidden = false
             ballsLayer.hidden = false
+            
+        case .GameBallSelection:
+            
+            ballSelectionUILayer.hidden = false
+            gameOnlyUILayer.hidden = true
+            menuOnlyUILayer.hidden = true
+            
+            ringsLayer.hidden = true
+            ballsLayer.hidden = true
             
         default:
             break
@@ -642,9 +684,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         backgroundColor = dark ? Color.BackgroundDark : Color.BackgroundLight
         
         // bars
-        topBarNode?.color = dark ? Color.TopBarDark : Color.TopBarLight
-        bottomBarNode?.color = dark ? Color.BottomBarDark : Color.BottomBarLight
-        verticalMiddleBarNode?.color = dark ? Color.VerticalMiddleBarDark : Color.VerticalMiddleBarLight
+        topBarNode?.color = dark ? Color.BarDark : Color.BarLight
+        bottomBarNode?.color = dark ? Color.BarDark : Color.BarLight
+        verticalMiddleBarNode?.color = dark ? Color.BarDark : Color.BarLight
         
         // rings
         leftRing.color = dark ? Color.RingDark : Color.RingLight
@@ -652,18 +694,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // coins label
         coinsLabel?.fontColor = dark ? FontColor.CoinsDark : FontColor.CoinsLight
-        
-//        // balls
-//        ballsLayer.enumerateChildNodesWithName(NodeName.Ball) {
-//            node, stop in
-//            if let ballNode = node as? BallNode {
-//                if ballNode.isSpecial {
-//                    ballNode.ballColor = Color.BallSpecial
-//                } else {
-//                    ballNode.ballColor = dark ? Color.BallDark : Color.BallLight
-//                }
-//            }
-//        }
         
         // GAME MENU
         // main title
@@ -688,7 +718,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel?.fontColor = dark ? FontColor.ScoreDark : FontColor.ScoreLight
         
         // pause button
-        pauseButtonNode?.color = dark ? Color.PauseButtonDark : Color.PauseButtonLight
+        pauseButtonNode?.color = dark ? Color.TopLeftButtonDark : Color.TopLeftButtonLight
         
         // live left nodes
         updateLiveLeftNodes()
@@ -725,7 +755,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if liveLeftNodes.count > 0 {
             let nodeRatio = liveLeftNodes.first!.size.width / liveLeftNodes.first!.size.height
             var nodeHeight = topBarHeight * Geometry.LivesLeftNodeRelativeHeight
-            print("live left node height: \(nodeHeight)")
             if mainTitleLabel != nil {
                 nodeHeight = min(nodeHeight, mainTitleLabel!.frame.size.height * Geometry.LivesLeftNodeMaxRelativeHeight)
             }
@@ -765,7 +794,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     startGame()
                     
                 case NodeName.QuitButton:
-                    // no sound actions can be played when game is paused
                     startNewGame()
                     
                 case NodeName.ContinueButton:
@@ -807,6 +835,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if isSoundActivated { runAction(buttonSmallSound) }
                     moreGamesRequest()
                     
+                case NodeName.MenuBall:
+                    if isSoundActivated { runAction(buttonLargeSound) }
+                    selectBall()
                     
                 default:
                     break
@@ -843,6 +874,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             if shouldPlayImpulseSound  && isSoundActivated {
                 runAction(impulseSound)
+            }
+        } else if gameState == .GameBallSelection {
+            for touch in touches {
+                let location = touch.locationInNode(self)
+                let touchedNode = self.nodeAtPoint(location)
+                
+                if let nodeName = touchedNode.name {
+                    switch nodeName {
+                        
+                    case NodeName.HomeButton:
+                        if isSoundActivated {
+                            runAction(buttonSmallSound) {
+                                self.startNewGame()
+                            }
+                        } else {
+                            startNewGame()
+                        }
+                
+                    default:
+                        break
+                    }
+                }
             }
         }
     }
@@ -1031,6 +1084,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+      // -------------------------------- //
+     // -------- Ball Selection -------- //
+    // -------------------------------- //
+    
+    private func selectBall() {
+        if gameState == .GameMenu {
+            gameState = .GameBallSelection
+            
+        }
+    }
+    
     
       // ------------------------ //
      // -------- Labels -------- //
@@ -1054,6 +1118,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 pauseButtonNode!.size = CGSize(
                     width: pauseButtonHeight * pauseButtonRatio,
                     height: pauseButtonHeight)
+            }
+            if homeButtonNode != nil {
+                let homeButtonRatio = homeButtonNode!.size.width / homeButtonNode!.size.height
+                let homeButtonHeight = min(homeButtonNode!.size.height, mainTitleLabel!.frame.size.height)
+                homeButtonNode!.size = CGSize(width: homeButtonRatio * homeButtonHeight, height: homeButtonHeight)
             }
             updateLiveLeftNodes()
         }

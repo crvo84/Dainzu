@@ -25,11 +25,6 @@ struct Geometry {
     static let BallRelativeHeight: CGFloat = 0.11 // Rel to playableRect height
     static let BallPhysicsBodyRelativeRadius: CGFloat = 0.5 // Rel to ballNode height
     
-    // menu ball
-    static let MenuBallRelativeHeight: CGFloat = 0.17 // relative to playableRect height
-    static let MenuBallAnimationMaxScale: CGFloat = 1.1
-    static let MenuBallAnimationMinScale: CGFloat = 1.0
-    
     // device
     static let DeviceBaseHeight: CGFloat = 320 // iPhone 5s landscape height (base to calculate gravity)
     
@@ -74,10 +69,15 @@ struct Geometry {
     // config buttons
     static let ConfigButtonRelativeHeight: CGFloat = 0.7 // relative to mainTitleLabel height
     
-    // pause button
-    static let PauseButtonRelativeHeight: CGFloat = 0.95 // relative to topBar height
-    static let PauseButtonRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
+    // config menu ball
+    static let MenuBallRelativeHeight: CGFloat = 1.3 // relative to regultar config button height
+    static let MenuBallAnimationMaxScale: CGFloat = 1.0
+    static let MenuBallAnimationMinScale: CGFloat = 1.0
     
+    // top left buttons
+    static let TopLeftButtonRelativeHeight: CGFloat = 0.95 // relative to topBar height
+    static let TopLeftButtonRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
+
     // pause node
     static let PauseNodeSmallButtonRelativeHeight: CGFloat = 0.10 // relative to pauseNode height
     static let PauseNodeSmallButtonRelativeSideOffset: CGFloat = 0.04 // relative to pauseNode height
@@ -90,6 +90,7 @@ struct Geometry {
 
 struct ZPosition {
     static let PauseNode: CGFloat = 300
+    static let BallSelectionUILayer: CGFloat = 275
     static let AlwaysVisibleUILayer: CGFloat = 250
     static let MenuBall: CGFloat = 250
     static let GameOnlyUILayer: CGFloat = 200
@@ -127,6 +128,7 @@ struct ImageFilename {
     static let GameCenterButton = "leaderboard"
     static let MoreGamesButton = "iphone"
     static let LiveLeft = "heart"
+    static let HomeButton = "home"
 }
 
 struct BallImage {
@@ -148,7 +150,7 @@ struct Physics {
     static let BallDensity: CGFloat = 4
     static let BallLinearDamping: CGFloat = 0.0
     static let BallVelocityMultiplier: CGFloat = 0.2 // 0.5
-    static let BallBounciness: CGFloat = 0.4
+    static let BallBounciness: CGFloat = 0.6
 }
 
 struct PhysicsCategory {
@@ -178,48 +180,37 @@ struct Time {
 struct Color {
     static let BackgroundDark = SKColor(red: 0, green: 0, blue: 0.1, alpha: 1.0)
     static let BackgroundLight = SKColor(red: 202.0/255.0, green: 240.0/255.0, blue: 255.0/255.0, alpha: 1.0)
-    
-    static let BottomBarDark: SKColor = SKColor.orangeColor()
-    static let BottomBarLight: SKColor = SKColor(red: 3.0/255.0, green: 41.0/255.0, blue: 56.0/255.0, alpha: 1.0)
-    
-    static let TopBarDark: SKColor = Color.BottomBarDark
-    static let TopBarLight: SKColor = Color.BottomBarLight
-    
-    static let VerticalMiddleBarDark: SKColor = Color.BottomBarDark
-    static let VerticalMiddleBarLight: SKColor = Color.BottomBarLight
+
+    static let BarDark: SKColor = SKColor.orangeColor()
+    static let BarLight: SKColor = SKColor(red: 3.0/255.0, green: 41.0/255.0, blue: 56.0/255.0, alpha: 1.0)
     
     static let LiveLeftDark: SKColor = Color.BackgroundDark
     static let LiveLeftLight: SKColor = Color.BackgroundLight
     static let LiveLeftBlendFactor: CGFloat = 1.0
     
-    static let RingDark: SKColor = Color.BottomBarDark
-    static let RingLight: SKColor = Color.BottomBarLight
+    static let RingDark: SKColor = Color.BarDark
+    static let RingLight: SKColor = Color.BarLight
     
-//    static let BallDark: SKColor = SKColor.whiteColor()
-//    static let BallLight: SKColor = SKColor.orangeColor()
-//    
-//    static let BallSpecial: SKColor = SKColor.yellowColor()
-    
-    static let PlayButtonDark: SKColor = Color.BottomBarDark
-    static let PlayButtonLight: SKColor = Color.BottomBarLight
+    static let PlayButtonDark: SKColor = Color.BarDark
+    static let PlayButtonLight: SKColor = Color.BarLight
     static let PlayButtonBlendFactor: CGFloat = 1.0
     
-    static let PauseButtonDark: SKColor = Color.BackgroundDark
-    static let PauseButtonLight: SKColor = Color.BackgroundLight
-    static let PauseButtonBlendFactor: CGFloat = 1.0
+    static let TopLeftButtonDark: SKColor = Color.BackgroundDark
+    static let TopLeftButtonLight: SKColor = Color.BackgroundLight
+    static let TopLeftButtonBlendFactor: CGFloat = 1.0
+    
+    static let ConfigButtonDark: SKColor = Color.BarDark
+    static let ConfigButtonLight: SKColor = Color.BarLight
+    static let ConfigButtonBlendFactor: CGFloat = Color.PlayButtonBlendFactor
     
     // Pause node
     static let PauseNodeBackground: SKColor = SKColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.95)
-    static let PauseNodeSmallButtonDark: SKColor = Color.BottomBarDark
+    static let PauseNodeSmallButtonDark: SKColor = Color.BarDark
     static let PauseNodeSmallButtonLight: SKColor = Color.BackgroundLight
     static let PauseNodeSmallButtonBlendFactor: CGFloat = 1.0
-    static let PauseNodeLargeButtonDark: SKColor = Color.BottomBarDark
+    static let PauseNodeLargeButtonDark: SKColor = Color.BarDark
     static let PauseNodeLargeButtonLight: SKColor = Color.BackgroundLight
     static let PauseNodeLargeButtonBlendFactor: CGFloat = 1.0
-    
-    static let ConfigButtonDark: SKColor = Color.BottomBarDark
-    static let ConfigButtonLight: SKColor = Color.BottomBarLight
-    static let ConfigButtonBlendFactor: CGFloat = Color.PlayButtonBlendFactor
 }
 
 struct FontColor {
@@ -262,6 +253,7 @@ struct NodeName {
     static let RemoveAdsButton = "removeAdsButtonNode"
     static let GameCenterButton = "gameCenterButtonNode"
     static let MoreGamesButton = "moreGamesButtonNode"
+    static let HomeButton = "homeButtonNode"
 }
 
 struct SegueId {
