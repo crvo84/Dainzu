@@ -103,7 +103,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var verticalMiddleBarNode: SKSpriteNode?
     
     // score
-    private var livesLeft: Int = GameOption.LivesNum
     private var scoreLabel: SKLabelNode?
     private var score: Int = 0 {
         didSet {
@@ -121,6 +120,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bestScoreLabel?.text = Text.BestScore + ": \(newValue)"
         }
     }
+    
+    // lives left
+    private var livesLeft: Int = GameOption.LivesNum {
+        didSet {
+            updateLiveLeftNodes()
+        }
+    }
+    private var liveLeftNodes: [SKSpriteNode] = []
     
     // coins
     private var coinNode: BallNode?
@@ -477,6 +484,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pauseButtonNode!.color = darkColorsOn ? Color.PauseButtonDark : Color.PauseButtonLight
         pauseButtonNode!.colorBlendFactor = Color.PauseButtonBlendFactor
         gameOnlyUILayer.addChild(pauseButtonNode!)
+        
+        // live left nodes
+        updateLiveLeftNodes()
     }
     
     private func alwaysVisibleUISetup() {
@@ -664,6 +674,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // pause button
         pauseButtonNode?.color = dark ? Color.PauseButtonDark : Color.PauseButtonLight
         
+        // live left nodes
+        updateLiveLeftNodes()
+        
     }
     
     private func updateGravity() {
@@ -677,6 +690,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let yGravity = gravityNormal ? gravityAdjustedForDevice : -gravityAdjustedForDevice
         physicsWorld.gravity = CGVector(dx: 0, dy: yGravity)
+    }
+    
+    private func updateLiveLeftNodes() {
+        // reset liveLeftNodes array
+        for liveNode in liveLeftNodes {
+            liveNode.removeFromParent()
+        }
+        liveLeftNodes = []
+        
+        for _ in 0..<livesLeft {
+            let liveLeftNode = SKSpriteNode(imageNamed: ImageFilename.LiveLeft)
+            liveLeftNode.name = NodeName.LiveLeftNode
+            liveLeftNode.color = darkColorsOn ? Color.LiveLeftDark : Color.LiveLeftLight
+            liveLeftNode.colorBlendFactor = Color.LiveLeftBlendFactor
+            liveLeftNodes.append(liveLeftNode)
+        }
+        
+        if liveLeftNodes.count > 0 {
+            let nodeRatio = liveLeftNodes.first!.size.width / liveLeftNodes.first!.size.height
+            var nodeHeight = topBarHeight * Geometry.LivesLeftNodeRelativeHeight
+            print("live left node height: \(nodeHeight)")
+            if mainTitleLabel != nil {
+                nodeHeight = min(nodeHeight, mainTitleLabel!.frame.size.height * Geometry.LivesLeftNodeMaxRelativeHeight)
+            }
+            let nodeWidth = nodeRatio * nodeHeight
+            
+            let nodeSeparation = playableRect.width * Geometry.LivesLeftNodeRelativeSeparation
+            let yPos = playableRect.height/2 + topBarHeight/2
+            let firstNodeX = -playableRect.width/4 - nodeWidth - nodeSeparation
+            
+            for i in 0..<liveLeftNodes.count {
+                let liveLeftNode = liveLeftNodes[i]
+                liveLeftNode.size = CGSize(width: nodeWidth, height: nodeHeight)
+                liveLeftNode.position = CGPoint(
+                    x: firstNodeX + (nodeWidth + nodeSeparation) * CGFloat(i),
+                    y: yPos)
+                gameOnlyUILayer.addChild(liveLeftNode)
+            }
+        }
     }
     
     
@@ -965,6 +1017,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     width: pauseButtonHeight * pauseButtonRatio,
                     height: pauseButtonHeight)
             }
+            updateLiveLeftNodes()
         }
     }
     
@@ -1050,9 +1103,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func applicationDidEnterBackground() {
 //        backgroundMusicPlayer.stop()
-//        if gameState == .GamePaused {
-//            self.view?.paused = true
-//        }
         self.view?.paused = true
     }
     

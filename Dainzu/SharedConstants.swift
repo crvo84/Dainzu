@@ -55,6 +55,11 @@ struct Geometry {
     static let CoinsLabelRelativeHeight: CGFloat = 0.6 // relative to topBar height
     static let CoinsLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width
     static let CoinsLabelFlashActionMaxScale: CGFloat = 1.5
+    
+    // lives left nodes
+    static let LivesLeftNodeRelativeHeight: CGFloat = 0.8 // relative to topBar height
+    static let LivesLeftNodeMaxRelativeHeight: CGFloat = 0.7 // relative to mainTitle height
+    static let LivesLeftNodeRelativeSeparation: CGFloat = 0.01 // relative to playableRect width
 
     // main title label
     static let MainTitleRelativeHeight: CGFloat = 0.25 // relative to playableRect height
@@ -118,6 +123,7 @@ struct ImageFilename {
     static let RemoveAdsButton = "shoppingCart"
     static let GameCenterButton = "leaderboard"
     static let MoreGamesButton = "iphone"
+    static let LiveLeft = "heart"
 }
 
 struct BallImage {
@@ -176,6 +182,10 @@ struct Color {
     
     static let VerticalMiddleBarDark: SKColor = Color.BottomBarDark
     static let VerticalMiddleBarLight: SKColor = Color.BottomBarLight
+    
+    static let LiveLeftDark: SKColor = Color.BackgroundDark
+    static let LiveLeftLight: SKColor = Color.BackgroundLight
+    static let LiveLeftBlendFactor: CGFloat = 1.0
     
     static let RingDark: SKColor = Color.BottomBarDark
     static let RingLight: SKColor = Color.BottomBarLight
@@ -236,6 +246,7 @@ struct NodeName {
     static let Boundary = "boundaryNode"
     static let BestScoreLabel = "bestScoreLabel"
     static let MainTitleLabel = "mainTitleLabel"
+    static let LiveLeftNode = "liveLeftNode"
     static let PlayButton = "playButtonNode"
     static let PauseButton = "pauseButtonNode"
     static let QuitButton = "quitButtonNode"
