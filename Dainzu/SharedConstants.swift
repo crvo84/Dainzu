@@ -176,7 +176,10 @@ struct Time {
     // ring
     static let RingFloatingCycle: Double = 2
     // ball
-    static let BallsWait: Double = 3
+    static let BallsWaitInitial: Double = 3
+    static let BallsWaitDecrease: Double = 0.3
+    static let BallsWaitMinimum: Double = 1
+    
     static let BallRotate: Double = 3
     static let BallFadeOut: Double = 0.3
     // coin count
@@ -352,6 +355,7 @@ struct GameOption {
     static let SpecialBallsRatio: UInt32 = 10 // 1 in X
     static let ResetVelocityBeforeImpulse = true
     static let LivesNum: Int = 3
+    static let NumberOfRoundsPerLevel: Int = 5
 }
 
 struct Test {

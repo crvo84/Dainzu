@@ -19,7 +19,7 @@ enum ScreenSide {
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // -------------- Instance variables -------------------//
-    weak var viewController: UIViewController?
+    weak var viewController: UIViewController? // TODO: comunicate VC via delegate instead
     var contentCreated = false
     private let bannerHeight: CGFloat
     
@@ -116,6 +116,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var topBarNode: SKSpriteNode?
     var bottomBarNode: SKSpriteNode?
     var verticalMiddleBarNode: SKSpriteNode?
+    
+    // level
+    private var round: Int = 0
+    private var ballsWait: Double {
+        let waitDecrease = Time.BallsWaitDecrease * floor(Double(round) / Double(GameOption.NumberOfRoundsPerLevel))
+        return max(Time.BallsWaitInitial - waitDecrease, Time.BallsWaitMinimum)
+    }
     
     // score
     private var scoreLabel: SKLabelNode?
@@ -644,7 +651,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ballsLayer.zPosition = ZPosition.BallsLayer
         addChild(ballsLayer)
 
-        let waitAction = SKAction.waitForDuration(Time.BallsWait)
+        // TODO: create an action that creates actions dynamically, from the number of rounds and the calculated variable for wait time
+//        let waitAction = SKAction.waitForDuration(Time.BallsWait)
+        let waitAction = SKAction.waitForDuration(Time.BallsWaitInitial)
         
         let createBallsAction = SKAction.runBlock {
             self.createNewBallForGame(.Left)
@@ -1251,12 +1260,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private func startTutorial() {
         let tutorialGameScene = TutorialGameScene(size: size, bannerHeight: bannerHeight)
         tutorialGameScene.scaleMode = scaleMode
+        tutorialGameScene.viewController = viewController
         view?.presentScene(tutorialGameScene)
     }
     
     private func startBallSelection() {
         let ballSelectionScene = BallSelectionScene(size: size, bannerHeight: bannerHeight)
         ballSelectionScene.scaleMode = scaleMode
+        ballSelectionScene.viewController = viewController
         view?.presentScene(ballSelectionScene)
     }
 
@@ -1271,10 +1282,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-//    func removeRemoveAdsButton() {
-//        removeAdsButtonNode?.removeFromParent()
-//        removeAdsButtonNode = nil
-//    }
     
     private func gameCenterRequest() {
         if let gameViewController = viewController as? GameViewController {
