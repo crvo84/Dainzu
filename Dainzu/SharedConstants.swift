@@ -38,17 +38,22 @@ struct Geometry {
     // score label
     static let ScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBar height
     static let ScoreLabelRelativeWidth: CGFloat = 0.30 // relative to playableRect width
-    static let ScoreLabelMaxRelativeFontSize: CGFloat = 0.8 // relative to mainTitle font size
+    static let ScoreLabelMaxRelativeFontSize: CGFloat = 0.8 // relative to gameTitle font size
     static let ScoreLabelFlashActionMaxScale: CGFloat = 1.3
     
-    // best score label
+//    // best score label
     static let BestScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBar height
     static let BestScoreLabelRelativeWidth: CGFloat = 0.5 // relative to playableRect width
+    
+    // title
+    static let TitleLabelRelativeHeight: CGFloat = 0.7 // relative to topBar height
+    static let TitleLabelRelativeWidth: CGFloat = 0.5 // relative to playableRect width
+    static let TitleLabelMaxRelativeFontSize: CGFloat = 0.8 // relative to gameTitle font size
     
     // coins label
     static let CoinNodeRelativeHeight: CGFloat = 0.45 // relative to topBar height
     static let CoinNodeRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
-    static let CoinsLabelMaxRelativeFontSize: CGFloat = 0.7 // relative to mainTitle font size
+    static let CoinsLabelMaxRelativeFontSize: CGFloat = 0.7 // relative to gameTitle font size
     static let CoinsLabelRelativeSideOffset: CGFloat = 0.25 // relative to coinNode width
     static let CoinsLabelRelativeHeight: CGFloat = 0.6 // relative to topBar height
     static let CoinsLabelRelativeWidth: CGFloat = 0.20 // relative to playableRect width
@@ -56,24 +61,24 @@ struct Geometry {
     
     // lives left nodes
     static let LivesLeftNodeRelativeHeight: CGFloat = 0.8 // relative to topBar height
-    static let LivesLeftNodeMaxRelativeHeight: CGFloat = 0.7 // relative to mainTitle height
+    static let LivesLeftNodeMaxRelativeHeight: CGFloat = 0.7 // relative to gameTitle height
     static let LivesLeftNodeRelativeSeparation: CGFloat = 0.01 // relative to playableRect width
 
-    // main title label
-    static let MainTitleRelativeHeight: CGFloat = 0.25 // relative to playableRect height
-    static let MainTitleRelativeWidth: CGFloat = 0.7 // relative to playableRect left side width
-    static let MainTitleRelativeYPosition: CGFloat = 0.8 // relative to playableRect height
+    // game title label
+    static let GameTitleRelativeHeight: CGFloat = 0.25 // relative to playableRect height
+    static let GameTitleRelativeWidth: CGFloat = 0.7 // relative to playableRect left side width
+    static let GameTitleRelativeYPosition: CGFloat = 0.8 // relative to playableRect height
     
     // play button
     static let PlayButtonRelativeHeight: CGFloat = 0.28 // relative to playableRect height
     
     // config buttons
-    static let ConfigButtonRelativeHeight: CGFloat = 0.7 // relative to mainTitleLabel height
+    static let ConfigButtonRelativeHeight: CGFloat = 0.7 // relative to gameTitleLabel height
     
     // config menu ball
-    static let MenuBallRelativeHeight: CGFloat = 1.3 // relative to regultar config button height
-    static let MenuBallAnimationMaxScale: CGFloat = 1.0
-    static let MenuBallAnimationMinScale: CGFloat = 1.0
+    static let MenuBallRelativeHeight: CGFloat = 1.3 // relative to regular config button height
+    static let MenuBallAnimationMaxScale: CGFloat = 0.95
+    static let MenuBallAnimationMinScale: CGFloat = 1.05
     
     // top left buttons
     static let TopLeftButtonRelativeHeight: CGFloat = 0.95 // relative to topBar height
@@ -87,11 +92,15 @@ struct Geometry {
     
     // about app buttons
     static let AboutAppButtonsRelativeCornerRadius: CGFloat = 0.2 // relative to button width
+    
+    // tutorial
+    static let TutorialTouchImageRelativeHeight: CGFloat = 0.6 // relative to playableRect height
 }
 
 struct ZPosition {
     static let PauseNode: CGFloat = 300
     static let BallSelectionUILayer: CGFloat = 275
+    static let TutorialUILayer: CGFloat = 275
     static let AlwaysVisibleUILayer: CGFloat = 250
     static let MenuBall: CGFloat = 250
     static let GameOnlyUILayer: CGFloat = 200
@@ -130,6 +139,8 @@ struct ImageFilename {
     static let MoreGamesButton = "iphone"
     static let LiveLeft = "heart"
     static let HomeButton = "home"
+    static let TutorialButton = "questionMark"
+    static let TouchScreen = "touchScreen"
 }
 
 struct BallImage {
@@ -178,6 +189,8 @@ struct Time {
     static let CoinsLabelFlashAction: Double = 0.2
     // score label
     static let ScoreLabelFlashAction: Double = 0.2
+    // tutorial image
+    static let TutorialImageFadeOut: Double = 1
 }
 
 struct Color {
@@ -207,6 +220,10 @@ struct Color {
     static let ConfigButtonDark: SKColor = Color.BarDark
     static let ConfigButtonLight: SKColor = Color.BarLight
     static let ConfigButtonBlendFactor: CGFloat = Color.PlayButtonBlendFactor
+
+    static let TutorialImageDark: SKColor = Color.BarDark
+    static let TutorialImageLight: SKColor = Color.BarLight
+    static let TutorialImageBlendFactor: CGFloat = 1.0
     
     // Pause node
     static let PauseNodeBackground: SKColor = SKColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.95)
@@ -219,8 +236,8 @@ struct Color {
 }
 
 struct FontColor {
-    static let MainTitleDark: SKColor = Color.RingDark
-    static let MainTitleLight: SKColor = Color.RingLight
+    static let GameTitleDark: SKColor = Color.RingDark
+    static let GameTitleLight: SKColor = Color.RingLight
     
     static let ScoreDark: SKColor = Color.BackgroundDark
     static let ScoreLight: SKColor = Color.BackgroundLight
@@ -228,12 +245,16 @@ struct FontColor {
     static let BestScoreDark: SKColor = Color.BackgroundDark
     static let BestScoreLight: SKColor = Color.BackgroundLight
     
+    static let TitleDark: SKColor = Color.BackgroundDark
+    static let TitleLight: SKColor = Color.BackgroundLight
+    
     static let CoinsDark: SKColor = Color.BackgroundDark
     static let CoinsLight: SKColor = Color.BackgroundLight
 }
 
 struct FontName {
-    static let MainTitle = "Snaps Taste"
+    static let GameTitle = "Snaps Taste"
+    static let Title = "Snaps Taste"
     static let Score = "Snaps Taste"
     static let BestScore = "Snaps Taste"
     static let Coins = "Snaps Taste"
@@ -246,7 +267,7 @@ struct NodeName {
     static let MenuBall = "menuBallNode"
     static let Boundary = "boundaryNode"
     static let BestScoreLabel = "bestScoreLabel"
-    static let MainTitleLabel = "mainTitleLabel"
+    static let GameTitleLabel = "gameTitleLabel"
     static let LiveLeftNode = "liveLeftNode"
     static let PlayButton = "playButtonNode"
     static let PauseButton = "pauseButtonNode"
@@ -259,6 +280,9 @@ struct NodeName {
     static let GameCenterButton = "gameCenterButtonNode"
     static let MoreGamesButton = "moreGamesButtonNode"
     static let HomeButton = "homeButtonNode"
+    static let TutorialButton = "tutorialButtonNode"
+    static let ExitTutorialButton = "exitTutorialButtonNode"
+    static let TutorialImage = "tutorialImageNode"
 }
 
 struct SegueId {
@@ -308,8 +332,9 @@ struct URLString {
 }
 
 struct Text {
+    static let GameTitle = "Dainzu"
     static let BestScore = "Best"
-    static let MainTitle = "Dainzu"
+    static let HowToPlay = "How to play"
     
     static let RemoveAds = NSLocalizedString("Remove Ads", comment: "For a button, to pay to remove advertising.")
     static let Purchase = NSLocalizedString("Purchase", comment: "Verb. For a button, to purchase a product")
