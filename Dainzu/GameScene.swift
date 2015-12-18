@@ -99,7 +99,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var removeAdsButtonNode: SKSpriteNode?
     private var gameCenterButtonNode: SKSpriteNode?
     private var moreGamesButtonNode: SKSpriteNode?
-    private var menuBallNode: BallNode?
+    private var selectBallButtonNode: SKSpriteNode?
     private var tutorialButtonNode: SKSpriteNode?
     
     // for GameScene subclasses
@@ -409,6 +409,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let configButtonY = gameTitleLabel!.position.y
         let configButtonSeparation = (playableRect.width - verticalMiddleBarNode!.size.width)/2 * 1/4
         let firstConfigButtonX = verticalMiddleBarNode!.size.width/2 + configButtonSeparation
+        let configButtonColor = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
         
         // dark colors button
         darkColorsButtonNode = SKSpriteNode(imageNamed: darkColorsOn ? ImageFilename.DarkColorsOn : ImageFilename.DarkColorsOff)
@@ -417,7 +418,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         darkColorsButtonNode!.position = CGPoint(
             x: firstConfigButtonX,
             y: configButtonY)
-        darkColorsButtonNode!.color = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        darkColorsButtonNode!.color = configButtonColor
         darkColorsButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
         darkColorsButtonNode!.name = NodeName.DarkColorsOnOffButton
         menuOnlyUILayer.addChild(darkColorsButtonNode!)
@@ -429,7 +430,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         musicOnButtonNode!.position = CGPoint(
             x: firstConfigButtonX + configButtonSeparation,
             y: configButtonY)
-        musicOnButtonNode!.color = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        musicOnButtonNode!.color = configButtonColor
         musicOnButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
         musicOnButtonNode!.name = NodeName.MusicOnOffButton
         menuOnlyUILayer.addChild(musicOnButtonNode!)
@@ -441,7 +442,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gravityNormalButtonNode!.position = CGPoint(
             x: firstConfigButtonX + configButtonSeparation * 2,
             y: configButtonY)
-        gravityNormalButtonNode!.color = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        gravityNormalButtonNode!.color = configButtonColor
         gravityNormalButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
         gravityNormalButtonNode!.name = NodeName.GravityNormalOnOffButton
         menuOnlyUILayer.addChild(gravityNormalButtonNode!)
@@ -454,7 +455,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             removeAdsButtonNode!.position = CGPoint(
                 x: firstConfigButtonX,
                 y: -configButtonY)
-            removeAdsButtonNode!.color = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+            removeAdsButtonNode!.color = configButtonColor
             removeAdsButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
             removeAdsButtonNode!.name = NodeName.RemoveAdsButton
             menuOnlyUILayer.addChild(removeAdsButtonNode!)
@@ -467,7 +468,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameCenterButtonNode!.position = CGPoint(
             x: firstConfigButtonX + configButtonSeparation,
             y: -configButtonY)
-        gameCenterButtonNode!.color = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        gameCenterButtonNode!.color = configButtonColor
         gameCenterButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
         gameCenterButtonNode!.name = NodeName.GameCenterButton
         menuOnlyUILayer.addChild(gameCenterButtonNode!)
@@ -479,24 +480,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         moreGamesButtonNode!.position = CGPoint(
             x: firstConfigButtonX + configButtonSeparation * 2,
             y: -configButtonY)
-        moreGamesButtonNode!.color = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        moreGamesButtonNode!.color = configButtonColor
         moreGamesButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
         moreGamesButtonNode!.name = NodeName.MoreGamesButton
         menuOnlyUILayer.addChild(moreGamesButtonNode!)
         
-        // menu ball
-        let menuBallHeight = configButtonHeight * Geometry.MenuBallRelativeHeight
-        menuBallNode = getNewBall(menuBallHeight, isSpecial: false)
-        menuBallNode!.position = CGPoint(
+        // select ball button
+        selectBallButtonNode = SKSpriteNode(imageNamed: ImageFilename.SelectBallButton)
+        let selectBallButtonRatio = selectBallButtonNode!.size.width / selectBallButtonNode!.size.height
+        let selectBallButtonHeight = configButtonHeight * Geometry.ConfigSelectBallButtonRelativeHeight
+        selectBallButtonNode!.size = CGSize(
+            width: selectBallButtonRatio * selectBallButtonHeight,
+            height: selectBallButtonHeight)
+        selectBallButtonNode!.position = CGPoint(
             x: firstConfigButtonX + configButtonSeparation,
             y: 0)
-        menuBallNode!.name = NodeName.MenuBall
-        menuBallNode!.zPosition = ZPosition.MenuBall
-        let scaleUpAction = SKAction.scaleTo(Geometry.MenuBallAnimationMaxScale, duration: Time.MenuBallSizeAnimation/2)
-        let scaleDownAction = SKAction.scaleTo(Geometry.MenuBallAnimationMinScale, duration: Time.MenuBallSizeAnimation/2)
-        let scaleAnimation = SKAction.repeatActionForever(SKAction.sequence([scaleUpAction, scaleDownAction]))
-        menuBallNode!.runAction(scaleAnimation, withKey: ActionKey.MenuBallSizeAnimation)
-        menuOnlyUILayer.addChild(menuBallNode!)
+        selectBallButtonNode!.color = configButtonColor
+        selectBallButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+        selectBallButtonNode!.name = NodeName.SelectBallButton
+        menuOnlyUILayer.addChild(selectBallButtonNode!)
         
         // tutorial button
         let tutorialButtonHeight = topBarHeight * Geometry.TopLeftButtonRelativeHeight
@@ -699,9 +701,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             ballsLayer.hidden = true
             
         case .GameRunning:
-
-            menuBallNode?.removeFromParent()
-            menuBallNode =  nil
             
             gameOnlyUILayer.hidden = false
             menuOnlyUILayer.hidden = true
@@ -766,6 +765,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         removeAdsButtonNode?.color = configButtonColor
         gameCenterButtonNode?.color = configButtonColor
         moreGamesButtonNode?.color = configButtonColor
+        selectBallButtonNode?.color = configButtonColor
         
         // GAME RUNNING
         // score label
@@ -872,7 +872,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if let gravityNormalNode = touchedNode as? SKSpriteNode {
                         gravityNormalNode.texture = SKTexture(imageNamed: gravityNormal ? ImageFilename.GravityNormalOn : ImageFilename.GravityNormalOff)
                     }
-//                    activateMenuBallPhysics()
                     activateRingsPhysics()
                     
                 case NodeName.MusicOnOffButton:
@@ -894,7 +893,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if isSoundActivated { runAction(buttonSmallSound) }
                     moreGamesRequest()
                     
-                case NodeName.MenuBall:
+                case NodeName.SelectBallButton:
                     if isSoundActivated { runAction(buttonSmallSound) }
                     selectBall()
                     
@@ -1108,13 +1107,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return CGPoint(
             x: screenSide == .Left ? -ballNode.size.width/2 : playableRect.width + ballNode.size.width/2,
             y: CGFloat(arc4random_uniform(maxY - minY) + minY))
-    }
-    
-    private func activateMenuBallPhysics() {
-        menuBallNode?.removeActionForKey(ActionKey.MenuBallSizeAnimation)
-        menuBallNode?.xScale = 1
-        menuBallNode?.yScale = 1
-        menuBallNode?.physicsBody?.affectedByGravity = true
     }
     
     private func ballFailed() {

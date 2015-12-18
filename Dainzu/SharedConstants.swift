@@ -74,11 +74,7 @@ struct Geometry {
     
     // config buttons
     static let ConfigButtonRelativeHeight: CGFloat = 0.7 // relative to gameTitleLabel height
-    
-    // config menu ball
-    static let MenuBallRelativeHeight: CGFloat = 1.3 // relative to regular config button height
-    static let MenuBallAnimationMaxScale: CGFloat = 0.95
-    static let MenuBallAnimationMinScale: CGFloat = 1.05
+    static let ConfigSelectBallButtonRelativeHeight: CGFloat = 1.3 // relative to regular config button height
     
     // top left buttons
     static let TopLeftButtonRelativeHeight: CGFloat = 0.95 // relative to topBar height
@@ -102,7 +98,6 @@ struct ZPosition {
     static let BallSelectionUILayer: CGFloat = 275
     static let TutorialUILayer: CGFloat = 275
     static let AlwaysVisibleUILayer: CGFloat = 250
-    static let MenuBall: CGFloat = 250
     static let GameOnlyUILayer: CGFloat = 200
     static let MenuOnlyUILayer: CGFloat = 200
     static let RingAbove: CGFloat = 110
@@ -141,6 +136,7 @@ struct ImageFilename {
     static let HomeButton = "home"
     static let TutorialButton = "questionMark"
     static let TouchScreen = "touchScreen"
+    static let SelectBallButton = "plusBall"
 }
 
 struct BallImage {
@@ -183,8 +179,6 @@ struct Time {
     static let BallsWait: Double = 3
     static let BallRotate: Double = 3
     static let BallFadeOut: Double = 0.3
-    // menu ball
-    static let MenuBallSizeAnimation: Double = 2
     // coin count
     static let CoinsLabelFlashAction: Double = 0.2
     // score label
@@ -264,7 +258,7 @@ struct NodeName {
     static let Ring = "ringNode"
     static let RingPart = "ringPartNode"
     static let Ball = "ballNode"
-    static let MenuBall = "menuBallNode"
+    static let SelectBallButton = "selectBallButtonNode"
     static let Boundary = "boundaryNode"
     static let BestScoreLabel = "bestScoreLabel"
     static let GameTitleLabel = "gameTitleLabel"
@@ -294,7 +288,6 @@ struct ActionKey {
     static let RingFloatingAnimation = "ringFloatingAnimation"
     static let BallsGeneration = "ballsGenerationAction"
     static let BallRotate = "ballRotateAction"
-    static let MenuBallSizeAnimation = "menuBallSizeAnimation"
 }
 
 struct UserDefaultsKey {
