@@ -39,6 +39,7 @@ struct Geometry {
     static let ScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBar height
     static let ScoreLabelRelativeWidth: CGFloat = 0.30 // relative to playableRect width
     static let ScoreLabelMaxRelativeFontSize: CGFloat = 0.8 // relative to mainTitle font size
+    static let ScoreLabelFlashActionMaxScale: CGFloat = 1.3
     
     // best score label
     static let BestScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBar height
@@ -109,7 +110,7 @@ struct SoundFilename {
     static let ButtonSmall = "manutsClick.wav"
     static let BallFailed = "Button Click.wav"
     static let Pause = "landHint.wav"
-    static let Success = "success7.wav"
+    static let Success = "success7.mp3"
     static let GameOver = "gameOverDainzu.wav"
 }
 
@@ -175,6 +176,8 @@ struct Time {
     static let MenuBallSizeAnimation: Double = 2
     // coin count
     static let CoinsLabelFlashAction: Double = 0.2
+    // score label
+    static let ScoreLabelFlashAction: Double = 0.2
 }
 
 struct Color {

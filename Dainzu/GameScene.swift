@@ -119,10 +119,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var scoreLabel: SKLabelNode?
     private var score: Int = 0 {
         didSet {
-            // TODO: size or glow effect
-            scoreLabel?.text = "\(score)"
+            let currentBest = bestScore
+            if currentBest > 0 && score > currentBest {
+                scoreLabel?.text = Text.BestScore + ": \(score)"
+                if !beatScoreAlertPresented {
+                    runAction(successSound)
+                    if scoreLabelFlashAction != nil {
+                        scoreLabel?.runAction(scoreLabelFlashAction!)
+                    }
+                    beatScoreAlertPresented = true
+                }
+            } else {
+                scoreLabel?.text = "\(score)"
+            }
         }
     }
+    private var scoreLabelFlashAction: SKAction?
+    private var beatScoreAlertPresented = false
+    
+    // best score
     private var bestScoreLabel: SKLabelNode?
     private var bestScore: Int {
         get {
@@ -500,6 +515,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         adjustFontSizeForLabel(scoreLabel!, tofitSize: CGSize(width: scoreLabelWidth, height: scoreLabelHeight))
         scoreLabel!.position = CGPoint(x: 0, y: +playableRect.height/2 + topBarHeight/2)
         gameOnlyUILayer.addChild(scoreLabel!)
+        
+        // score label flash action setup
+        let scoreLabelFlash = SKAction.scaleTo(Geometry.ScoreLabelFlashActionMaxScale, duration: Time.ScoreLabelFlashAction/2)
+        let scoreLabelFlashReverse = SKAction.scaleTo(1.0, duration: Time.ScoreLabelFlashAction/2)
+        scoreLabelFlashAction = SKAction.sequence([scoreLabelFlash, scoreLabelFlashReverse])
         
         // pause button node
         pauseButtonNode = SKSpriteNode(imageNamed: ImageFilename.PauseButton)
@@ -1071,26 +1091,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    private func gameOver() {
-        gameState = .GameOver
-        if let gameViewController = viewController as? GameViewController {
-            gameViewController.reportScore(score)
-        }
-        if score > bestScore {
-            bestScore = score
-            if isSoundActivated {
-                runAction(self.successSound) { self.startNewGame() }
-            } else {
-                startNewGame()
-            }
-        } else {
-            if isSoundActivated {
-                runAction(self.gameOverSound) { self.startNewGame() }
-            } else {
-                startNewGame()
-            }
-        }
-    }
     
       // -------------------------------- //
      // -------- Ball Selection -------- //
@@ -1249,6 +1249,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         view?.presentScene(newGameScene)
     }
     
+    private func gameOver() {
+        gameState = .GameOver
+        if let gameViewController = viewController as? GameViewController {
+            gameViewController.reportScore(score)
+        }
+        if score > bestScore {
+            bestScore = score
+        }
+        if isSoundActivated {
+            runAction(self.gameOverSound) { self.startNewGame() }
+        } else {
+            startNewGame()
+        }
+    }
+
     private func removeAdsRequest() {
         if let gameViewController = viewController as? GameViewController {
             if view != nil && removeAdsButtonNode != nil && removeAdsButtonNode!.parent != nil {
