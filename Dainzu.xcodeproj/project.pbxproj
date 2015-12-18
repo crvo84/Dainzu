@@ -17,6 +17,7 @@
 		73074E871C23962400477A7D /* success7.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 73074E7E1C23962400477A7D /* success7.mp3 */; };
 		73074E891C23987000477A7D /* impulse.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73074E881C23987000477A7D /* impulse.wav */; };
 		73074E8B1C23E11900477A7D /* TutorialGameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73074E8A1C23E11900477A7D /* TutorialGameScene.swift */; };
+		73074E8D1C240E2600477A7D /* BallSelectionScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73074E8C1C240E2600477A7D /* BallSelectionScene.swift */; };
 		73DF508C1C1AA2740022312B /* BallNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DF508B1C1AA2740022312B /* BallNode.swift */; };
 		73DF50921C1F3A0F0022312B /* Snaps Taste.otf in Resources */ = {isa = PBXBuildFile; fileRef = 73DF50911C1F39F70022312B /* Snaps Taste.otf */; };
 		73DF50D21C20803D0022312B /* RingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DF50D11C20803D0022312B /* RingView.swift */; };
@@ -77,6 +78,7 @@
 		73074E7E1C23962400477A7D /* success7.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = success7.mp3; sourceTree = "<group>"; };
 		73074E881C23987000477A7D /* impulse.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = impulse.wav; sourceTree = "<group>"; };
 		73074E8A1C23E11900477A7D /* TutorialGameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialGameScene.swift; sourceTree = "<group>"; };
+		73074E8C1C240E2600477A7D /* BallSelectionScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallSelectionScene.swift; sourceTree = "<group>"; };
 		73DF508B1C1AA2740022312B /* BallNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallNode.swift; sourceTree = "<group>"; };
 		73DF50911C1F39F70022312B /* Snaps Taste.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Snaps Taste.otf"; sourceTree = "<group>"; };
 		73DF50D11C20803D0022312B /* RingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RingView.swift; sourceTree = "<group>"; };
@@ -271,6 +273,7 @@
 			children = (
 				73F22FF91C18E68D00EC3762 /* GameScene.swift */,
 				73074E8A1C23E11900477A7D /* TutorialGameScene.swift */,
+				73074E8C1C240E2600477A7D /* BallSelectionScene.swift */,
 			);
 			name = Scene;
 			sourceTree = "<group>";
@@ -435,6 +438,7 @@
 				73F2303E1C18F5B000EC3762 /* SKNode+Extensions.swift in Sources */,
 				73F230401C18F5B000EC3762 /* SKTEffects.swift in Sources */,
 				73F22FFA1C18E68D00EC3762 /* GameScene.swift in Sources */,
+				73074E8D1C240E2600477A7D /* BallSelectionScene.swift in Sources */,
 				73F230441C18F62100EC3762 /* RingNode.swift in Sources */,
 				73F22FFC1C18E68D00EC3762 /* GameViewController.swift in Sources */,
 				73DF508C1C1AA2740022312B /* BallNode.swift in Sources */,

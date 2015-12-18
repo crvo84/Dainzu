@@ -9,7 +9,7 @@
 import SpriteKit
 
 enum GameState {
-    case GameMenu, GameBallSelection, GameRunning, GamePaused, GameOver
+    case GameMenu, GameRunning, GamePaused, GameOver
 }
 
 enum ScreenSide {
@@ -160,9 +160,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var liveLeftNodes: [SKSpriteNode] = []
     
     // coins
-    private var coinNode: BallNode?
-    private var coinsLabel: SKLabelNode?
-    private var coinsCount: Int {
+    var coinNode: BallNode?
+    var coinsLabel: SKLabelNode?
+    var coinsCount: Int {
         get {
             return NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultsKey.CoinsCount)
         }
@@ -171,8 +171,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             coinsLabel?.text = "\(newValue)"
         }
     }
-    private var coinNodeFlashAction: SKAction?
-    private var coinsLabelFlashAction: SKAction?
+    var coinNodeFlashAction: SKAction?
+    var coinsLabelFlashAction: SKAction?
 
     // playableRect
     var playableRect: CGRect!
@@ -209,7 +209,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let alwaysVisibleUILayer = SKNode()
     private let gameOnlyUILayer = SKNode()
     private let menuOnlyUILayer = SKNode()
-    private let ballSelectionUILayer = SKNode()
     private let ringsLayer = SKNode()
     private let ballsLayer = SKNode()
     
@@ -253,10 +252,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             // ----- This methods must be called after barsSetup ----- //
             
-            alwaysVisibleUISetup()
+            coinsUISetup()
             menuOnlyUISetup()
             gameOnlyUISetup()
-            ballSelectionUISetup()
             ringsSetup()
             
             adjustLabelsSize()
@@ -557,7 +555,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         updateLiveLeftNodes()
     }
     
-    private func alwaysVisibleUISetup() {
+    func coinsUISetup() {
         alwaysVisibleUILayer.zPosition = ZPosition.AlwaysVisibleUILayer
         alwaysVisibleUILayer.position = CGPoint(
             x: playableRectOriginInScene.x + playableRect.width/2,
@@ -593,27 +591,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let coinNodeFlash = SKAction.scaleTo(Geometry.CoinsLabelFlashActionMaxScale, duration: Time.CoinsLabelFlashAction/2)
         let coinNodeFlashReverse = SKAction.scaleTo(1.0, duration: Time.CoinsLabelFlashAction/2)
         coinNodeFlashAction = SKAction.sequence([coinNodeFlash, coinNodeFlashReverse])
-    }
-    
-    private func ballSelectionUISetup() {
-        ballSelectionUILayer.zPosition = ZPosition.BallSelectionUILayer
-        ballSelectionUILayer.position = CGPoint(
-            x: playableRectOriginInScene.x + playableRect.width/2,
-            y: playableRectOriginInScene.y + playableRect.height/2)
-        addChild(ballSelectionUILayer)
-        
-        // home button
-        homeButtonNode = SKSpriteNode(imageNamed: ImageFilename.HomeButton)
-        let homeButtonRatio = homeButtonNode!.size.width / homeButtonNode!.size.height
-        let homeButtonHeight = topBarHeight * Geometry.TopLeftButtonRelativeHeight
-        homeButtonNode!.size = CGSize(width: homeButtonRatio * homeButtonHeight, height: homeButtonHeight)
-        homeButtonNode!.position = CGPoint(
-            x: -playableRect.width/2 + playableRect.width * Geometry.TopLeftButtonRelativeSideOffset + homeButtonNode!.size.width/2,
-            y: +playableRect.height/2 + topBarHeight / 2)
-        homeButtonNode!.name = NodeName.HomeButton
-        homeButtonNode!.color = darkColorsOn ? Color.TopLeftButtonDark : Color.TopLeftButtonLight
-        homeButtonNode!.colorBlendFactor = Color.TopLeftButtonBlendFactor
-        ballSelectionUILayer.addChild(homeButtonNode!)
     }
 
     func ringsSetup() {
@@ -695,7 +672,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             menuOnlyUILayer.hidden = false
             gameOnlyUILayer.hidden = true
-            ballSelectionUILayer.hidden = true
             
             ringsLayer.hidden = false
             ballsLayer.hidden = true
@@ -704,19 +680,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             gameOnlyUILayer.hidden = false
             menuOnlyUILayer.hidden = true
-            ballSelectionUILayer.hidden = true
             
             ringsLayer.hidden = false
             ballsLayer.hidden = false
-            
-        case .GameBallSelection:
-            
-            ballSelectionUILayer.hidden = false
-            gameOnlyUILayer.hidden = true
-            menuOnlyUILayer.hidden = true
-            
-            ringsLayer.hidden = true
-            ballsLayer.hidden = true
             
         default:
             break
@@ -840,7 +806,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
-        if gameState == .GameMenu || gameState == .GamePaused || gameState == .GameBallSelection {
+        if gameState == .GameMenu || gameState == .GamePaused {
             let touch = touches.first!
             let location = touch.locationInNode(self)
             let touchedNode = self.nodeAtPoint(location)
@@ -895,7 +861,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     
                 case NodeName.SelectBallButton:
                     if isSoundActivated { runAction(buttonSmallSound) }
-                    selectBall()
+                    startBallSelection()
                     
                 case NodeName.TutorialButton:
                     if isSoundActivated {
@@ -906,7 +872,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         startTutorial()
                     }
                     
-                case NodeName.HomeButton:
+                case NodeName.BackToMenuButton:
                     if isSoundActivated {
                         runAction(buttonSmallSound) {
                             self.startNewGame()
@@ -939,7 +905,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             pauseGame()
                         }
                         
-                    case NodeName.ExitTutorialButton:
+                    case NodeName.BackToMenuButton:
                         if isSoundActivated {
                             runAction(buttonSmallSound) {
                                 self.startNewGame()
@@ -1119,18 +1085,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
-      // -------------------------------- //
-     // -------- Ball Selection -------- //
-    // -------------------------------- //
-    
-    private func selectBall() {
-        if gameState == .GameMenu {
-            gameState = .GameBallSelection
-            
-        }
-    }
-    
-    
       // ------------------------ //
      // -------- Labels -------- //
     // ------------------------ //
@@ -1298,6 +1252,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let tutorialGameScene = TutorialGameScene(size: size, bannerHeight: bannerHeight)
         tutorialGameScene.scaleMode = scaleMode
         view?.presentScene(tutorialGameScene)
+    }
+    
+    private func startBallSelection() {
+        let ballSelectionScene = BallSelectionScene(size: size, bannerHeight: bannerHeight)
+        ballSelectionScene.scaleMode = scaleMode
+        view?.presentScene(ballSelectionScene)
     }
 
     private func removeAdsRequest() {

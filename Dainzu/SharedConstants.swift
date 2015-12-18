@@ -95,9 +95,9 @@ struct Geometry {
 
 struct ZPosition {
     static let PauseNode: CGFloat = 300
-    static let BallSelectionUILayer: CGFloat = 275
-    static let TutorialUILayer: CGFloat = 275
     static let AlwaysVisibleUILayer: CGFloat = 250
+    static let BallSelectionUILayer: CGFloat = 200
+    static let TutorialUILayer: CGFloat = 200
     static let GameOnlyUILayer: CGFloat = 200
     static let MenuOnlyUILayer: CGFloat = 200
     static let RingAbove: CGFloat = 110
@@ -275,7 +275,7 @@ struct NodeName {
     static let MoreGamesButton = "moreGamesButtonNode"
     static let HomeButton = "homeButtonNode"
     static let TutorialButton = "tutorialButtonNode"
-    static let ExitTutorialButton = "exitTutorialButtonNode"
+    static let BackToMenuButton = "backToMenuButtonNode"
     static let TutorialImage = "tutorialImageNode"
 }
 
@@ -328,6 +328,7 @@ struct Text {
     static let GameTitle = "Dainzu"
     static let BestScore = "Best"
     static let HowToPlay = "How to play"
+    static let SelectBall = "Select ball"
     
     static let RemoveAds = NSLocalizedString("Remove Ads", comment: "For a button, to pay to remove advertising.")
     static let Purchase = NSLocalizedString("Purchase", comment: "Verb. For a button, to purchase a product")

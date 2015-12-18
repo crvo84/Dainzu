@@ -1,5 +1,5 @@
 //
-//  TutorialGameScene.swift
+//  BallSelectionScene.swift
 //  Dainzu
 //
 //  Created by Carlos Rogelio Villanueva Ousset on 12/18/15.
@@ -8,47 +8,43 @@
 
 import SpriteKit
 
-class TutorialGameScene: GameScene {
+class BallSelectionScene: GameScene {
     
-    private var ringsPhysicsActivated = false
-    
-    private var tutorialUILayer = SKNode()
-    
+    private var ballSelectionUILayer = SKNode()
+
     override func didMoveToView(view: SKView) {
-        gameState = .GameRunning
+        gameState = .GameMenu
         
-        view.multipleTouchEnabled = true
         isSoundActivated = isMusicOn
         
         /* Setup your scene here */
         if !contentCreated {
-
-            physicsWorld.contactDelegate = self
             
             playableRectSetup()
             barsSetup() // call after playableRectSetup()
             
             // ----- This methods must be called after barsSetup ----- //
-            
-            ringsSetup()
-            
-            tutorialUISetup()
 
+            verticalMiddleBarNode?.removeFromParent()
+            
+            coinsUISetup()
+            ballSelectionUISetup()
+            
             contentCreated = true
         }
 
-        updateGravity()
         updateColors()
         adjustLabelsSize()
     }
     
-    private func tutorialUISetup() {
-        tutorialUILayer.zPosition = ZPosition.TutorialUILayer
-        tutorialUILayer.position = CGPoint(
+    private func ballSelectionUISetup() {
+        ballSelectionUILayer.zPosition = ZPosition.BallSelectionUILayer
+        ballSelectionUILayer.position = CGPoint(
             x: playableRectOriginInScene.x + playableRect.width/2,
             y: playableRectOriginInScene.y + playableRect.height/2)
-        addChild(tutorialUILayer)
+        addChild(ballSelectionUILayer)
         
+        // TODO: move top left button and title label implementation to super class
         // home button
         homeButtonNode = SKSpriteNode(imageNamed: ImageFilename.HomeButton)
         let homeButtonRatio = homeButtonNode!.size.width / homeButtonNode!.size.height
@@ -60,12 +56,12 @@ class TutorialGameScene: GameScene {
         homeButtonNode!.name = NodeName.BackToMenuButton
         homeButtonNode!.color = darkColorsOn ? Color.TopLeftButtonDark : Color.TopLeftButtonLight
         homeButtonNode!.colorBlendFactor = Color.TopLeftButtonBlendFactor
-        tutorialUILayer.addChild(homeButtonNode!)
+        ballSelectionUILayer.addChild(homeButtonNode!)
         
         // title label
         let titleLabelHeight = topBarHeight * Geometry.TitleLabelRelativeHeight
         let titleLabelWidth = playableRect.width * Geometry.TitleLabelRelativeWidth
-        titleLabel = SKLabelNode(text: Text.HowToPlay)
+        titleLabel = SKLabelNode(text: Text.SelectBall)
         titleLabel!.verticalAlignmentMode = .Center
         titleLabel!.horizontalAlignmentMode = .Center
         titleLabel!.fontName = FontName.Title
@@ -74,42 +70,11 @@ class TutorialGameScene: GameScene {
             width: titleLabelWidth,
             height: titleLabelHeight))
         titleLabel!.position = CGPoint(x: 0, y: +playableRect.height/2 + topBarHeight/2)
-        tutorialUILayer.addChild(titleLabel!)
-        
-        // touch
-        let handColor = darkColorsOn ? Color.TutorialImageDark : Color.TutorialImageLight
-        let handHeight = playableRect.height * Geometry.TutorialTouchImageRelativeHeight
-
-        // left hand
-        let leftHand = SKSpriteNode(imageNamed: ImageFilename.TouchScreen)
-        let handRatio = leftHand.size.width / leftHand.size.height
-        leftHand.size = CGSize(width: handRatio * handHeight, height: handHeight)
-        leftHand.position = CGPoint(x: playableRect.width/4, y: 0)
-        leftHand.xScale = -1
-        leftHand.color = handColor
-        leftHand.colorBlendFactor = Color.TutorialImageBlendFactor
-        leftHand.name = NodeName.TutorialImage
-        tutorialUILayer.addChild(leftHand)
-        // right hand
-        let rightHand = SKSpriteNode(imageNamed: ImageFilename.TouchScreen)
-        rightHand.size = leftHand.size
-        rightHand.position = CGPoint(x: -playableRect.width/4, y: 0)
-        rightHand.color = handColor
-        rightHand.colorBlendFactor = Color.TutorialImageBlendFactor
-        rightHand.name = NodeName.TutorialImage
-        tutorialUILayer.addChild(rightHand)
+        ballSelectionUILayer.addChild(titleLabel!)
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if !ringsPhysicsActivated {
-            activateRingsPhysics()
-            ringsPhysicsActivated = true
-        } else {
-            super.touchesBegan(touches, withEvent: event)
-        }
+        super.touchesBegan(touches, withEvent: event)
     }
-
-    
-    
     
 }
