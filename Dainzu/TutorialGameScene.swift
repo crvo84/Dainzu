@@ -79,6 +79,7 @@ class TutorialGameScene: GameScene {
         // touch
         let handColor = darkColorsOn ? Color.TutorialImageDark : Color.TutorialImageLight
         let handHeight = playableRect.height * Geometry.TutorialTouchImageRelativeHeight
+        print("touch screen image height: \(handHeight)")
 
         // left hand
         let leftHand = SKSpriteNode(imageNamed: ImageFilename.TouchScreen)
