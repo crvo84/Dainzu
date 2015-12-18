@@ -1271,10 +1271,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    func removeRemoveAdsButton() {
-        removeAdsButtonNode?.removeFromParent()
-        removeAdsButtonNode = nil
-    }
+//    func removeRemoveAdsButton() {
+//        removeAdsButtonNode?.removeFromParent()
+//        removeAdsButtonNode = nil
+//    }
     
     private func gameCenterRequest() {
         if let gameViewController = viewController as? GameViewController {

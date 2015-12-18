@@ -34,12 +34,7 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
             if !newValue {
                 adBanner?.removeFromSuperview()
                 adBanner = nil
-                // TODO: remove ads button from GameScene
-                if let skView = view as? SKView {
-                    if let gameScene = skView.scene as? GameScene {
-                        gameScene.removeRemoveAdsButton()
-                    }
-                }
+                startNewGameScene()
             }
         }
     }
@@ -65,6 +60,11 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
             getProductInfo()
         }
         
+        startNewGameScene()
+    }
+    
+    func startNewGameScene() {
+        adBanner = nil
         if NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.ShowAds) {
             adBanner = ADBannerView(frame: CGRectZero)
             adBanner!.delegate = self
@@ -95,14 +95,14 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
             skView.presentScene(gameScene)
         }
     }
-
+    
+    // called from GameScene
     func requestInterstitialAdIfNeeded() {
         if showAds && !appJustLaunched {
             requestInterstitialAdPresentation()
         }
         appJustLaunched = false
     }
-    
     
     // ------------------------------------------ //
     // ----- MARK: iAd Banner View Delegate ---- //
