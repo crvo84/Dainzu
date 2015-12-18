@@ -869,8 +869,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     moreGamesRequest()
                     
                 case NodeName.SelectBallButton:
-                    if isSoundActivated { runAction(buttonSmallSound) }
-                    startBallSelection()
+                    if isSoundActivated {
+                        runAction(buttonSmallSound) {
+                            self.startBallSelection()
+                        }
+                    } else {
+                        startBallSelection()
+                    }
+                    
                     
                 case NodeName.TutorialButton:
                     if isSoundActivated {
