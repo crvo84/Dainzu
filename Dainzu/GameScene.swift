@@ -49,15 +49,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var isSoundActivated: Bool = true
 
     // sound actions
-    private var buttonLargeSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.ButtonLarge, waitForCompletion: false)
-    private var buttonSmallSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.ButtonSmall, waitForCompletion: false)
-    private var impulseSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Impulse, waitForCompletion: false)
-    private var moneySound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Money, waitForCompletion: false)
-    private var ballTouchSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallTouch, waitForCompletion: false)
-    private var ballCatchSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallCatch, waitForCompletion: false)
-    private var ballFailedSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallFailed, waitForCompletion: false)
-    private var gameOverSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.GameOver, waitForCompletion: false)
-    private var successSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Success, waitForCompletion: false)
+    private var buttonLargeSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.ButtonLarge,
+        waitForCompletion: false)
+    private var buttonSmallSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.ButtonSmall,
+        waitForCompletion: false)
+    private var impulseSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Impulse,
+        waitForCompletion: false)
+    private var moneySound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Money,
+        waitForCompletion: false)
+    private var ballCatchSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallCatch,
+        waitForCompletion: false)
+    private var ballFailedSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallFailed,
+        waitForCompletion: false)
+    private var gameOverSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.GameOver,
+        waitForCompletion: false)
+    private var successSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Success,
+        waitForCompletion: false)
+    private var pauseSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Pause,
+        waitForCompletion: false)
     
     // colors
     private var darkColorsOn: Bool {
@@ -821,7 +830,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if let musicOnOffNode = touchedNode as? SKSpriteNode {
                         musicOnOffNode.texture = SKTexture(imageNamed: isMusicOn ? ImageFilename.MusicOnButton : ImageFilename.MusicOffButton)
                     }
-                    if isSoundActivated { runAction(buttonSmallSound) }
+//                    if isSoundActivated { runAction(buttonSmallSound) }
                     
                 case NodeName.RemoveAdsButton:
                     if isSoundActivated { runAction(buttonSmallSound) }
@@ -836,7 +845,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     moreGamesRequest()
                     
                 case NodeName.MenuBall:
-                    if isSoundActivated { runAction(buttonLargeSound) }
+                    if isSoundActivated { runAction(buttonSmallSound) }
                     selectBall()
                     
                 default:
@@ -856,7 +865,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         
                     case NodeName.PauseButton:
                         if isSoundActivated {
-                            runAction(buttonSmallSound) {
+                            runAction(pauseSound) {
                                 self.pauseGame()
                             }
                         } else {
@@ -910,7 +919,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 if collision == PhysicsCategory.Ball | PhysicsCategory.Ring {
                     ballNode.affectedByGravity = true
-                    if isSoundActivated { runAction(ballTouchSound) }
                     
                 } else if collision == PhysicsCategory.Ball | PhysicsCategory.MiddleBar {
                     ballNode.removeFromParent()

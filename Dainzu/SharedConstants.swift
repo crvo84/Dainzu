@@ -103,14 +103,14 @@ struct ZPosition {
 
 struct SoundFilename {
     static let Impulse = "impulse.wav"
-    static let Money = "money4.wav"
-    static let BallCatch = "pop5.wav"
-    static let BallTouch = "pop3.wav"
+    static let Money = "Shine Collect.wav"
+    static let BallCatch = "menuSelectionClick.wav"
     static let ButtonLarge = "largeButton.wav"
-    static let ButtonSmall = "slime.wav"
-    static let BallFailed = "failed-laser.mp3"
-    static let GameOver = "gameOver1.wav"
-    static let Success = "success7.mp3"
+    static let ButtonSmall = "manutsClick.wav"
+    static let BallFailed = "Button Click.wav"
+    static let Pause = "landHint.wav"
+    static let Success = "success7.wav"
+    static let GameOver = "gameOverDainzu.wav"
 }
 
 struct ImageFilename {
