@@ -100,7 +100,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var gameCenterButtonNode: SKSpriteNode?
     private var moreGamesButtonNode: SKSpriteNode?
     private var selectBallButtonNode: SKSpriteNode?
-    private var tutorialButtonNode: SKSpriteNode?
     
     // for GameScene subclasses
     var homeButtonNode: SKSpriteNode?
@@ -116,13 +115,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var topBarNode: SKSpriteNode?
     var bottomBarNode: SKSpriteNode?
     var verticalMiddleBarNode: SKSpriteNode?
-    
-    // level
-    private var round: Int = 0
-    private var ballsWait: Double {
-        let waitDecrease = Time.BallsWaitDecrease * floor(Double(round) / Double(GameOption.NumberOfRoundsPerLevel))
-        return max(Time.BallsWaitInitial - waitDecrease, Time.BallsWaitMinimum)
-    }
     
     // score
     private var scoreLabel: SKLabelNode?
@@ -504,21 +496,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         selectBallButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
         selectBallButtonNode!.name = NodeName.SelectBallButton
         menuOnlyUILayer.addChild(selectBallButtonNode!)
-        
-        // tutorial button
-        let tutorialButtonHeight = topBarHeight * Geometry.TopLeftButtonRelativeHeight
-        tutorialButtonNode = SKSpriteNode(imageNamed: ImageFilename.TutorialButton)
-        let tutorialButtonRatio = tutorialButtonNode!.size.width / tutorialButtonNode!.size.height
-        tutorialButtonNode!.size = CGSize(
-            width: tutorialButtonRatio * tutorialButtonHeight,
-            height: tutorialButtonHeight)
-        tutorialButtonNode!.position = CGPoint(
-            x: -playableRect.width/2 + playableRect.width * Geometry.TopLeftButtonRelativeSideOffset + tutorialButtonNode!.size.width/2,
-            y: +playableRect.height/2 + topBarHeight / 2)
-        tutorialButtonNode!.color = darkColorsOn ? Color.TopLeftButtonDark : Color.TopLeftButtonLight
-        tutorialButtonNode!.colorBlendFactor = Color.TopLeftButtonBlendFactor
-        tutorialButtonNode!.name = NodeName.TutorialButton
-        menuOnlyUILayer.addChild(tutorialButtonNode!)
     }
     
     private func gameOnlyUISetup() {
@@ -651,10 +628,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ballsLayer.zPosition = ZPosition.BallsLayer
         addChild(ballsLayer)
 
-        // TODO: create an action that creates actions dynamically, from the number of rounds and the calculated variable for wait time
-//        let waitAction = SKAction.waitForDuration(Time.BallsWait)
-        let waitAction = SKAction.waitForDuration(Time.BallsWaitInitial)
-        
+        let waitAction = SKAction.waitForDuration(Time.BallsWait)
         let createBallsAction = SKAction.runBlock {
             self.createNewBallForGame(.Left)
             self.createNewBallForGame(.Right)
@@ -728,9 +702,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // play button
         playButtonNode?.color = dark ? Color.PlayButtonDark : Color.PlayButtonLight
-        
-        // tutorial button
-        tutorialButtonNode?.color = dark ? Color.TopLeftButtonDark : Color.TopLeftButtonLight
         
         // config buttons
         let configButtonColor = dark ? Color.ConfigButtonDark : Color.ConfigButtonLight
@@ -877,16 +848,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         startBallSelection()
                     }
                     
-                    
-                case NodeName.TutorialButton:
-                    if isSoundActivated {
-                        runAction(buttonSmallSound) {
-                            self.startTutorial()
-                        }
-                    } else {
-                        startTutorial()
-                    }
-                    
                 case NodeName.BackToMenuButton:
                     if isSoundActivated {
                         runAction(buttonSmallSound) {
@@ -920,14 +881,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             pauseGame()
                         }
                         
-                    case NodeName.BackToMenuButton:
-                        if isSoundActivated {
-                            runAction(buttonSmallSound) {
-                                self.startNewGame()
-                            }
-                        } else {
-                            startNewGame()
-                        }
                         
                     default:
                         applyRingImpulse(touchLocation: location)
@@ -1261,13 +1214,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             startNewGame()
         }
-    }
-    
-    private func startTutorial() {
-        let tutorialGameScene = TutorialGameScene(size: size, bannerHeight: bannerHeight)
-        tutorialGameScene.scaleMode = scaleMode
-        tutorialGameScene.viewController = viewController
-        view?.presentScene(tutorialGameScene)
     }
     
     private func startBallSelection() {

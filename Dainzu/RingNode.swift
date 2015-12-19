@@ -9,7 +9,6 @@
 import SpriteKit
 
 class RingNode: SKNode {
-//    private var leftNode: SKCropNode?
     private var leftNode: SKSpriteNode?
     private var rightNode: SKSpriteNode?
     

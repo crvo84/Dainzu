@@ -89,16 +89,12 @@ struct Geometry {
     
     // about app buttons
     static let AboutAppButtonsRelativeCornerRadius: CGFloat = 0.2 // relative to button width
-    
-    // tutorial
-    static let TutorialTouchImageRelativeHeight: CGFloat = 0.4 // relative to playableRect height
 }
 
 struct ZPosition {
     static let PauseNode: CGFloat = 300
     static let AlwaysVisibleUILayer: CGFloat = 250
     static let BallSelectionUILayer: CGFloat = 200
-    static let TutorialUILayer: CGFloat = 200
     static let GameOnlyUILayer: CGFloat = 200
     static let MenuOnlyUILayer: CGFloat = 200
     static let RingAbove: CGFloat = 110
@@ -135,7 +131,6 @@ struct ImageFilename {
     static let MoreGamesButton = "iphone"
     static let LiveLeft = "heart"
     static let HomeButton = "home"
-    static let TutorialButton = "questionMark"
     static let TouchScreen = "touchScreen"
     static let SelectBallButton = "plusBall"
 }
@@ -177,9 +172,7 @@ struct Time {
     // ring
     static let RingFloatingCycle: Double = 2
     // ball
-    static let BallsWaitInitial: Double = 3
-    static let BallsWaitDecrease: Double = 0.3
-    static let BallsWaitMinimum: Double = 1
+    static let BallsWait: Double = 3
     
     static let BallRotate: Double = 3
     static let BallFadeOut: Double = 0.3
@@ -187,8 +180,6 @@ struct Time {
     static let CoinsLabelFlashAction: Double = 0.2
     // score label
     static let ScoreLabelFlashAction: Double = 0.2
-    // tutorial image
-    static let TutorialImageFadeOut: Double = 1
 }
 
 struct Color {
@@ -218,10 +209,6 @@ struct Color {
     static let ConfigButtonDark: SKColor = Color.BarDark
     static let ConfigButtonLight: SKColor = Color.BarLight
     static let ConfigButtonBlendFactor: CGFloat = Color.PlayButtonBlendFactor
-
-    static let TutorialImageDark: SKColor = Color.BarDark
-    static let TutorialImageLight: SKColor = Color.BarLight
-    static let TutorialImageBlendFactor: CGFloat = 1.0
     
     // Pause node
     static let PauseNodeBackground: SKColor = SKColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.95)
@@ -278,9 +265,7 @@ struct NodeName {
     static let GameCenterButton = "gameCenterButtonNode"
     static let MoreGamesButton = "moreGamesButtonNode"
     static let HomeButton = "homeButtonNode"
-    static let TutorialButton = "tutorialButtonNode"
     static let BackToMenuButton = "backToMenuButtonNode"
-    static let TutorialImage = "tutorialImageNode"
 }
 
 struct SegueId {
@@ -356,7 +341,6 @@ struct GameOption {
     static let SpecialBallsRatio: UInt32 = 10 // 1 in X
     static let ResetVelocityBeforeImpulse = true
     static let LivesNum: Int = 3
-    static let NumberOfRoundsPerLevel: Int = 5
 }
 
 struct Test {
