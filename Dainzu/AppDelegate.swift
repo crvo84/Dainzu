@@ -75,6 +75,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             defaults.setInteger(UserDefaults.BestScore, forKey: UserDefaultsKey.BestScore)
         }
         
+        // ball available by default
+        if defaults.objectForKey(UserDefaultsKey.BallDefault) == nil {
+            defaults.setBool(UserDefaults.BallDefault, forKey: UserDefaultsKey.BallDefault)
+        }
+        
         if defaults.objectForKey(UserDefaultsKey.BallSelected) == nil {
             defaults.setObject(UserDefaults.BallSelected, forKey: UserDefaultsKey.BallSelected)
         }

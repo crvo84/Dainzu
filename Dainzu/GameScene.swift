@@ -167,7 +167,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         set {
             NSUserDefaults.standardUserDefaults().setInteger(newValue, forKey: UserDefaultsKey.CoinsCount)
-            coinsLabel?.text = "\(newValue)"
+            coinsLabel?.text = "\(newValue)/\(GameOption.BallPrice)"
         }
     }
     var coinNodeFlashAction: SKAction?
@@ -566,7 +566,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // coins label
         let coinsLabelHeight = topBarHeight * Geometry.CoinsLabelRelativeHeight
         let coinsLabelWidth = playableRect.width * Geometry.CoinsLabelRelativeWidth
-        coinsLabel = SKLabelNode(text: "\(coinsCount)")
+        coinsLabel = SKLabelNode(text: "\(coinsCount)/\(GameOption.BallPrice)")
         coinsLabel!.fontColor = darkColorsOn ? FontColor.CoinsDark : FontColor.CoinsLight
         coinsLabel!.fontName = FontName.Coins
         adjustFontSizeForLabel(coinsLabel!, tofitSize: CGSize(width: coinsLabelWidth, height: coinsLabelHeight))
@@ -1286,7 +1286,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func startBallSelection() {
-        let ballSelectionScene = BallSelectionScene(size: size, bannerHeight: bannerHeight)
+        let ballSelectionScene = BallSelectionScene(
+            size: size,
+            bannerHeight: bannerHeight,
+            imageFilenames: BallImage.Balls_A)
         ballSelectionScene.scaleMode = scaleMode
         ballSelectionScene.viewController = viewController
         view?.presentScene(ballSelectionScene)

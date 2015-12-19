@@ -10,8 +10,22 @@ import SpriteKit
 
 class BallSelectionScene: GameScene {
     
-    private var ballSelectionUILayer = SKNode()
+    private let imageFilenames: [String]
+    
+    private var topBarUILayer = SKNode()
+    private var gridLayer = SKNode()
+    
+    private var gridNodes: [SKSpriteNode] = []
+    
+    init(size: CGSize, bannerHeight: CGFloat, imageFilenames: [String]) {
+        self.imageFilenames = imageFilenames
+        super.init(size: size, bannerHeight: bannerHeight)
+    }
 
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func didMoveToView(view: SKView) {
         gameState = .GameMenu
         
@@ -28,7 +42,9 @@ class BallSelectionScene: GameScene {
             verticalMiddleBarNode?.removeFromParent()
             
             coinsUISetup()
-            ballSelectionUISetup()
+            
+            topBarUISetup()
+            gridSetup()
             
             contentCreated = true
         }
@@ -37,12 +53,12 @@ class BallSelectionScene: GameScene {
         adjustLabelsSize()
     }
     
-    private func ballSelectionUISetup() {
-        ballSelectionUILayer.zPosition = ZPosition.BallSelectionUILayer
-        ballSelectionUILayer.position = CGPoint(
+    private func topBarUISetup() {
+        topBarUILayer.zPosition = ZPosition.BallSelectionTopBarUILayer
+        topBarUILayer.position = CGPoint(
             x: playableRectOriginInScene.x + playableRect.width/2,
             y: playableRectOriginInScene.y + playableRect.height/2)
-        addChild(ballSelectionUILayer)
+        addChild(topBarUILayer)
         
         // TODO: move top left button and title label implementation to super class
         // home button
@@ -56,7 +72,7 @@ class BallSelectionScene: GameScene {
         homeButtonNode!.name = NodeName.BackToMenuButton
         homeButtonNode!.color = darkColorsOn ? Color.TopLeftButtonDark : Color.TopLeftButtonLight
         homeButtonNode!.colorBlendFactor = Color.TopLeftButtonBlendFactor
-        ballSelectionUILayer.addChild(homeButtonNode!)
+        topBarUILayer.addChild(homeButtonNode!)
         
         // title label
         let titleLabelHeight = topBarHeight * Geometry.TitleLabelRelativeHeight
@@ -70,11 +86,94 @@ class BallSelectionScene: GameScene {
             width: titleLabelWidth,
             height: titleLabelHeight))
         titleLabel!.position = CGPoint(x: 0, y: +playableRect.height/2 + topBarHeight/2)
-        ballSelectionUILayer.addChild(titleLabel!)
+        topBarUILayer.addChild(titleLabel!)
     }
+    
+    
+    // TODO: facebook, twitter and rate balls
+    private func gridSetup() {
+        gridLayer.zPosition = ZPosition.BallSelectionGridLayer
+        gridLayer.position = CGPoint(
+            x: playableRectOriginInScene.x,
+            y: playableRectOriginInScene.y)
+        addChild(gridLayer)
+        
+        updateGrid()
+    }
+    
+    
+    // MARK: Update methods
+    
+    private func updateGrid() {
+        resetGrid()
+        
+        // +1 row and column to set offset with boundaries
+        let squareHeight = playableRect.height / CGFloat(Geometry.BallSelectionNumberOfRows + 1)
+        let squareWidth = playableRect.width / CGFloat(Geometry.BallSelectionNumberOfColumns + 1)
+        let ballHeight = playableRect.height * Geometry.BallSelectionBallRelativeHeight
+        
+        var ballIndex = 0
+        for column in 0..<Geometry.BallSelectionNumberOfColumns {
+            for row in 0..<Geometry.BallSelectionNumberOfRows {
+                let xPos = squareWidth + squareWidth * CGFloat(column)
+                let yPos = playableRect.height - squareHeight - squareHeight * CGFloat(row)
+                
+                if ballIndex < imageFilenames.count {
+                    let imageFilename = imageFilenames[ballIndex]
+                    let purchased = NSUserDefaults.standardUserDefaults().boolForKey(imageFilename)
+                    
+                    let ballNode: SKSpriteNode
+                    if purchased {
+                        ballNode = SKSpriteNode(imageNamed: imageFilename)
+    
+                    } else {
+                        ballNode = SKSpriteNode(imageNamed: ImageFilename.BallNotPurchased)
+                        ballNode.color = darkColorsOn ? Color.BallSelectionNotPurchasedDark : Color.BallSelectionNotPurchasedLight
+                        ballNode.colorBlendFactor = Color.BallSelectionNotPurchasedBlendFactor
+                    }
+                    let ballNodeRatio = ballNode.size.width / ballNode.size.height
+                    ballNode.size = CGSize(width: ballNodeRatio * ballHeight, height: ballHeight)
+                    ballNode.position = CGPoint(x: xPos, y: yPos)
+                    ballNode.name = imageFilename
+                    gridLayer.addChild(ballNode)
+            
+                    gridNodes.append(ballNode)
+                    
+                }
+                ballIndex++
+            }
+        }
+    }
+    
+    private func resetGrid() {
+        for var i = 0; i < gridNodes.count; i++ {
+            let ballNode = gridNodes[i]
+            ballNode.removeFromParent()
+        }
+        gridNodes = []
+    }
+    
+    
+    
+    
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         super.touchesBegan(touches, withEvent: event)
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

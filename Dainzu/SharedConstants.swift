@@ -63,6 +63,7 @@ struct Geometry {
     static let LivesLeftNodeRelativeHeight: CGFloat = 0.8 // relative to topBar height
     static let LivesLeftNodeMaxRelativeHeight: CGFloat = 0.7 // relative to gameTitle height
     static let LivesLeftNodeRelativeSeparation: CGFloat = 0.01 // relative to playableRect width
+    static let LivesLeftNodeRelativeSideOffset: CGFloat = 0.03 // relative to playableRect width
 
     // game title label
     static let GameTitleRelativeHeight: CGFloat = 0.25 // relative to playableRect height
@@ -93,12 +94,17 @@ struct Geometry {
     static let InstructionLabelRelativeWidth: CGFloat = 0.7 // relative to side screen width
     static let InstructionLabelRelativeHeight: CGFloat = 0.20 // relative to playableRect height
     static let InstructionLabelRelativeYPosition: CGFloat = 0.7 // relative to playableRect height
+    
+    // ball selection
+    static let BallSelectionBallRelativeHeight: CGFloat = 0.15 // relative to playableRect height
+    static let BallSelectionNumberOfRows: Int = 1 // 4
+    static let BallSelectionNumberOfColumns: Int = 4 // 7
 }
 
 struct ZPosition {
+    // Game Scene
     static let PauseNode: CGFloat = 300
     static let AlwaysVisibleUILayer: CGFloat = 250
-    static let BallSelectionUILayer: CGFloat = 200
     static let GameOnlyUILayer: CGFloat = 200
     static let MenuOnlyUILayer: CGFloat = 200
     static let InstructionsLayer: CGFloat = 200
@@ -106,6 +112,10 @@ struct ZPosition {
     static let BallsLayer: CGFloat = 100
     static let RingsLayer: CGFloat = 90
     static let BarsLayer: CGFloat = 80
+    
+    // BallSelectionScene
+    static let BallSelectionTopBarUILayer: CGFloat = 300
+    static let BallSelectionGridLayer: CGFloat = 200
 }
 
 struct SoundFilename {
@@ -138,13 +148,20 @@ struct ImageFilename {
     static let HomeButton = "home"
     static let TouchScreen = "touchScreen"
     static let SelectBallButton = "plusBall"
+    static let BallNotPurchased = "questionMark"
 }
 
 struct BallImage {
-    static let Ball_Special = "pacman"
-    static let Ball_1 = "tennisBall"
+    static let Ball_Special = "coin"
+    static let Ball_Default = "tennisBall"
+    static let Ball_1 = "soccerBall"
+    static let Ball_2 = "pacman"
+    static let Ball_3 = "monkey"
     
-    static let Balls = [BallImage.Ball_1]
+    // all balls
+    static let Balls: [String] = BallImage.Balls_A
+    // screen A
+    static let Balls_A: [String] = [BallImage.Ball_Default, BallImage.Ball_1, BallImage.Ball_2, BallImage.Ball_3]
 }
 
 struct Physics {
@@ -225,6 +242,11 @@ struct Color {
     static let PauseNodeLargeButtonDark: SKColor = Color.BarDark
     static let PauseNodeLargeButtonLight: SKColor = Color.BackgroundLight
     static let PauseNodeLargeButtonBlendFactor: CGFloat = 1.0
+    
+    // ball selection
+    static let BallSelectionNotPurchasedDark: SKColor = Color.RingDark
+    static let BallSelectionNotPurchasedLight: SKColor = Color.RingLight
+    static let BallSelectionNotPurchasedBlendFactor: CGFloat = 1.0
 }
 
 struct FontColor {
@@ -299,6 +321,7 @@ struct UserDefaultsKey {
     static let ShowInstructions = "showInstructions"
     static let CoinsCount = "coinsCount"
     static let BestScore = "bestScore"
+    static let BallDefault = BallImage.Ball_Default
     static let BallSelected = "ballSelected"
 }
 
@@ -311,7 +334,9 @@ struct UserDefaults {
     static let ShowInstructions = true
     static let CoinsCount: Int = 0
     static let BestScore: Int = 0
-    static let BallSelected: String = BallImage.Ball_1
+    // ball purchased
+    static let BallSelected: String = BallImage.Ball_Default
+    static let BallDefault = true
 }
 
 struct URLString {
@@ -355,6 +380,7 @@ struct GameOption {
     static let SpecialBallsRatio: UInt32 = 10 // 1 in X
     static let ResetVelocityBeforeImpulse = true
     static let LivesNum: Int = 3
+    static let BallPrice: Int = 20
 }
 
 struct Test {
