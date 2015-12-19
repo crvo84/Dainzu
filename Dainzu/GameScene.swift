@@ -56,7 +56,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var impulseSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Impulse,
         waitForCompletion: false)
     var moneySound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Money,
-        waitForCompletion: false)
+        waitForCompletion: true)
     var ballCatchSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallCatch,
         waitForCompletion: false)
     var ballFailedSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallFailed,
@@ -259,6 +259,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             coinsUISetup()
             menuOnlyUISetup()
             gameOnlyUISetup()
+            ballsUISetup()
             ringsSetup()
             if NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.ShowInstructions) {
                 instructionsUISetup()
@@ -514,35 +515,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createNewBallForMenu()
     }
     
-    // TODO: can do better
-    private func getGameTitleFontSize() -> CGFloat {
-        if gameTitleLabel != nil {
-            return gameTitleLabel!.fontSize
-        } else {
-            let gameTitleHeight = playableRect.height * Geometry.GameTitleRelativeHeight
-            let gameTitleWidth = (playableRect.width)/2 * Geometry.GameTitleRelativeWidth
-            let labelNode = SKLabelNode(text: Text.GameTitle)
-            labelNode.fontName = FontName.GameTitle
-            adjustFontSizeForLabel(labelNode, tofitSize: CGSize(width: gameTitleWidth, height: gameTitleHeight))
-            return labelNode.fontSize
-        }
-    }
-    
-    // TODO: can do better
-    private func getGameTitleSize() -> CGSize {
-        if gameTitleLabel != nil {
-            return gameTitleLabel!.frame.size
-        } else {
-            let gameTitleHeight = playableRect.height * Geometry.GameTitleRelativeHeight
-            let gameTitleWidth = (playableRect.width)/2 * Geometry.GameTitleRelativeWidth
-            let labelNode = SKLabelNode(text: Text.GameTitle)
-            labelNode.fontName = FontName.GameTitle
-            adjustFontSizeForLabel(labelNode, tofitSize: CGSize(width: gameTitleWidth, height: gameTitleHeight))
-            return labelNode.frame.size
-        }
-    }
-
-    
     private func gameOnlyUISetup() {
         gameOnlyUILayer.zPosition = ZPosition.GameOnlyUILayer
         gameOnlyUILayer.position = CGPoint(
@@ -620,6 +592,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let coinNodeFlash = SKAction.scaleTo(Geometry.CoinsLabelFlashActionMaxScale, duration: Time.CoinsLabelFlashAction/2)
         let coinNodeFlashReverse = SKAction.scaleTo(1.0, duration: Time.CoinsLabelFlashAction/2)
         coinNodeFlashAction = SKAction.sequence([coinNodeFlash, coinNodeFlashReverse])
+    }
+    
+    private func ballsUISetup() {
+        ballsLayer.position = playableRectOriginInScene
+        ballsLayer.zPosition = ZPosition.BallsLayer
+        addChild(ballsLayer)
+        
+        createNewBallForMenu()
     }
     
     private func instructionsUISetup() {
@@ -711,10 +691,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     
     private func generateBalls() {
-        ballsLayer.position = playableRectOriginInScene
-        ballsLayer.zPosition = ZPosition.BallsLayer
-        addChild(ballsLayer)
-
         let waitAction = SKAction.waitForDuration(Time.BallsWait)
         let createBallsAction = SKAction.runBlock {
             self.createNewBallForGame(.Left)
@@ -747,7 +723,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             instructionsUILayer.hidden = true
             
             ringsLayer.hidden = false
-            ballsLayer.hidden = true
+            ballsLayer.hidden = false
             
         case .GameRunning:
             menuBallNode?.removeFromParent()
@@ -1111,7 +1087,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ballNode.position = self.getBallRandomPosition(ballNode, screenSide: screenSide)
         ballsLayer.addChild(ballNode)
         
-        ballNode.physicsBody?.velocity = getBallVelocity(ballNode, screenSide: screenSide)
+        ballNode.physicsBody?.velocity = getBallVelocity(
+            withMultiplier: Physics.BallVelocityMultiplier,
+            screenSide: screenSide)
 
         let rotateAction = SKAction.repeatActionForever(SKAction.rotateByAngle(2*π, duration: Time.BallRotate))
         ballNode.runAction(rotateAction, withKey: ActionKey.BallRotate)
@@ -1122,14 +1100,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         menuBallNode = nil
         
         menuBallNode = getNewBall(ballHeight, isSpecial: false)
-        menuBallNode!.zPosition = ZPosition.BallsLayer
-        menuBallNode!.position = CGPoint(x: -size.width/2 - menuBallNode!.size.width/2, y: 0)
-        menuOnlyUILayer.addChild(menuBallNode!)
+        menuBallNode!.position = CGPoint( // ballsLayer position is at playableRect origin
+            x: -menuBallNode!.size.width/2,
+            y: +playableRect.height/2)
+        ballsLayer.addChild(menuBallNode!)
         
-        menuBallNode!.physicsBody?.velocity = getBallVelocity(menuBallNode!, screenSide: .Left)
+        menuBallNode!.physicsBody?.velocity = getBallVelocity(
+            withMultiplier: Physics.MenuBallVelocityMultiplier,
+            screenSide: .Left)
         
         let rotateAction = SKAction.repeatActionForever(SKAction.rotateByAngle(2*π, duration: Time.BallRotate))
         menuBallNode!.runAction(rotateAction, withKey: ActionKey.BallRotate)
+        
     }
     
     // creates a new BallNode with the selected ball texture
@@ -1145,8 +1127,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return ballNode
     }
     
-    private func getBallVelocity(ballNode: BallNode, screenSide: ScreenSide) -> CGVector {
-        let dx = playableRect.width * Physics.BallVelocityMultiplier
+    private func getBallVelocity(withMultiplier multiplier: CGFloat, screenSide: ScreenSide) -> CGVector {
+        let dx = playableRect.width * multiplier
         return CGVector(
             dx: screenSide == .Left ? +dx : -dx,
             dy: 0)
@@ -1205,6 +1187,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             titleLabel!.fontSize = min(titleLabel!.fontSize, maxFontSize * Geometry.TitleLabelMaxRelativeFontSize)
         }
         updateLiveLeftNodes()
+    }
+    
+    // TODO: can do better
+    private func getGameTitleFontSize() -> CGFloat {
+        if gameTitleLabel != nil {
+            return gameTitleLabel!.fontSize
+        } else {
+            let gameTitleHeight = playableRect.height * Geometry.GameTitleRelativeHeight
+            let gameTitleWidth = (playableRect.width)/2 * Geometry.GameTitleRelativeWidth
+            let labelNode = SKLabelNode(text: Text.GameTitle)
+            labelNode.fontName = FontName.GameTitle
+            adjustFontSizeForLabel(labelNode, tofitSize: CGSize(width: gameTitleWidth, height: gameTitleHeight))
+            return labelNode.fontSize
+        }
+    }
+    
+    // TODO: can do better
+    private func getGameTitleSize() -> CGSize {
+        if gameTitleLabel != nil {
+            return gameTitleLabel!.frame.size
+        } else {
+            let gameTitleHeight = playableRect.height * Geometry.GameTitleRelativeHeight
+            let gameTitleWidth = (playableRect.width)/2 * Geometry.GameTitleRelativeWidth
+            let labelNode = SKLabelNode(text: Text.GameTitle)
+            labelNode.fontName = FontName.GameTitle
+            adjustFontSizeForLabel(labelNode, tofitSize: CGSize(width: gameTitleWidth, height: gameTitleHeight))
+            return labelNode.frame.size
+        }
     }
     
     func adjustFontSizeForLabel(labelNode: SKLabelNode, tofitSize size: CGSize) {

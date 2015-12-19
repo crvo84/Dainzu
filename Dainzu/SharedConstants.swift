@@ -43,7 +43,7 @@ struct Geometry {
     
 //    // best score label
     static let BestScoreLabelRelativeHeight: CGFloat = 0.7 // relative to topBar height
-    static let BestScoreLabelRelativeWidth: CGFloat = 0.5 // relative to playableRect width
+    static let BestScoreLabelRelativeWidth: CGFloat = 0.30 // relative to playableRect width
     
     // title
     static let TitleLabelRelativeHeight: CGFloat = 0.7 // relative to topBar height
@@ -51,7 +51,7 @@ struct Geometry {
     static let TitleLabelMaxRelativeFontSize: CGFloat = 0.8 // relative to gameTitle font size
     
     // coins label
-    static let CoinNodeRelativeHeight: CGFloat = 0.45 // relative to topBar height
+    static let CoinNodeRelativeHeight: CGFloat = 0.6 // relative to topBar height
     static let CoinNodeRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
     static let CoinsLabelMaxRelativeFontSize: CGFloat = 0.7 // relative to gameTitle font size
     static let CoinsLabelRelativeSideOffset: CGFloat = 0.25 // relative to coinNode width
@@ -97,8 +97,8 @@ struct Geometry {
     
     // ball selection
     static let BallSelectionBallRelativeHeight: CGFloat = 0.15 // relative to playableRect height
-    static let BallSelectionNumberOfRows: Int = 1 // 4
-    static let BallSelectionNumberOfColumns: Int = 4 // 7
+    static let BallSelectionNumberOfRows: Int = 2 // 1
+    static let BallSelectionNumberOfColumns: Int = 5 // 5
 }
 
 struct ZPosition {
@@ -155,26 +155,96 @@ struct ImageFilename {
 }
 
 struct BallImage {
-    static let Ball_Special = "coin" // coin
-    static let Ball_Default = "tennisBall"
-    static let Ball_1 = "soccerBall"
-    static let Ball_2 = "pacman"
-    static let Ball_3 = "monkey"
+    static let Ball_0 = "ocean-yellow-marble"
+    // bot
+    static let Ball_A1 = "bot-orange-marble"
+    static let Ball_A2 = "bot-light-green-marble"
+    static let Ball_A3 = "bot-blue-marble"
+    static let Ball_A4 = "bot-green-marble"
+    static let Ball_A5 = "bot-black-marble"
+    static let Ball_A6 = "bot-pink-marble"
+    static let Ball_A7 = "bot-purple-marble"
+    static let Ball_A8 = "bot-red-marble"
+    static let Ball_A9 = "bot-brown-marble"
+    // creature
+    static let Ball_B1 = "creature-cat-marble"
+    static let Ball_B2 = "creature-angry-marble"
+    static let Ball_B3 = "creature-creepy-nerd-marble"
+    static let Ball_B4 = "creature-devil-marble"
+    static let Ball_B5 = "creature-dog-marble"
+    static let Ball_B6 = "creature-eye-ghost-marble"
+    static let Ball_B7 = "creature-mouse-marble"
+    static let Ball_B8 = "creature-skull-marble"
+    static let Ball_B9 = "creature-spiky-marble"
+    // ocean
+    static let Ball_C1 = "ocean-black-marble"
+    static let Ball_C2 = "ocean-blue-marble"
+    static let Ball_C3 = "ocean-brown-marble"
+    static let Ball_C4 = "ocean-dark-blue-marble"
+    static let Ball_C5 = "ocean-green-marble"
+    static let Ball_C6 = "ocean-light-green-marble"
+    static let Ball_C7 = "ocean-orange-marble"
+    static let Ball_C8 = "ocean-red-marble"
+    static let Ball_C9 = "ocean-purple-marble"
+    // monster
+    static let Ball_D1 = "monster-1-marble"
+    static let Ball_D2 = "monster-2-marble"
+    static let Ball_D3 = "monster-3-marble"
+    static let Ball_D4 = "monster-4-marble"
+    static let Ball_D5 = "monster-5-marble"
+    static let Ball_D6 = "monster-6-marble"
+    static let Ball_D7 = "monster-7-marble"
+    static let Ball_D8 = "monster-8-marble"
+    static let Ball_D9 = "monster-9-marble"
+    // glossy
+    static let Ball_E1 = "glossy-black-marble"
+    static let Ball_E2 = "glossy-blue-marble"
+    static let Ball_E3 = "glossy-brown-marble"
+    static let Ball_E4 = "glossy-green-marble"
+    static let Ball_E5 = "glossy-orange-marble"
+    static let Ball_E6 = "glossy-pink-marble"
+    static let Ball_E7 = "glossy-purple-marble"
+    static let Ball_E8 = "glossy-red-marble"
+    static let Ball_E9 = "glossy-yellow-marble"
+    // funny
+    static let Ball_F1 = "funny-black-marble"
+    static let Ball_F2 = "funny-blue-marble"
+    static let Ball_F3 = "funny-brown-marble"
+    static let Ball_F4 = "funny-pink-marble"
+    static let Ball_F5 = "funny-green-marble"
+    static let Ball_F6 = "funny-greenB-marble"
+    static let Ball_F7 = "funny-orange-marble"
+    static let Ball_F8 = "funny-red-marble"
+    static let Ball_F9 = "funny-yellow-marble"
+    
+    
+    static let Ball_Special = Ball_0 // coin
+    static let Ball_Default = Ball_A1
     
     // screens
-    static let ScreenA: [String] = [BallImage.Ball_Default, BallImage.Ball_1, BallImage.Ball_2, BallImage.NextScreenButton]
-    static let ScreenB: [String] = [BallImage.PreviousScreenButton, BallImage.Ball_3, BallImage.Ball_2, BallImage.Ball_1]
+    static let ScreenA: [String] = [BallImage.Ball_Default, BallImage.Ball_A2, BallImage.Ball_A3, BallImage.Ball_A4, BallImage.Ball_A5, BallImage.Ball_A6, BallImage.Ball_A7, BallImage.Ball_A8, BallImage.Ball_A9, BallImage.NextScreenButton]
     
-    // all screens
-    static let Screens: [Int : [String]] = [0 : BallImage.ScreenA, 1 : BallImage.ScreenB]
+    static let ScreenB: [String] = [BallImage.PreviousScreenButton, BallImage.Ball_B1, BallImage.Ball_B2, BallImage.Ball_B3, BallImage.Ball_B4, BallImage.Ball_B6, BallImage.Ball_B7, BallImage.Ball_B8, BallImage.Ball_B9, BallImage.NextScreenButton]
+    
+    static let ScreenC: [String] = [BallImage.PreviousScreenButton, BallImage.Ball_C1, BallImage.Ball_C2, BallImage.Ball_C3, BallImage.Ball_C4, BallImage.Ball_C5, BallImage.Ball_C7, BallImage.Ball_C8, BallImage.Ball_C9, BallImage.NextScreenButton]
+    
+    static let ScreenD: [String] = [BallImage.PreviousScreenButton, BallImage.Ball_D1, BallImage.Ball_D2, BallImage.Ball_D3, BallImage.Ball_D4, BallImage.Ball_D5, BallImage.Ball_D6, BallImage.Ball_D7, BallImage.Ball_D9, BallImage.NextScreenButton]
+    
+    static let ScreenE: [String] = [BallImage.PreviousScreenButton, BallImage.Ball_E1, BallImage.Ball_E2, BallImage.Ball_E3, BallImage.Ball_E4, BallImage.Ball_E5, BallImage.Ball_E7, BallImage.Ball_E8, BallImage.Ball_E9, BallImage.NextScreenButton]
+    
+    static let ScreenF: [String] = [BallImage.PreviousScreenButton, BallImage.Ball_F1, BallImage.Ball_F2, BallImage.Ball_F3, BallImage.Ball_F4, BallImage.Ball_F5, BallImage.Ball_F7, BallImage.Ball_F8, BallImage.Ball_F6, BallImage.Ball_F9]
+    
+    
+    // all screens (order screens here)
+    static let Screens: [Int : [String]] = [0 : BallImage.ScreenA, 1 : BallImage.ScreenB, 2: BallImage.ScreenC, 3: BallImage.ScreenD, 4: BallImage.ScreenE, 5: BallImage.ScreenF]
     
     // navigation buttons
     static let NextScreenButton = "ballSelectionNextScreen"
     static let PreviousScreenButton = "ballSelectionPreviousScreen"
     
     // special images
-    static let FacebookBall = BallImage.Ball_1
-    static let TwitterBall = BallImage.Ball_2
+    static let FacebookBall = BallImage.Ball_A2
+    static let TwitterBall = BallImage.Ball_B1
 }
 
 struct Physics {
@@ -188,8 +258,10 @@ struct Physics {
     // ball
     static let BallDensity: CGFloat = 4
     static let BallLinearDamping: CGFloat = 0.0
-    static let BallVelocityMultiplier: CGFloat = 0.2 // 0.5
     static let BallBounciness: CGFloat = 0.6
+    static let BallVelocityMultiplier: CGFloat = 0.2 // 0.5
+    // menu ball
+    static let MenuBallVelocityMultiplier: CGFloat = 0.1
 }
 
 struct PhysicsCategory {
@@ -210,6 +282,10 @@ struct Time {
     static let BallsWait: Double = 3
     static let BallRotate: Double = 3
     static let BallFadeOut: Double = 0.3
+    // menu ball
+    static let MenuBallWait: Double = 5
+    static let MenuBallRotate: Double = 5
+    static let MenuBallFadeOut: Double = 0.5
     // coin count
     static let CoinsLabelFlashAction: Double = 0.2
     // score label
@@ -387,10 +463,10 @@ struct GameCenter {
 
 struct GameOption {
     static let SpecialBallsOn = true
-    static let SpecialBallsRatio: UInt32 = 5 // 1 in X
+    static let SpecialBallsRatio: UInt32 = 10 // 1 in X
     static let ResetVelocityBeforeImpulse = true
-    static let LivesNum: Int = 3
-    static let BallPrice: Int = 1
+    static let LivesNum: Int = 2
+    static let BallPrice: Int = 0//10
 }
 
 struct Test {

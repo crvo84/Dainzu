@@ -78,8 +78,9 @@ class BallSelectionScene: GameScene {
         updateGrid()
         
         if unlockedSpecialBall && isSoundActivated {
-            runAction(moneySound)
-            unlockedSpecialBall = false
+            runAction(moneySound) {
+                self.unlockedSpecialBall = false
+            }
         }
     }
     
@@ -144,8 +145,8 @@ class BallSelectionScene: GameScene {
         let ballHeight = playableRect.height * Geometry.BallSelectionBallRelativeHeight
         
         var ballIndex = 0
-        for column in 0..<Geometry.BallSelectionNumberOfColumns {
-            for row in 0..<Geometry.BallSelectionNumberOfRows {
+        for row in 0..<Geometry.BallSelectionNumberOfRows {
+            for column in 0..<Geometry.BallSelectionNumberOfColumns {
                 let xPos = squareWidth + squareWidth * CGFloat(column)
                 let yPos = playableRect.height - squareHeight - squareHeight * CGFloat(row)
                 
