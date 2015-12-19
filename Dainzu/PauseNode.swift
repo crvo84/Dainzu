@@ -31,7 +31,7 @@ class PauseNode: SKNode {
             height: largeButtonHeight)
         continueButton.position = CGPointZero
         continueButton.color = darkColorsOn ? Color.PauseNodeLargeButtonDark : Color.PauseNodeLargeButtonLight
-        continueButton.colorBlendFactor = Color.PauseNodeLargeButtonBlendFactor
+        continueButton.colorBlendFactor = Color.BlendFactor
         continueButton.name = NodeName.ContinueButton
         backgroundNode.addChild(continueButton)
     
@@ -50,7 +50,7 @@ class PauseNode: SKNode {
             x: +size.width/2 - smallButtonSideOffset - quitButton.size.width/2,
             y: +size.height/2 - smallButtonSideOffset - smallButtonHeight/2)
         quitButton.color = darkColorsOn ? Color.PauseNodeSmallButtonDark : Color.PauseNodeSmallButtonLight
-        quitButton.colorBlendFactor = Color.PauseNodeSmallButtonBlendFactor
+        quitButton.colorBlendFactor = Color.BlendFactor
         quitButton.name = NodeName.QuitButton
         backgroundNode.addChild(quitButton)
 
@@ -62,7 +62,7 @@ class PauseNode: SKNode {
             x: -size.width/2 + smallButtonSideOffset + musicButton.size.width/2,
             y: +size.height/2 - smallButtonSideOffset - smallButtonHeight/2)
         musicButton.color = darkColorsOn ? Color.PauseNodeSmallButtonDark : Color.PauseNodeSmallButtonLight
-        musicButton.colorBlendFactor = Color.PauseNodeSmallButtonBlendFactor
+        musicButton.colorBlendFactor = Color.BlendFactor
         musicButton.name = NodeName.MusicOnOffButton
         backgroundNode.addChild(musicButton)
         

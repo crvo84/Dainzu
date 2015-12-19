@@ -49,23 +49,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var isSoundActivated: Bool = true
 
     // sound actions
-    private var buttonLargeSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.ButtonLarge,
+    var buttonLargeSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.ButtonLarge,
         waitForCompletion: false)
-    private var buttonSmallSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.ButtonSmall,
+    var buttonSmallSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.ButtonSmall,
         waitForCompletion: false)
-    private var impulseSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Impulse,
+    var impulseSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Impulse,
         waitForCompletion: false)
-    private var moneySound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Money,
+    var moneySound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Money,
         waitForCompletion: false)
-    private var ballCatchSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallCatch,
+    var ballCatchSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallCatch,
         waitForCompletion: false)
-    private var ballFailedSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallFailed,
+    var ballFailedSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.BallFailed,
         waitForCompletion: false)
-    private var gameOverSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.GameOver,
+    var gameOverSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.GameOver,
         waitForCompletion: false)
-    private var successSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Success,
+    var successSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Success,
         waitForCompletion: false)
-    private var pauseSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Pause,
+    var pauseSound: SKAction = SKAction.playSoundFileNamed(SoundFilename.Pause,
         waitForCompletion: false)
     
     // colors
@@ -191,16 +191,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var rightRing: RingNode!
     
     // balls
-    private var ballSelected: String {
+    var ballSelected: String {
         get {
             let userDefaults = NSUserDefaults.standardUserDefaults()
             return userDefaults.stringForKey(UserDefaultsKey.BallSelected) ?? UserDefaults.BallSelected
         }
         set {
-            if BallImage.Balls.contains(newValue) {
-                let userDefaults = NSUserDefaults.standardUserDefaults()
-                userDefaults.setObject(newValue, forKey: UserDefaultsKey.BallSelected)
-            }
+            let userDefaults = NSUserDefaults.standardUserDefaults()
+            userDefaults.setObject(newValue, forKey: UserDefaultsKey.BallSelected)
         }
     }
     private var ballHeight: CGFloat {
@@ -229,6 +227,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         self.bannerHeight = bannerHeight
         super.init(size: size)
+        isSoundActivated = isMusicOn
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -238,7 +237,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: Game Setup
     override func didMoveToView(view: SKView) {
         view.multipleTouchEnabled = true
-        isSoundActivated = isMusicOn
+//        isSoundActivated = isMusicOn
         
         /* Setup your scene here */
         if !contentCreated {
@@ -387,7 +386,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             y: -playableRect.height/2 + heightAvailableForPlayButton/2)
         playButtonNode!.name = NodeName.PlayButton
         playButtonNode!.color = darkColorsOn ? Color.PlayButtonDark : Color.PlayButtonLight
-        playButtonNode!.colorBlendFactor = Color.PlayButtonBlendFactor
+        playButtonNode!.colorBlendFactor = Color.BlendFactor
         if let playButtonTexture = playButtonNode!.texture {
             playButtonNode!.physicsBody = SKPhysicsBody(texture: playButtonTexture, size: playButtonNode!.size)
             playButtonNode!.physicsBody?.categoryBitMask = PhysicsCategory.MenuBoundary
@@ -424,7 +423,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             x: firstConfigButtonX,
             y: configButtonY)
         darkColorsButtonNode!.color = configButtonColor
-        darkColorsButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+        darkColorsButtonNode!.colorBlendFactor = Color.BlendFactor
         darkColorsButtonNode!.name = NodeName.DarkColorsOnOffButton
         menuOnlyUILayer.addChild(darkColorsButtonNode!)
         
@@ -436,7 +435,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             x: firstConfigButtonX + configButtonSeparation,
             y: configButtonY)
         musicOnButtonNode!.color = configButtonColor
-        musicOnButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+        musicOnButtonNode!.colorBlendFactor = Color.BlendFactor
         musicOnButtonNode!.name = NodeName.MusicOnOffButton
         menuOnlyUILayer.addChild(musicOnButtonNode!)
         
@@ -448,7 +447,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             x: firstConfigButtonX + configButtonSeparation * 2,
             y: configButtonY)
         gravityNormalButtonNode!.color = configButtonColor
-        gravityNormalButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+        gravityNormalButtonNode!.colorBlendFactor = Color.BlendFactor
         gravityNormalButtonNode!.name = NodeName.GravityNormalOnOffButton
         menuOnlyUILayer.addChild(gravityNormalButtonNode!)
         
@@ -461,7 +460,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 x: firstConfigButtonX,
                 y: -configButtonY)
             removeAdsButtonNode!.color = configButtonColor
-            removeAdsButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+            removeAdsButtonNode!.colorBlendFactor = Color.BlendFactor
             removeAdsButtonNode!.name = NodeName.RemoveAdsButton
             menuOnlyUILayer.addChild(removeAdsButtonNode!)
         }
@@ -474,7 +473,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             x: firstConfigButtonX + configButtonSeparation,
             y: -configButtonY)
         gameCenterButtonNode!.color = configButtonColor
-        gameCenterButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+        gameCenterButtonNode!.colorBlendFactor = Color.BlendFactor
         gameCenterButtonNode!.name = NodeName.GameCenterButton
         menuOnlyUILayer.addChild(gameCenterButtonNode!)
         
@@ -486,7 +485,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             x: firstConfigButtonX + configButtonSeparation * 2,
             y: -configButtonY)
         moreGamesButtonNode!.color = configButtonColor
-        moreGamesButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+        moreGamesButtonNode!.colorBlendFactor = Color.BlendFactor
         moreGamesButtonNode!.name = NodeName.MoreGamesButton
         menuOnlyUILayer.addChild(moreGamesButtonNode!)
         
@@ -501,7 +500,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             x: firstConfigButtonX + configButtonSeparation,
             y: 0)
         selectBallButtonNode!.color = configButtonColor
-        selectBallButtonNode!.colorBlendFactor = Color.ConfigButtonBlendFactor
+        selectBallButtonNode!.colorBlendFactor = Color.BlendFactor
         selectBallButtonNode!.name = NodeName.SelectBallButton
         menuOnlyUILayer.addChild(selectBallButtonNode!)
     }
@@ -540,7 +539,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             y: +playableRect.height/2 + topBarHeight / 2)
         pauseButtonNode!.name = NodeName.PauseButton
         pauseButtonNode!.color = darkColorsOn ? Color.TopLeftButtonDark : Color.TopLeftButtonLight
-        pauseButtonNode!.colorBlendFactor = Color.TopLeftButtonBlendFactor
+        pauseButtonNode!.colorBlendFactor = Color.BlendFactor
         gameOnlyUILayer.addChild(pauseButtonNode!)
         
         // live left nodes
@@ -810,7 +809,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let liveLeftNode = SKSpriteNode(imageNamed: ImageFilename.LiveLeft)
             liveLeftNode.name = NodeName.LiveLeftNode
             liveLeftNode.color = darkColorsOn ? Color.LiveLeftDark : Color.LiveLeftLight
-            liveLeftNode.colorBlendFactor = Color.LiveLeftBlendFactor
+            liveLeftNode.colorBlendFactor = Color.BlendFactor
             liveLeftNodes.append(liveLeftNode)
         }
         
@@ -899,10 +898,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 case NodeName.SelectBallButton:
                     if isSoundActivated {
                         runAction(buttonSmallSound) {
-                            self.startBallSelection()
+                            self.startBallSelection(withScreenIndex: 0)
                         }
                     } else {
-                        startBallSelection()
+                        startBallSelection(withScreenIndex: 0)
                     }
                     
                 case NodeName.BackToMenuButton:
@@ -1262,7 +1261,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     // MARK: Navigation
 
-    private func startNewGame() {
+    func startNewGame() {
         // Create and configure new scene
         let newGameScene = GameScene(size: size, bannerHeight: bannerHeight)
         newGameScene.scaleMode = scaleMode
@@ -1285,11 +1284,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    private func startBallSelection() {
+    func startBallSelection(withScreenIndex screenIndex: Int) {
         let ballSelectionScene = BallSelectionScene(
             size: size,
             bannerHeight: bannerHeight,
-            imageFilenames: BallImage.Balls_A)
+            screenIndex: screenIndex)
         ballSelectionScene.scaleMode = scaleMode
         ballSelectionScene.viewController = viewController
         view?.presentScene(ballSelectionScene)

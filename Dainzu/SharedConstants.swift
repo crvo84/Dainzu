@@ -149,19 +149,26 @@ struct ImageFilename {
     static let TouchScreen = "touchScreen"
     static let SelectBallButton = "plusBall"
     static let BallNotPurchased = "questionMark"
+    static let BallNextScreen = "arrowRight"
 }
 
 struct BallImage {
-    static let Ball_Special = "coin"
+    static let Ball_Special = "coin" // coin
     static let Ball_Default = "tennisBall"
     static let Ball_1 = "soccerBall"
     static let Ball_2 = "pacman"
     static let Ball_3 = "monkey"
     
-    // all balls
-    static let Balls: [String] = BallImage.Balls_A
-    // screen A
-    static let Balls_A: [String] = [BallImage.Ball_Default, BallImage.Ball_1, BallImage.Ball_2, BallImage.Ball_3]
+    // screens
+    static let ScreenA: [String] = [BallImage.Ball_Default, BallImage.Ball_1, BallImage.Ball_2, BallImage.NextScreenButton]
+    static let ScreenB: [String] = [BallImage.PreviousScreenButton, BallImage.Ball_3, BallImage.Ball_2, BallImage.Ball_1]
+    
+    // all screens
+    static let Screens: [Int : [String]] = [0 : BallImage.ScreenA, 1 : BallImage.ScreenB]
+    
+    // other options
+    static let NextScreenButton = "ballSelectionNextScreen"
+    static let PreviousScreenButton = "ballSelectionPreviousScreen"
 }
 
 struct Physics {
@@ -216,37 +223,34 @@ struct Color {
     
     static let RingDark: SKColor = SKColor(red: 43.0/255.0, green: 150.0/255.0, blue: 192.0/255.0, alpha: 1.0)
     static let RingLight: SKColor = SKColor(red: 255.0/255.0, green: 64.0/255.0, blue: 82.0/255.0, alpha: 1.0)
+    
+    static let BlendFactor: CGFloat = 1.0
     // -------------------------------------------------------------------------------- //
     
     static let LiveLeftDark: SKColor = Color.BackgroundDark
     static let LiveLeftLight: SKColor = Color.BackgroundLight
-    static let LiveLeftBlendFactor: CGFloat = 1.0
     
     static let PlayButtonDark: SKColor = Color.BarDark
     static let PlayButtonLight: SKColor = Color.BarLight
-    static let PlayButtonBlendFactor: CGFloat = 1.0
     
     static let TopLeftButtonDark: SKColor = Color.BackgroundDark
     static let TopLeftButtonLight: SKColor = Color.BackgroundLight
-    static let TopLeftButtonBlendFactor: CGFloat = 1.0
     
     static let ConfigButtonDark: SKColor = Color.BarDark
     static let ConfigButtonLight: SKColor = Color.BarLight
-    static let ConfigButtonBlendFactor: CGFloat = Color.PlayButtonBlendFactor
     
     // Pause node
     static let PauseNodeBackground: SKColor = SKColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.95)
     static let PauseNodeSmallButtonDark: SKColor = Color.BarDark
     static let PauseNodeSmallButtonLight: SKColor = Color.BackgroundLight
-    static let PauseNodeSmallButtonBlendFactor: CGFloat = 1.0
     static let PauseNodeLargeButtonDark: SKColor = Color.BarDark
     static let PauseNodeLargeButtonLight: SKColor = Color.BackgroundLight
-    static let PauseNodeLargeButtonBlendFactor: CGFloat = 1.0
     
     // ball selection
     static let BallSelectionNotPurchasedDark: SKColor = Color.RingDark
     static let BallSelectionNotPurchasedLight: SKColor = Color.RingLight
-    static let BallSelectionNotPurchasedBlendFactor: CGFloat = 1.0
+    static let BallSelectionButtonDark: SKColor = Color.BarDark
+    static let BallSelectionButtonLight: SKColor = Color.BarLight
 }
 
 struct FontColor {
@@ -377,10 +381,10 @@ struct GameCenter {
 
 struct GameOption {
     static let SpecialBallsOn = true
-    static let SpecialBallsRatio: UInt32 = 10 // 1 in X
+    static let SpecialBallsRatio: UInt32 = 5 // 1 in X
     static let ResetVelocityBeforeImpulse = true
     static let LivesNum: Int = 3
-    static let BallPrice: Int = 20
+    static let BallPrice: Int = 1
 }
 
 struct Test {

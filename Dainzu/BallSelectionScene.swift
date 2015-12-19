@@ -9,7 +9,7 @@
 import SpriteKit
 
 class BallSelectionScene: GameScene {
-    
+    private let screenIndex: Int
     private let imageFilenames: [String]
     
     private var topBarUILayer = SKNode()
@@ -17,9 +17,24 @@ class BallSelectionScene: GameScene {
     
     private var gridNodes: [SKSpriteNode] = []
     
-    init(size: CGSize, bannerHeight: CGFloat, imageFilenames: [String]) {
-        self.imageFilenames = imageFilenames
+    init(size: CGSize, bannerHeight: CGFloat, screenIndex: Int) {
+        self.screenIndex = screenIndex
+        self.imageFilenames = BallImage.Screens[screenIndex]!
         super.init(size: size, bannerHeight: bannerHeight)
+    }
+    
+    private var nextScreenIndex: Int? {
+        if screenIndex < BallImage.Screens.count - 1 {
+            return screenIndex + 1
+        }
+        return nil
+    }
+    
+    private var previousScreenIndex: Int? {
+        if screenIndex > 0 {
+            return screenIndex - 1
+        }
+        return nil
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -71,7 +86,7 @@ class BallSelectionScene: GameScene {
             y: +playableRect.height/2 + topBarHeight / 2)
         homeButtonNode!.name = NodeName.BackToMenuButton
         homeButtonNode!.color = darkColorsOn ? Color.TopLeftButtonDark : Color.TopLeftButtonLight
-        homeButtonNode!.colorBlendFactor = Color.TopLeftButtonBlendFactor
+        homeButtonNode!.colorBlendFactor = Color.BlendFactor
         topBarUILayer.addChild(homeButtonNode!)
         
         // title label
@@ -119,26 +134,44 @@ class BallSelectionScene: GameScene {
                 let yPos = playableRect.height - squareHeight - squareHeight * CGFloat(row)
                 
                 if ballIndex < imageFilenames.count {
-                    let imageFilename = imageFilenames[ballIndex]
-                    let purchased = NSUserDefaults.standardUserDefaults().boolForKey(imageFilename)
                     
+                    let imageFilename = imageFilenames[ballIndex]
                     let ballNode: SKSpriteNode
-                    if purchased {
-                        ballNode = SKSpriteNode(imageNamed: imageFilename)
-    
-                    } else {
-                        ballNode = SKSpriteNode(imageNamed: ImageFilename.BallNotPurchased)
-                        ballNode.color = darkColorsOn ? Color.BallSelectionNotPurchasedDark : Color.BallSelectionNotPurchasedLight
-                        ballNode.colorBlendFactor = Color.BallSelectionNotPurchasedBlendFactor
+                    
+                    switch imageFilename {
+                        
+                    case BallImage.NextScreenButton:
+                        ballNode = SKSpriteNode(imageNamed: ImageFilename.BallNextScreen)
+                        ballNode.color = darkColorsOn ? Color.BallSelectionButtonDark : Color.BallSelectionButtonLight
+                        ballNode.colorBlendFactor = Color.BlendFactor
+                        
+                    case BallImage.PreviousScreenButton:
+                        ballNode = SKSpriteNode(imageNamed: ImageFilename.BallNextScreen)
+                        ballNode.color = darkColorsOn ? Color.BallSelectionButtonDark : Color.BallSelectionButtonLight
+                        ballNode.colorBlendFactor = Color.BlendFactor
+                        ballNode.xScale = -1 // point to left
+                        
+                    default:
+                        let purchased = NSUserDefaults.standardUserDefaults().boolForKey(imageFilename)
+                        
+                        if purchased {
+                            ballNode = SKSpriteNode(imageNamed: imageFilename)
+                            
+                        } else {
+                            ballNode = SKSpriteNode(imageNamed: ImageFilename.BallNotPurchased)
+                            ballNode.color = darkColorsOn ? Color.BallSelectionNotPurchasedDark : Color.BallSelectionNotPurchasedLight
+                            ballNode.colorBlendFactor = Color.BlendFactor
+                        }
+                        
                     }
+                    
                     let ballNodeRatio = ballNode.size.width / ballNode.size.height
                     ballNode.size = CGSize(width: ballNodeRatio * ballHeight, height: ballHeight)
                     ballNode.position = CGPoint(x: xPos, y: yPos)
                     ballNode.name = imageFilename
                     gridLayer.addChild(ballNode)
-            
-                    gridNodes.append(ballNode)
                     
+                    gridNodes.append(ballNode)
                 }
                 ballIndex++
             }
@@ -158,7 +191,81 @@ class BallSelectionScene: GameScene {
     
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesBegan(touches, withEvent: event)
+        let touch = touches.first!
+        let location = touch.locationInNode(self)
+        let touchedNode = self.nodeAtPoint(location)
+            
+        if let nodeName = touchedNode.name {
+            if imageFilenames.contains(nodeName) {
+                selectBall(withImageFilename: nodeName)
+                
+            } else {
+                super.touchesBegan(touches, withEvent: event)
+            }
+        }
+    }
+    
+    private func selectBall(withImageFilename imageFilename: String) {
+        let defaults = NSUserDefaults.standardUserDefaults()
+        
+        // if there is an object in user defaults, it has been purchased
+        if defaults.objectForKey(imageFilename) != nil {
+            // already purchased. Select
+            ballSelected = imageFilename
+            
+            if isSoundActivated {
+                runAction(ballCatchSound) { self.startNewGame() }
+            } else {
+                startNewGame()
+            }
+            
+        } else {
+            // if is a next/previous screen button 
+            if imageFilename == BallImage.NextScreenButton {
+                if let index = nextScreenIndex {
+                    if isSoundActivated {
+                        runAction(buttonSmallSound) {
+                            self.startBallSelection(withScreenIndex: index)
+                        }
+                    } else {
+                        startBallSelection(withScreenIndex: index)
+                    }
+                }
+                
+            } else if imageFilename == BallImage.PreviousScreenButton {
+                if let index = previousScreenIndex {
+                    if isSoundActivated {
+                        runAction(buttonSmallSound) {
+                            self.startBallSelection(withScreenIndex: index)
+                        }
+                    } else {
+                        startBallSelection(withScreenIndex: index)
+                    }
+                }
+                
+            } else {
+                
+                // if enough money, purchase
+                if coinsCount >= GameOption.BallPrice {
+                    
+                    defaults.setBool(true, forKey: imageFilename)
+                    coinsCount -= GameOption.BallPrice
+                    ballSelected = imageFilename
+                    
+                    if isSoundActivated { runAction(moneySound) }
+                    
+                } else {
+                    if isSoundActivated { runAction(ballFailedSound) }
+                }
+                
+                if coinsLabelFlashAction != nil && coinNodeFlashAction != nil {
+                    coinsLabel?.runAction(coinsLabelFlashAction!)
+                    coinNode?.runAction(coinNodeFlashAction!)
+                }
+                
+                updateGrid()
+            }
+        }
     }
     
 }
