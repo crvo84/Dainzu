@@ -124,6 +124,11 @@ class RingNode: SKNode {
         
         return ovalNode
     }
+    
+    func activatePhysics() {
+        stopFloatingAnimation()
+        physicsBody?.dynamic = true
+    }
 
     func startFloatingAnimation(verticalRange: CGFloat, durationPerCycle: Double, startUpward: Bool) {
         stopFloatingAnimation()

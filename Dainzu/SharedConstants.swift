@@ -86,9 +86,13 @@ struct Geometry {
     static let PauseNodeSmallButtonRelativeVerticalOffset: CGFloat = 0.07
     static let PauseNodeLargeButtonRelativeHeight: CGFloat = 0.20 // relative to pauseNode height
     
-    
     // about app buttons
     static let AboutAppButtonsRelativeCornerRadius: CGFloat = 0.2 // relative to button width
+    
+    // instruction labels
+    static let InstructionLabelRelativeWidth: CGFloat = 0.7 // relative to side screen width
+    static let InstructionLabelRelativeHeight: CGFloat = 0.20 // relative to playableRect height
+    static let InstructionLabelRelativeYPosition: CGFloat = 0.7 // relative to playableRect height
 }
 
 struct ZPosition {
@@ -97,6 +101,7 @@ struct ZPosition {
     static let BallSelectionUILayer: CGFloat = 200
     static let GameOnlyUILayer: CGFloat = 200
     static let MenuOnlyUILayer: CGFloat = 200
+    static let InstructionsLayer: CGFloat = 200
     static let RingAbove: CGFloat = 110
     static let BallsLayer: CGFloat = 100
     static let RingsLayer: CGFloat = 90
@@ -173,13 +178,15 @@ struct Time {
     static let RingFloatingCycle: Double = 2
     // ball
     static let BallsWait: Double = 3
-    
     static let BallRotate: Double = 3
     static let BallFadeOut: Double = 0.3
     // coin count
     static let CoinsLabelFlashAction: Double = 0.2
     // score label
     static let ScoreLabelFlashAction: Double = 0.2
+    // instruction label
+    static let InstructionLabelWait: Double = 4
+    static let InstructionLabelFadeOut: Double = 0.4
 }
 
 struct Color {
@@ -235,6 +242,9 @@ struct FontColor {
     
     static let CoinsDark: SKColor = Color.BackgroundDark
     static let CoinsLight: SKColor = Color.BackgroundLight
+    
+    static let InstructionDark: SKColor = Color.RingDark
+    static let InstructionLight: SKColor = Color.RingLight
 }
 
 struct FontName {
@@ -243,6 +253,7 @@ struct FontName {
     static let Score = "Snaps Taste"
     static let BestScore = "Snaps Taste"
     static let Coins = "Snaps Taste"
+    static let Instruction = "Snaps Taste"
 }
 
 struct NodeName {
@@ -266,6 +277,7 @@ struct NodeName {
     static let MoreGamesButton = "moreGamesButtonNode"
     static let HomeButton = "homeButtonNode"
     static let BackToMenuButton = "backToMenuButtonNode"
+    static let InstructionLabel = "instructionLabelNode"
 }
 
 struct SegueId {
@@ -284,6 +296,7 @@ struct UserDefaultsKey {
     static let MusicOn = "musicOn"
     static let DarkColorsOn = "darkColorsOn"
     static let GravityNormal = "gravityNormal"
+    static let ShowInstructions = "showInstructions"
     static let CoinsCount = "coinsCount"
     static let BestScore = "bestScore"
     static let BallSelected = "ballSelected"
@@ -295,6 +308,7 @@ struct UserDefaults {
     static let MusicOn = true
     static let DarkColorsOn = false
     static let GravityNormal = true
+    static let ShowInstructions = true
     static let CoinsCount: Int = 0
     static let BestScore: Int = 0
     static let BallSelected: String = BallImage.Ball_1
@@ -316,8 +330,8 @@ struct URLString {
 struct Text {
     static let GameTitle = "Dainzu"
     static let BestScore = "Best"
-    static let HowToPlay = "How to play"
     static let SelectBall = "Select ball"
+    static let TapToJump = "Tap to jump"
     
     static let RemoveAds = NSLocalizedString("Remove Ads", comment: "For a button, to pay to remove advertising.")
     static let Purchase = NSLocalizedString("Purchase", comment: "Verb. For a button, to purchase a product")

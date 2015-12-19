@@ -79,6 +79,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             defaults.setObject(UserDefaults.BallSelected, forKey: UserDefaultsKey.BallSelected)
         }
         
+        // instructions will be shown always the first game after the app launches
+        defaults.setBool(UserDefaults.ShowInstructions, forKey: UserDefaultsKey.ShowInstructions)
+        
     }
 
 

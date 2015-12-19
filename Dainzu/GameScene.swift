@@ -172,6 +172,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     var coinNodeFlashAction: SKAction?
     var coinsLabelFlashAction: SKAction?
+    
+    // instruction labels
+    var instructionLeftLabel: SKLabelNode?
+    var instructionRightLabel: SKLabelNode?
 
     // playableRect
     var playableRect: CGRect!
@@ -210,6 +214,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let menuOnlyUILayer = SKNode()
     private let ringsLayer = SKNode()
     private let ballsLayer = SKNode()
+    private let instructionsUILayer = SKNode()
     
     // physics
     private var gravityAdjustedForDevice: CGFloat {
@@ -255,6 +260,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             menuOnlyUISetup()
             gameOnlyUISetup()
             ringsSetup()
+            if NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.ShowInstructions) {
+                instructionsUISetup()
+            }
             
             adjustLabelsSize()
             
@@ -576,6 +584,48 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let coinNodeFlashReverse = SKAction.scaleTo(1.0, duration: Time.CoinsLabelFlashAction/2)
         coinNodeFlashAction = SKAction.sequence([coinNodeFlash, coinNodeFlashReverse])
     }
+    
+    private func instructionsUISetup() {
+        instructionsUILayer.zPosition = ZPosition.InstructionsLayer
+        instructionsUILayer.position = CGPoint(
+            x: playableRectOriginInScene.x + playableRect.width/2,
+            y: playableRectOriginInScene.y + playableRect.height/2)
+        addChild(instructionsUILayer)
+        
+        let instructionLabelHeight = playableRect.height * Geometry.InstructionLabelRelativeWidth
+        let instructionLabelWidth = (playableRect.width - verticalMiddleBarNode!.size.width)/2 * Geometry.GameTitleRelativeWidth
+        let instructionColor = darkColorsOn ? FontColor.InstructionDark : FontColor.InstructionLight
+        
+        // left instruction
+        instructionLeftLabel = SKLabelNode(text: Text.TapToJump)
+        instructionLeftLabel!.verticalAlignmentMode = .Center
+        instructionLeftLabel!.horizontalAlignmentMode = .Center
+        instructionLeftLabel!.fontName = FontName.Instruction
+        instructionLeftLabel!.fontColor = instructionColor
+        adjustFontSizeForLabel(instructionLeftLabel!, tofitSize: CGSize(
+            width: instructionLabelWidth,
+            height: instructionLabelHeight))
+        instructionLeftLabel!.position = CGPoint(
+            x: -(playableRect.width - verticalMiddleBarNode!.size.width)/4 - verticalMiddleBarNode!.size.width/2,
+            y: playableRect.height * Geometry.InstructionLabelRelativeYPosition - playableRect.height/2)
+        instructionLeftLabel!.name = NodeName.InstructionLabel
+        instructionsUILayer.addChild(instructionLeftLabel!)
+        
+        // right instruction
+        instructionRightLabel = SKLabelNode(text: Text.TapToJump)
+        instructionRightLabel!.verticalAlignmentMode = .Center
+        instructionRightLabel!.horizontalAlignmentMode = .Center
+        instructionRightLabel!.fontName = FontName.Instruction
+        instructionRightLabel!.fontColor = instructionColor
+        adjustFontSizeForLabel(instructionRightLabel!, tofitSize: CGSize(
+            width: instructionLabelWidth,
+            height: instructionLabelHeight))
+        instructionRightLabel!.position = CGPoint(
+            x: +(playableRect.width - verticalMiddleBarNode!.size.width)/4 + verticalMiddleBarNode!.size.width/2,
+            y: playableRect.height * Geometry.InstructionLabelRelativeYPosition - playableRect.height/2)
+        instructionRightLabel!.name = NodeName.InstructionLabel
+        instructionsUILayer.addChild(instructionRightLabel!)
+    }
 
     func ringsSetup() {
         ringsLayer.zPosition = ZPosition.RingsLayer
@@ -642,7 +692,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         updateLiveLeftNodes()
         
-        activateRingsPhysics()
+        removeInstructionLabels()
+        
+        activateRingsPhysics(withRandomImpulse: false)
         
         generateBalls()
     }
@@ -653,16 +705,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         switch gameState {
         case .GameMenu:
             
-            menuOnlyUILayer.hidden = false
             gameOnlyUILayer.hidden = true
+            menuOnlyUILayer.hidden = false
+            instructionsUILayer.hidden = true
             
             ringsLayer.hidden = false
             ballsLayer.hidden = true
             
         case .GameRunning:
             
-            gameOnlyUILayer.hidden = false
             menuOnlyUILayer.hidden = true
+            gameOnlyUILayer.hidden = false
+            instructionsUILayer.hidden = false
             
             ringsLayer.hidden = false
             ballsLayer.hidden = false
@@ -722,8 +776,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // live left nodes
         updateLiveLeftNodes()
-
         
+        // instruction labels
+        let instructionLabelColor = dark ? FontColor.InstructionDark : FontColor.InstructionLight
+        instructionLeftLabel?.fontColor = instructionLabelColor
+        instructionRightLabel?.fontColor = instructionLabelColor
     }
     
     func updateGravity() {
@@ -818,7 +875,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if let gravityNormalNode = touchedNode as? SKSpriteNode {
                         gravityNormalNode.texture = SKTexture(imageNamed: gravityNormal ? ImageFilename.GravityNormalOn : ImageFilename.GravityNormalOff)
                     }
-                    activateRingsPhysics()
+                    activateRingsPhysics(withRandomImpulse: true)
                     
                 case NodeName.MusicOnOffButton:
                     isMusicOn = !isMusicOn
@@ -880,7 +937,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         } else {
                             pauseGame()
                         }
-                        
                         
                     default:
                         applyRingImpulse(touchLocation: location)
@@ -947,9 +1003,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private func applyRingImpulse(touchLocation location: CGPoint) {
         if location.x < size.width/2 {
-            leftRing.physicsBody?.applyImpulse(getRingImpulse(leftRing))
+            leftRing?.physicsBody?.applyImpulse(getRingImpulse(leftRing))
         } else if location.x > size.width/2 {
-            rightRing.physicsBody?.applyImpulse(getRingImpulse(rightRing))
+            rightRing?.physicsBody?.applyImpulse(getRingImpulse(rightRing))
         }
     }
     
@@ -983,12 +1039,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return ringGoal
     }
     
-    func activateRingsPhysics() {
-        if leftRing != nil && rightRing != nil {
-            leftRing.stopFloatingAnimation()
-            rightRing.stopFloatingAnimation()
-            leftRing.physicsBody!.dynamic = true
-            rightRing.physicsBody!.dynamic = true
+    func activateRingsPhysics(withRandomImpulse randomImpulse: Bool) {
+        rightRing?.activatePhysics()
+        leftRing?.activatePhysics()
+        if randomImpulse {
             let leftRingImpulse = arc4random_uniform(UInt32(2)) == 0
             if leftRingImpulse {
                 applyRingImpulse(touchLocation: CGPoint(x: size.width * 0.25, y: size.height/2))
@@ -1095,7 +1149,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Set fit font size
         labelNode.fontSize = labelNode.fontSize * scalingFactor
     }
-
+    
+    // ------------------------------ //
+    // -------- Instructions -------- //
+    // ------------------------------ //
+    
+    private func removeInstructionLabels() {
+        let waitAction = SKAction.waitForDuration(Time.InstructionLabelWait)
+        let fadeOutAction = SKAction.fadeOutWithDuration(Time.InstructionLabelFadeOut)
+        let removeAction = SKAction.removeFromParent()
+        let sequenceAction = SKAction.sequence([waitAction, fadeOutAction, removeAction])
+        
+        instructionLeftLabel?.runAction(sequenceAction)
+        instructionRightLabel?.runAction(sequenceAction) {
+            NSUserDefaults.standardUserDefaults().setBool(false, forKey: UserDefaultsKey.ShowInstructions)
+        }
+    }
     
     
       // ----------------------------- //
