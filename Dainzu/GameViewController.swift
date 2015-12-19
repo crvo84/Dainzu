@@ -342,6 +342,29 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
         }
     }
     
+    @IBAction func facebookButtonPressed() {
+        if let facebookFromAppURL = NSURL(string: URLString.FacebookFromApp) {
+            if UIApplication.sharedApplication().canOpenURL(facebookFromAppURL) {
+                UIApplication.sharedApplication().openURL(facebookFromAppURL)
+            } else {
+                if let facebookURL = NSURL(string: URLString.Facebook) {
+                    UIApplication.sharedApplication().openURL(facebookURL)
+                }
+            }
+        }
+    }
+    
+    @IBAction func twitterButtonPressed() {
+        if let twitterFromAppURL = NSURL(string: URLString.TwitterFromApp) {
+            if UIApplication.sharedApplication().canOpenURL(twitterFromAppURL) {
+                UIApplication.sharedApplication().openURL(twitterFromAppURL)
+            } else {
+                if let twitterURL = NSURL(string: URLString.Twitter) {
+                    UIApplication.sharedApplication().openURL(twitterURL)
+                }
+            }
+        }
+    }
     
     
     

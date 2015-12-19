@@ -17,6 +17,8 @@ class BallSelectionScene: GameScene {
     
     private var gridNodes: [SKSpriteNode] = []
     
+    private var unlockedSpecialBall = false
+    
     init(size: CGSize, bannerHeight: CGFloat, screenIndex: Int) {
         self.screenIndex = screenIndex
         self.imageFilenames = BallImage.Screens[screenIndex]!
@@ -49,6 +51,8 @@ class BallSelectionScene: GameScene {
         /* Setup your scene here */
         if !contentCreated {
             
+            registerAppTransitionObservers()
+            
             playableRectSetup()
             barsSetup() // call after playableRectSetup()
             
@@ -66,6 +70,17 @@ class BallSelectionScene: GameScene {
 
         updateColors()
         adjustLabelsSize()
+    }
+    
+    override func updateUI() {
+        super.updateUI()
+        
+        updateGrid()
+        
+        if unlockedSpecialBall && isSoundActivated {
+            runAction(moneySound)
+            unlockedSpecialBall = false
+        }
     }
     
     private func topBarUISetup() {
@@ -114,6 +129,7 @@ class BallSelectionScene: GameScene {
         addChild(gridLayer)
         
         updateGrid()
+        
     }
     
     
@@ -138,6 +154,8 @@ class BallSelectionScene: GameScene {
                     let imageFilename = imageFilenames[ballIndex]
                     let ballNode: SKSpriteNode
                     
+                    let purchased = NSUserDefaults.standardUserDefaults().boolForKey(imageFilename)
+                    
                     switch imageFilename {
                         
                     case BallImage.NextScreenButton:
@@ -151,9 +169,13 @@ class BallSelectionScene: GameScene {
                         ballNode.colorBlendFactor = Color.BlendFactor
                         ballNode.xScale = -1 // point to left
                         
-                    default:
-                        let purchased = NSUserDefaults.standardUserDefaults().boolForKey(imageFilename)
+                    case BallImage.FacebookBall where !purchased:
+                        ballNode = SKSpriteNode(imageNamed: ImageFilename.Facebook)
                         
+                    case BallImage.TwitterBall where !purchased:
+                        ballNode = SKSpriteNode(imageNamed: ImageFilename.Twitter)
+                        
+                    default:
                         if purchased {
                             ballNode = SKSpriteNode(imageNamed: imageFilename)
                             
@@ -185,9 +207,6 @@ class BallSelectionScene: GameScene {
         }
         gridNodes = []
     }
-    
-    
-    
     
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -223,24 +242,28 @@ class BallSelectionScene: GameScene {
             // if is a next/previous screen button 
             if imageFilename == BallImage.NextScreenButton {
                 if let index = nextScreenIndex {
-                    if isSoundActivated {
-                        runAction(buttonSmallSound) {
-                            self.startBallSelection(withScreenIndex: index)
-                        }
-                    } else {
-                        startBallSelection(withScreenIndex: index)
-                    }
+                    startBallSelection(withScreenIndex: index)
                 }
                 
             } else if imageFilename == BallImage.PreviousScreenButton {
                 if let index = previousScreenIndex {
-                    if isSoundActivated {
-                        runAction(buttonSmallSound) {
-                            self.startBallSelection(withScreenIndex: index)
-                        }
-                    } else {
-                        startBallSelection(withScreenIndex: index)
-                    }
+                    startBallSelection(withScreenIndex: index)
+                }
+                
+            } else if imageFilename == BallImage.FacebookBall { // open facebook
+                defaults.setBool(true, forKey: imageFilename)
+                ballSelected = imageFilename
+                if let gameViewController = viewController as? GameViewController {
+                    gameViewController.facebookButtonPressed()
+                    unlockedSpecialBall = true
+                }
+                
+            } else if imageFilename == BallImage.TwitterBall { // open twitter
+                defaults.setBool(true, forKey: imageFilename)
+                ballSelected = imageFilename
+                if let gameViewController = viewController as? GameViewController {
+                    gameViewController.twitterButtonPressed()
+                    unlockedSpecialBall = true
                 }
                 
             } else {

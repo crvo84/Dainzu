@@ -277,6 +277,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    // abstract method
+    func updateUI() {
+        // override in subclasses
+    }
+    
     func playableRectSetup() {
         // playableRect uses all scene width, with a constant ratio to define height
         let playableRectSize = CGSize(width: size.width, height: size.width / Geometry.PlayableRectRatio)
@@ -1211,7 +1216,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
-    private func registerAppTransitionObservers() {
+    func registerAppTransitionObservers() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         
         notificationCenter.addObserver(self, selector: "applicationWillResignActive", name:UIApplicationWillResignActiveNotification , object: nil)
@@ -1234,6 +1239,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if gameState == .GamePaused {
             paused = true
         }
+        updateUI()
     }
     
     func applicationDidEnterBackground() {

@@ -150,6 +150,8 @@ struct ImageFilename {
     static let SelectBallButton = "plusBall"
     static let BallNotPurchased = "questionMark"
     static let BallNextScreen = "arrowRight"
+    static let Facebook = "facebook"
+    static let Twitter = "twitter"
 }
 
 struct BallImage {
@@ -166,9 +168,13 @@ struct BallImage {
     // all screens
     static let Screens: [Int : [String]] = [0 : BallImage.ScreenA, 1 : BallImage.ScreenB]
     
-    // other options
+    // navigation buttons
     static let NextScreenButton = "ballSelectionNextScreen"
     static let PreviousScreenButton = "ballSelectionPreviousScreen"
+    
+    // special images
+    static let FacebookBall = BallImage.Ball_1
+    static let TwitterBall = BallImage.Ball_2
 }
 
 struct Physics {
