@@ -100,6 +100,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var gameCenterButtonNode: SKSpriteNode?
     private var moreGamesButtonNode: SKSpriteNode?
     private var selectBallButtonNode: SKSpriteNode?
+    private var menuBallNode: BallNode?
     
     // for GameScene subclasses
     var homeButtonNode: SKSpriteNode?
@@ -508,7 +509,39 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         selectBallButtonNode!.colorBlendFactor = Color.BlendFactor
         selectBallButtonNode!.name = NodeName.SelectBallButton
         menuOnlyUILayer.addChild(selectBallButtonNode!)
+        
+        // menu ball node
+        createNewBallForMenu()
     }
+    
+    // TODO: can do better
+    private func getGameTitleFontSize() -> CGFloat {
+        if gameTitleLabel != nil {
+            return gameTitleLabel!.fontSize
+        } else {
+            let gameTitleHeight = playableRect.height * Geometry.GameTitleRelativeHeight
+            let gameTitleWidth = (playableRect.width)/2 * Geometry.GameTitleRelativeWidth
+            let labelNode = SKLabelNode(text: Text.GameTitle)
+            labelNode.fontName = FontName.GameTitle
+            adjustFontSizeForLabel(labelNode, tofitSize: CGSize(width: gameTitleWidth, height: gameTitleHeight))
+            return labelNode.fontSize
+        }
+    }
+    
+    // TODO: can do better
+    private func getGameTitleSize() -> CGSize {
+        if gameTitleLabel != nil {
+            return gameTitleLabel!.frame.size
+        } else {
+            let gameTitleHeight = playableRect.height * Geometry.GameTitleRelativeHeight
+            let gameTitleWidth = (playableRect.width)/2 * Geometry.GameTitleRelativeWidth
+            let labelNode = SKLabelNode(text: Text.GameTitle)
+            labelNode.fontName = FontName.GameTitle
+            adjustFontSizeForLabel(labelNode, tofitSize: CGSize(width: gameTitleWidth, height: gameTitleHeight))
+            return labelNode.frame.size
+        }
+    }
+
     
     private func gameOnlyUISetup() {
         gameOnlyUILayer.zPosition = ZPosition.GameOnlyUILayer
@@ -717,6 +750,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             ballsLayer.hidden = true
             
         case .GameRunning:
+            menuBallNode?.removeFromParent()
+            menuBallNode = nil
             
             menuOnlyUILayer.hidden = true
             gameOnlyUILayer.hidden = false
@@ -960,11 +995,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: SKPhysicsContact Delegate
     
     func didBeginContact(contact: SKPhysicsContact) {
-        if gameState == .GameRunning {
-            let collision: UInt32 = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+        let collision: UInt32 = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+        
+        if let ballNode = contact.bodyA.node as? BallNode ?? (contact.bodyB.node as? BallNode ?? nil) {
             
-            if let ballNode = contact.bodyA.node as? BallNode ?? (contact.bodyB.node as? BallNode ?? nil) {
-                
+            if gameState == .GameRunning {
+
                 if collision == PhysicsCategory.Ball | PhysicsCategory.Ring {
                     ballNode.affectedByGravity = true
                     
@@ -992,6 +1028,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         if isSoundActivated { runAction(ballCatchSound) }
                     }
                     score++
+                }
+            } else if gameState == .GameMenu {
+                if collision == PhysicsCategory.Ball | PhysicsCategory.Ring {
+                    ballNode.affectedByGravity = true
+                    
+                } else if collision == PhysicsCategory.Ball | PhysicsCategory.MiddleBar
+                    || collision == PhysicsCategory.Ball | PhysicsCategory.Boundary {
+                        createNewBallForMenu()
+                    
                 }
             }
         }
@@ -1072,6 +1117,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ballNode.runAction(rotateAction, withKey: ActionKey.BallRotate)
     }
     
+    private func createNewBallForMenu() {
+        menuBallNode?.removeFromParent()
+        menuBallNode = nil
+        
+        menuBallNode = getNewBall(ballHeight, isSpecial: false)
+        menuBallNode!.zPosition = ZPosition.BallsLayer
+        menuBallNode!.position = CGPoint(x: -size.width/2 - menuBallNode!.size.width/2, y: 0)
+        menuOnlyUILayer.addChild(menuBallNode!)
+        
+        menuBallNode!.physicsBody?.velocity = getBallVelocity(menuBallNode!, screenSide: .Left)
+        
+        let rotateAction = SKAction.repeatActionForever(SKAction.rotateByAngle(2*π, duration: Time.BallRotate))
+        menuBallNode!.runAction(rotateAction, withKey: ActionKey.BallRotate)
+    }
+    
     // creates a new BallNode with the selected ball texture
     private func getNewBall(height: CGFloat, isSpecial: Bool) -> BallNode {
         var ballTexture: SKTexture?
@@ -1116,34 +1176,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // ------------------------ //
     
     func adjustLabelsSize() {
-        if gameTitleLabel != nil {
-            let maxFontSize = gameTitleLabel!.fontSize
-            if scoreLabel != nil {
-                scoreLabel!.fontSize = min(scoreLabel!.fontSize, maxFontSize * Geometry.ScoreLabelMaxRelativeFontSize)
-            }
-            if bestScoreLabel != nil {
-                bestScoreLabel!.fontSize = min(bestScoreLabel!.fontSize, maxFontSize * Geometry.ScoreLabelMaxRelativeFontSize)
-            }
-            if coinsLabel != nil {
-                coinsLabel!.fontSize = min(coinsLabel!.fontSize, maxFontSize * Geometry.CoinsLabelMaxRelativeFontSize)
-            }
-            if pauseButtonNode != nil {
-                let pauseButtonRatio = pauseButtonNode!.size.width / pauseButtonNode!.size.height
-                let pauseButtonHeight = min(pauseButtonNode!.size.height, gameTitleLabel!.frame.size.height)
-                pauseButtonNode!.size = CGSize(
-                    width: pauseButtonHeight * pauseButtonRatio,
-                    height: pauseButtonHeight)
-            }
-            if homeButtonNode != nil {
-                let homeButtonRatio = homeButtonNode!.size.width / homeButtonNode!.size.height
-                let homeButtonHeight = min(homeButtonNode!.size.height, gameTitleLabel!.frame.size.height)
-                homeButtonNode!.size = CGSize(width: homeButtonRatio * homeButtonHeight, height: homeButtonHeight)
-            }
-            if titleLabel != nil {
-                titleLabel!.fontSize = min(titleLabel!.fontSize, maxFontSize * Geometry.TitleLabelMaxRelativeFontSize)
-            }
-            updateLiveLeftNodes()
+        
+        let maxFontSize = getGameTitleFontSize()
+        let maxSize = getGameTitleSize()
+        
+        if scoreLabel != nil {
+            scoreLabel!.fontSize = min(scoreLabel!.fontSize, maxFontSize * Geometry.ScoreLabelMaxRelativeFontSize)
         }
+        if bestScoreLabel != nil {
+            bestScoreLabel!.fontSize = min(bestScoreLabel!.fontSize, maxFontSize * Geometry.ScoreLabelMaxRelativeFontSize)
+        }
+        if coinsLabel != nil {
+            coinsLabel!.fontSize = min(coinsLabel!.fontSize, maxFontSize * Geometry.CoinsLabelMaxRelativeFontSize)
+        }
+        if pauseButtonNode != nil {
+            let pauseButtonRatio = pauseButtonNode!.size.width / pauseButtonNode!.size.height
+            let pauseButtonHeight = min(pauseButtonNode!.size.height, maxSize.height)
+            pauseButtonNode!.size = CGSize(
+                width: pauseButtonHeight * pauseButtonRatio,
+                height: pauseButtonHeight)
+        }
+        if homeButtonNode != nil {
+            let homeButtonRatio = homeButtonNode!.size.width / homeButtonNode!.size.height
+            let homeButtonHeight = min(homeButtonNode!.size.height, maxSize.height)
+            homeButtonNode!.size = CGSize(width: homeButtonRatio * homeButtonHeight, height: homeButtonHeight)
+        }
+        if titleLabel != nil {
+            titleLabel!.fontSize = min(titleLabel!.fontSize, maxFontSize * Geometry.TitleLabelMaxRelativeFontSize)
+        }
+        updateLiveLeftNodes()
     }
     
     func adjustFontSizeForLabel(labelNode: SKLabelNode, tofitSize size: CGSize) {
