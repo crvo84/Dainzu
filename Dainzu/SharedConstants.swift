@@ -51,7 +51,7 @@ struct Geometry {
     static let TitleLabelMaxRelativeFontSize: CGFloat = 0.8 // relative to gameTitle font size
     
     // coins label
-    static let CoinNodeRelativeHeight: CGFloat = 0.6 // relative to topBar height
+    static let CoinNodeRelativeHeight: CGFloat = 0.45 // relative to topBar height
     static let CoinNodeRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
     static let CoinsLabelMaxRelativeFontSize: CGFloat = 0.7 // relative to gameTitle font size
     static let CoinsLabelRelativeSideOffset: CGFloat = 0.25 // relative to coinNode width

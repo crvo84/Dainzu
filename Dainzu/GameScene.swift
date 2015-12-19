@@ -100,7 +100,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var gameCenterButtonNode: SKSpriteNode?
     private var moreGamesButtonNode: SKSpriteNode?
     private var selectBallButtonNode: SKSpriteNode?
-    private var menuBallNode: BallNode?
+    private var menuBallLeftNode: BallNode?
+    private var menuBallRightNode: BallNode?
     
     // for GameScene subclasses
     var homeButtonNode: SKSpriteNode?
@@ -726,8 +727,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             ballsLayer.hidden = false
             
         case .GameRunning:
-            menuBallNode?.removeFromParent()
-            menuBallNode = nil
+            menuBallLeftNode?.removeFromParent()
+            menuBallRightNode?.removeFromParent()
+            menuBallLeftNode = nil
+            menuBallRightNode = nil
             
             menuOnlyUILayer.hidden = true
             gameOnlyUILayer.hidden = false
@@ -1091,27 +1094,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             withMultiplier: Physics.BallVelocityMultiplier,
             screenSide: screenSide)
 
-        let rotateAction = SKAction.repeatActionForever(SKAction.rotateByAngle(2*π, duration: Time.BallRotate))
-        ballNode.runAction(rotateAction, withKey: ActionKey.BallRotate)
+        ballNode.runAction(getBallRotationAction(screenSide), withKey: ActionKey.BallRotate)
     }
     
     private func createNewBallForMenu() {
-        menuBallNode?.removeFromParent()
-        menuBallNode = nil
+        menuBallLeftNode?.removeFromParent()
+        menuBallRightNode?.removeFromParent()
+        menuBallLeftNode = nil
+        menuBallRightNode = nil
         
-        menuBallNode = getNewBall(ballHeight, isSpecial: false)
-        menuBallNode!.position = CGPoint( // ballsLayer position is at playableRect origin
-            x: -menuBallNode!.size.width/2,
+        // LEFT
+        menuBallLeftNode = getNewBall(ballHeight, isSpecial: false)
+        menuBallLeftNode!.position = CGPoint( // ballsLayer position is at playableRect origin
+            x: -menuBallLeftNode!.size.width/2,
             y: +playableRect.height/2)
-        ballsLayer.addChild(menuBallNode!)
+        ballsLayer.addChild(menuBallLeftNode!)
         
-        menuBallNode!.physicsBody?.velocity = getBallVelocity(
+        menuBallLeftNode!.physicsBody?.velocity = getBallVelocity(
             withMultiplier: Physics.MenuBallVelocityMultiplier,
             screenSide: .Left)
         
-        let rotateAction = SKAction.repeatActionForever(SKAction.rotateByAngle(2*π, duration: Time.BallRotate))
-        menuBallNode!.runAction(rotateAction, withKey: ActionKey.BallRotate)
+        // RIGHT
+        menuBallRightNode = getNewBall(ballHeight, isSpecial: false)
+        menuBallRightNode!.position = CGPoint( // ballsLayer position is at playableRect origin
+            x: +menuBallRightNode!.size.width/2 + playableRect.width,
+            y: +playableRect.height/2)
+        ballsLayer.addChild(menuBallRightNode!)
         
+        menuBallRightNode!.physicsBody?.velocity = getBallVelocity(
+            withMultiplier: Physics.MenuBallVelocityMultiplier,
+            screenSide: .Right)
+        
+        menuBallLeftNode!.runAction(getBallRotationAction(.Left), withKey: ActionKey.BallRotate)
+        menuBallRightNode!.runAction(getBallRotationAction(.Right), withKey: ActionKey.BallRotate)
+    }
+    
+    private func getBallRotationAction(screenSide: ScreenSide) -> SKAction {
+        let angle = screenSide == .Right ? +2*π : -2*π
+        return SKAction.repeatActionForever(SKAction.rotateByAngle(angle, duration: Time.BallRotate))
     }
     
     // creates a new BallNode with the selected ball texture
