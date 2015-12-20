@@ -74,8 +74,12 @@ struct Geometry {
     static let PlayButtonRelativeHeight: CGFloat = 0.28 // relative to playableRect height
     
     // config buttons
-    static let ConfigButtonRelativeHeight: CGFloat = 0.7 // relative to gameTitleLabel height
-    static let ConfigSelectBallButtonRelativeHeight: CGFloat = 1.3 // relative to regular config button height
+    static let ConfigButtonRelativeHeight: CGFloat = 0.6 // relative to gameTitleLabel height
+    static let ConfigButtonRelativeHorizontalOffset: CGFloat = 0.05 // relative to playableRect width
+    static let ConfigButtonRelativeVerticalOffset: CGFloat = 0.02 // relative to playableRect height
+    static let ConfigButtonRelativeSeparation: CGFloat = 0.1 // relative to playableRect width
+    // config select ball button
+    static let ConfigSelectBallButtonRelativeHeight: CGFloat = 0.18 // relative to playableRect height
     
     // top left buttons
     static let TopLeftButtonRelativeHeight: CGFloat = 0.95 // relative to topBar height

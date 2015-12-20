@@ -417,47 +417,95 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bestScoreLabel!.name = NodeName.BestScoreLabel
         menuOnlyUILayer.addChild(bestScoreLabel!)
         
+        // ------------------- //
+        // CONFIG BUTTON NODES //
+        // ------------------- //
         let configButtonHeight = gameTitleLabel!.frame.size.height * Geometry.ConfigButtonRelativeHeight
-        let configButtonY = gameTitleLabel!.position.y
-        let configButtonSeparation = (playableRect.width - verticalMiddleBarNode!.size.width)/2 * 1/4
-        let firstConfigButtonX = verticalMiddleBarNode!.size.width/2 + configButtonSeparation
         let configButtonColor = darkColorsOn ? Color.ConfigButtonDark : Color.ConfigButtonLight
+        let configButtonSeparation = playableRect.width * Geometry.ConfigButtonRelativeSeparation
+        let configButtonSideOffset = playableRect.width * Geometry.ConfigButtonRelativeHorizontalOffset
         
-        // dark colors button
-        darkColorsButtonNode = SKSpriteNode(imageNamed: darkColorsOn ? ImageFilename.DarkColorsOn : ImageFilename.DarkColorsOff)
-        let darkColorsButtonRatio = darkColorsButtonNode!.size.width / darkColorsButtonNode!.size.height
-        darkColorsButtonNode!.size = CGSize(width: darkColorsButtonRatio * configButtonHeight, height: configButtonHeight)
-        darkColorsButtonNode!.position = CGPoint(
-            x: firstConfigButtonX,
-            y: configButtonY)
-        darkColorsButtonNode!.color = configButtonColor
-        darkColorsButtonNode!.colorBlendFactor = Color.BlendFactor
-        darkColorsButtonNode!.name = NodeName.DarkColorsOnOffButton
-        menuOnlyUILayer.addChild(darkColorsButtonNode!)
+        // SELECT BALL BUTTON NODE
+        // select ball button
+        selectBallButtonNode = SKSpriteNode(imageNamed: ImageFilename.SelectBallButton)
+        let selectBallButtonRatio = selectBallButtonNode!.size.width / selectBallButtonNode!.size.height
+        let selectBallButtonHeight = playableRect.height * Geometry.ConfigSelectBallButtonRelativeHeight
+        selectBallButtonNode!.size = CGSize(
+            width: selectBallButtonRatio * selectBallButtonHeight,
+            height: selectBallButtonHeight)
+        selectBallButtonNode!.position = CGPoint(
+            x: -playButtonNode!.position.x,
+            y: +playButtonNode!.position.y)
+        selectBallButtonNode!.color = configButtonColor
+        selectBallButtonNode!.colorBlendFactor = Color.BlendFactor
+        selectBallButtonNode!.name = NodeName.SelectBallButton
+        menuOnlyUILayer.addChild(selectBallButtonNode!)
+        
+        // TOP RIGHT
+        let topConfigButtonY = playableRect.height/2 - (playableRect.height * Geometry.ConfigButtonRelativeVerticalOffset) - configButtonHeight/2
         
         // music on button
         musicOnButtonNode = SKSpriteNode(imageNamed: ImageFilename.MusicOnButton)
         let musicOnButtonRatio = musicOnButtonNode!.size.width / musicOnButtonNode!.size.height
         musicOnButtonNode!.size = CGSize(width: musicOnButtonRatio * configButtonHeight, height: configButtonHeight)
         musicOnButtonNode!.position = CGPoint(
-            x: firstConfigButtonX + configButtonSeparation,
-            y: configButtonY)
+            x: playableRect.width/2 - configButtonSideOffset,
+            y: topConfigButtonY)
         musicOnButtonNode!.color = configButtonColor
         musicOnButtonNode!.colorBlendFactor = Color.BlendFactor
         musicOnButtonNode!.name = NodeName.MusicOnOffButton
         menuOnlyUILayer.addChild(musicOnButtonNode!)
+        
+        // dark colors button
+        darkColorsButtonNode = SKSpriteNode(imageNamed: darkColorsOn ? ImageFilename.DarkColorsOn : ImageFilename.DarkColorsOff)
+        let darkColorsButtonRatio = darkColorsButtonNode!.size.width / darkColorsButtonNode!.size.height
+        darkColorsButtonNode!.size = CGSize(width: darkColorsButtonRatio * configButtonHeight, height: configButtonHeight)
+        darkColorsButtonNode!.position = CGPoint(
+            x: musicOnButtonNode!.position.x - configButtonSeparation,
+            y: topConfigButtonY)
+        darkColorsButtonNode!.color = configButtonColor
+        darkColorsButtonNode!.colorBlendFactor = Color.BlendFactor
+        darkColorsButtonNode!.name = NodeName.DarkColorsOnOffButton
+        menuOnlyUILayer.addChild(darkColorsButtonNode!)
         
         // gravity normal button
         gravityNormalButtonNode = SKSpriteNode(imageNamed: gravityNormal ? ImageFilename.GravityNormalOn : ImageFilename.GravityNormalOff)
         let gravityNormalButtonRatio = gravityNormalButtonNode!.size.width / gravityNormalButtonNode!.size.height
         gravityNormalButtonNode!.size = CGSize(width: gravityNormalButtonRatio * configButtonHeight, height: configButtonHeight)
         gravityNormalButtonNode!.position = CGPoint(
-            x: firstConfigButtonX + configButtonSeparation * 2,
-            y: configButtonY)
+            x: darkColorsButtonNode!.position.x - configButtonSeparation,
+            y: topConfigButtonY)
         gravityNormalButtonNode!.color = configButtonColor
         gravityNormalButtonNode!.colorBlendFactor = Color.BlendFactor
         gravityNormalButtonNode!.name = NodeName.GravityNormalOnOffButton
         menuOnlyUILayer.addChild(gravityNormalButtonNode!)
+        
+        // game center button
+        gameCenterButtonNode = SKSpriteNode(imageNamed: ImageFilename.GameCenterButton)
+        let gameCenterButtonRatio = gameCenterButtonNode!.size.width / gameCenterButtonNode!.size.height
+        gameCenterButtonNode!.size = CGSize(width: gameCenterButtonRatio * configButtonHeight, height: configButtonHeight)
+        gameCenterButtonNode!.position = CGPoint(
+            x: gravityNormalButtonNode!.position.x - configButtonSeparation,
+            y: topConfigButtonY)
+        gameCenterButtonNode!.color = configButtonColor
+        gameCenterButtonNode!.colorBlendFactor = Color.BlendFactor
+        gameCenterButtonNode!.name = NodeName.GameCenterButton
+        menuOnlyUILayer.addChild(gameCenterButtonNode!)
+        
+        
+        // BOTTOM RIGHT
+        let bottomConfigButtonY = -topConfigButtonY
+        // more games button
+        moreGamesButtonNode = SKSpriteNode(imageNamed: ImageFilename.MoreGamesButton)
+        let moreGamesButtonRatio = moreGamesButtonNode!.size.width / moreGamesButtonNode!.size.height
+        moreGamesButtonNode!.size = CGSize(width: moreGamesButtonRatio * configButtonHeight, height: configButtonHeight)
+        moreGamesButtonNode!.position = CGPoint(
+            x: playableRect.width/2 - configButtonSideOffset,
+            y: bottomConfigButtonY)
+        moreGamesButtonNode!.color = configButtonColor
+        moreGamesButtonNode!.colorBlendFactor = Color.BlendFactor
+        moreGamesButtonNode!.name = NodeName.MoreGamesButton
+        menuOnlyUILayer.addChild(moreGamesButtonNode!)
         
         // remove ads button
         if showAds {
@@ -465,52 +513,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let removeAdsButtonRatio = removeAdsButtonNode!.size.width / removeAdsButtonNode!.size.height
             removeAdsButtonNode!.size = CGSize(width: removeAdsButtonRatio * configButtonHeight, height: configButtonHeight)
             removeAdsButtonNode!.position = CGPoint(
-                x: firstConfigButtonX,
-                y: -configButtonY)
+                x: moreGamesButtonNode!.position.x - configButtonSeparation,
+                y: bottomConfigButtonY)
             removeAdsButtonNode!.color = configButtonColor
             removeAdsButtonNode!.colorBlendFactor = Color.BlendFactor
             removeAdsButtonNode!.name = NodeName.RemoveAdsButton
             menuOnlyUILayer.addChild(removeAdsButtonNode!)
         }
-        
-        // game center button
-        gameCenterButtonNode = SKSpriteNode(imageNamed: ImageFilename.GameCenterButton)
-        let gameCenterButtonRatio = gameCenterButtonNode!.size.width / gameCenterButtonNode!.size.height
-        gameCenterButtonNode!.size = CGSize(width: gameCenterButtonRatio * configButtonHeight, height: configButtonHeight)
-        gameCenterButtonNode!.position = CGPoint(
-            x: firstConfigButtonX + configButtonSeparation,
-            y: -configButtonY)
-        gameCenterButtonNode!.color = configButtonColor
-        gameCenterButtonNode!.colorBlendFactor = Color.BlendFactor
-        gameCenterButtonNode!.name = NodeName.GameCenterButton
-        menuOnlyUILayer.addChild(gameCenterButtonNode!)
-        
-        // more games button
-        moreGamesButtonNode = SKSpriteNode(imageNamed: ImageFilename.MoreGamesButton)
-        let moreGamesButtonRatio = moreGamesButtonNode!.size.width / moreGamesButtonNode!.size.height
-        moreGamesButtonNode!.size = CGSize(width: moreGamesButtonRatio * configButtonHeight, height: configButtonHeight)
-        moreGamesButtonNode!.position = CGPoint(
-            x: firstConfigButtonX + configButtonSeparation * 2,
-            y: -configButtonY)
-        moreGamesButtonNode!.color = configButtonColor
-        moreGamesButtonNode!.colorBlendFactor = Color.BlendFactor
-        moreGamesButtonNode!.name = NodeName.MoreGamesButton
-        menuOnlyUILayer.addChild(moreGamesButtonNode!)
-        
-        // select ball button
-        selectBallButtonNode = SKSpriteNode(imageNamed: ImageFilename.SelectBallButton)
-        let selectBallButtonRatio = selectBallButtonNode!.size.width / selectBallButtonNode!.size.height
-        let selectBallButtonHeight = configButtonHeight * Geometry.ConfigSelectBallButtonRelativeHeight
-        selectBallButtonNode!.size = CGSize(
-            width: selectBallButtonRatio * selectBallButtonHeight,
-            height: selectBallButtonHeight)
-        selectBallButtonNode!.position = CGPoint(
-            x: firstConfigButtonX + configButtonSeparation,
-            y: 0)
-        selectBallButtonNode!.color = configButtonColor
-        selectBallButtonNode!.colorBlendFactor = Color.BlendFactor
-        selectBallButtonNode!.name = NodeName.SelectBallButton
-        menuOnlyUILayer.addChild(selectBallButtonNode!)
+
         
         // menu ball node
         createNewBallForMenu()
@@ -1177,6 +1187,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      // -------- Labels -------- //
     // ------------------------ //
     
+    // adjust top bar nodes relative to game title height
     func adjustLabelsSize() {
         
         let maxFontSize = getGameTitleFontSize()
