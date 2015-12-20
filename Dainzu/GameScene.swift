@@ -258,9 +258,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // ----- This methods must be called after barsSetup ----- //
             
             coinsUISetup()
-            menuOnlyUISetup()
-            gameOnlyUISetup()
-            ballsUISetup()
+//            menuOnlyUISetup()
+//            gameOnlyUISetup()
+//            ballsUISetup()
             ringsSetup()
             if NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.ShowInstructions) {
                 instructionsUISetup()
