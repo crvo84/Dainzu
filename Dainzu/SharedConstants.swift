@@ -447,7 +447,7 @@ struct URLString {
 struct Text {
     static let GameTitle = "Dainzu"
     static let BestScore = "Best"
-    static let SelectBall = "Select marble"
+    static let SelectBall = "Marbles"
     static let TapToJump = "Tap to jump"
     
     static let RemoveAds = NSLocalizedString("Remove Ads", comment: "For a button, to pay to remove advertising.")
