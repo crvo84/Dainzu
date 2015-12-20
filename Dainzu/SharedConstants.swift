@@ -283,9 +283,11 @@ struct Time {
     // ring
     static let RingFloatingCycle: Double = 2
     // ball
-    static let BallsWait: Double = 3
     static let BallRotate: Double = 3
     static let BallFadeOut: Double = 0.3
+    static let BallsWaitInitial: Double = 3
+    static let BallsWaitDecrease: Double = 0.1
+    static let BallsWaitMinimum: Double = 2
     // menu ball
     static let MenuBallWait: Double = 5
     static let MenuBallRotate: Double = 5
@@ -467,10 +469,11 @@ struct GameCenter {
 
 struct GameOption {
     static let SpecialBallsOn = true
-    static let SpecialBallsRatio: UInt32 = 10 // 1 in X
+    static let SpecialBallsRatio: UInt32 = 10 // 10 // 1 in X
     static let ResetVelocityBeforeImpulse = true
-    static let LivesNum: Int = 3
+    static let LivesNum: Int = 3 // 3
     static let BallPrice: Int = 20 // 20
+    static let RoundsPerLevel: Int = 5
 }
 
 struct Test {

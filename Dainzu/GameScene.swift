@@ -207,6 +207,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return playableRect.height * Geometry.BallRelativeHeight
     }
     
+    // level
+    private var round: Int = 0
+    private var level: Int {
+        return round / GameOption.RoundsPerLevel
+    }
+    private var timeBetweenBalls: Double {
+        return max(Time.BallsWaitInitial - Time.BallsWaitDecrease * Double(level), Time.BallsWaitMinimum)
+    }
+    
     // layers
     private let barsLayer = SKNode()
     private let alwaysVisibleUILayer = SKNode()
@@ -701,13 +710,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     
     private func generateBalls() {
-        let waitAction = SKAction.waitForDuration(Time.BallsWait)
         let createBallsAction = SKAction.runBlock {
             self.createNewBallForGame(.Left)
             self.createNewBallForGame(.Right)
         }
+
+        let waitAction = SKAction.waitForDuration(timeBetweenBalls)
         let sequenceAction = SKAction.sequence([createBallsAction, waitAction])
-        runAction(SKAction.repeatActionForever(sequenceAction), withKey: ActionKey.BallsGeneration)
+
+        runAction(sequenceAction) {
+            [unowned self] in
+            self.round++
+            self.generateBalls()
+        }
     }
 
     private func startGame() {
