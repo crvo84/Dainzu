@@ -254,7 +254,13 @@ class BallSelectionScene: GameScene {
                 
             } else if imageFilename == BallImage.PreviousScreenButton {
                 if let index = previousScreenIndex {
-                    startBallSelection(withScreenIndex: index)
+                    if isSoundActivated {
+                        runAction(buttonSmallSound) {
+                            self.startBallSelection(withScreenIndex: index)
+                        }
+                    } else {
+                        startBallSelection(withScreenIndex: index)
+                    }
                 }
                 
             } else if imageFilename == BallImage.FacebookBall { // open facebook

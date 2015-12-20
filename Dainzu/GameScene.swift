@@ -239,7 +239,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: Game Setup
     override func didMoveToView(view: SKView) {
         view.multipleTouchEnabled = true
-//        isSoundActivated = isMusicOn
         
         /* Setup your scene here */
         if !contentCreated {
@@ -258,9 +257,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // ----- This methods must be called after barsSetup ----- //
             
             coinsUISetup()
-//            menuOnlyUISetup()
-//            gameOnlyUISetup()
-//            ballsUISetup()
+            menuOnlyUISetup()
+            gameOnlyUISetup()
+            ballsUISetup()
             ringsSetup()
             if NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.ShowInstructions) {
                 instructionsUISetup()
