@@ -250,7 +250,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             
             physicsWorld.contactDelegate = self
-            
+
             playableRectSetup()
             barsSetup() // call after playableRectSetup()
             

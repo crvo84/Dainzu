@@ -445,7 +445,7 @@ struct URLString {
 struct Text {
     static let GameTitle = "Dainzu"
     static let BestScore = "Best"
-    static let SelectBall = "Select ball"
+    static let SelectBall = "Select marble"
     static let TapToJump = "Tap to jump"
     
     static let RemoveAds = NSLocalizedString("Remove Ads", comment: "For a button, to pay to remove advertising.")
@@ -470,7 +470,7 @@ struct GameOption {
     static let SpecialBallsRatio: UInt32 = 10 // 1 in X
     static let ResetVelocityBeforeImpulse = true
     static let LivesNum: Int = 3
-    static let BallPrice: Int = 10 // 10
+    static let BallPrice: Int = 20 // 20
 }
 
 struct Test {
