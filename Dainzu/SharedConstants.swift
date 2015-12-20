@@ -226,9 +226,9 @@ struct BallImage {
     static let Ball_Default = Ball_A1
     
     // screens
-    static let ScreenA: [String] = [BallImage.Ball_Default, BallImage.Ball_A2, BallImage.Ball_A3, BallImage.Ball_A4, BallImage.Ball_A5, BallImage.Ball_A6, BallImage.Ball_A7, BallImage.Ball_A8, BallImage.Ball_A9, BallImage.NextScreenButton]
+    static let ScreenA: [String] = [BallImage.Ball_Default, BallImage.Ball_A8, BallImage.Ball_A3, BallImage.Ball_A2, BallImage.Ball_A5, BallImage.Ball_A6, BallImage.Ball_A7, BallImage.Ball_A4, BallImage.Ball_A9, BallImage.NextScreenButton]
     
-    static let ScreenB: [String] = [BallImage.PreviousScreenButton, BallImage.Ball_B1, BallImage.Ball_B2, BallImage.Ball_B3, BallImage.Ball_B4, BallImage.Ball_B6, BallImage.Ball_B7, BallImage.Ball_B8, BallImage.Ball_B9, BallImage.NextScreenButton]
+    static let ScreenB: [String] = [BallImage.PreviousScreenButton, BallImage.Ball_B7, BallImage.Ball_B2, BallImage.Ball_B3, BallImage.Ball_B4, BallImage.Ball_B6, BallImage.Ball_B1, BallImage.Ball_B8, BallImage.Ball_B9, BallImage.NextScreenButton]
     
     static let ScreenC: [String] = [BallImage.PreviousScreenButton, BallImage.Ball_C1, BallImage.Ball_C2, BallImage.Ball_C3, BallImage.Ball_C4, BallImage.Ball_C5, BallImage.Ball_C7, BallImage.Ball_C8, BallImage.Ball_C9, BallImage.NextScreenButton]
     
