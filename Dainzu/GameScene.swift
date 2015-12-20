@@ -824,7 +824,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         liveLeftNodes = []
         
-        for _ in 0..<livesLeft {
+        for var i = 0; i < livesLeft - 1; i++ {
             let liveLeftNode = SKSpriteNode(imageNamed: ImageFilename.LiveLeft)
             liveLeftNode.name = NodeName.LiveLeftNode
             liveLeftNode.color = darkColorsOn ? Color.LiveLeftDark : Color.LiveLeftLight

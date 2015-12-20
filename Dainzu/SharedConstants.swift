@@ -465,7 +465,7 @@ struct GameOption {
     static let SpecialBallsOn = true
     static let SpecialBallsRatio: UInt32 = 10 // 1 in X
     static let ResetVelocityBeforeImpulse = true
-    static let LivesNum: Int = 2
+    static let LivesNum: Int = 3
     static let BallPrice: Int = 0//10
 }
 
