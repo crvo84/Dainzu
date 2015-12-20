@@ -243,7 +243,13 @@ class BallSelectionScene: GameScene {
             // if is a next/previous screen button 
             if imageFilename == BallImage.NextScreenButton {
                 if let index = nextScreenIndex {
-                    startBallSelection(withScreenIndex: index)
+                    if isSoundActivated {
+                        runAction(buttonSmallSound) {
+                            self.startBallSelection(withScreenIndex: index)
+                        }
+                    } else {
+                        startBallSelection(withScreenIndex: index)
+                    }
                 }
                 
             } else if imageFilename == BallImage.PreviousScreenButton {

@@ -304,11 +304,14 @@ struct Color {
     static let BackgroundDark = SKColor(red: 0, green: 0, blue: 0.1, alpha: 1.0)
     static let BackgroundLight = SKColor(red: 202.0/255.0, green: 240.0/255.0, blue: 255.0/255.0, alpha: 1.0)
 
-    static let BarDark: SKColor = SKColor.orangeColor()
-    static let BarLight: SKColor = SKColor(red: 3.0/255.0, green: 41.0/255.0, blue: 56.0/255.0, alpha: 1.0)
+    static let BarDark: SKColor = SKColor(red: 192.0/255.0, green: 95.0/255.0, blue: 0.0, alpha: 1.0)
+    static let BarLight: SKColor = SKColor(red: 5.0/255.0, green: 62.0/255.0, blue: 84.0/255.0, alpha: 1.0)
     
     static let RingDark: SKColor = SKColor(red: 43.0/255.0, green: 150.0/255.0, blue: 192.0/255.0, alpha: 1.0)
     static let RingLight: SKColor = SKColor(red: 255.0/255.0, green: 64.0/255.0, blue: 82.0/255.0, alpha: 1.0)
+    
+    static let ConfigButtonDark: SKColor = SKColor.orangeColor()
+    static let ConfigButtonLight: SKColor = SKColor(red: 6.0/255.0, green: 81.0/255.0, blue: 111.0/255.0, alpha: 1.0)
     
     static let BlendFactor: CGFloat = 1.0
     // -------------------------------------------------------------------------------- //
@@ -316,27 +319,24 @@ struct Color {
     static let LiveLeftDark: SKColor = Color.BackgroundDark
     static let LiveLeftLight: SKColor = Color.BackgroundLight
     
-    static let PlayButtonDark: SKColor = Color.BarDark
-    static let PlayButtonLight: SKColor = Color.BarLight
+    static let PlayButtonDark: SKColor = Color.ConfigButtonDark
+    static let PlayButtonLight: SKColor = Color.ConfigButtonLight
     
     static let TopLeftButtonDark: SKColor = Color.BackgroundDark
     static let TopLeftButtonLight: SKColor = Color.BackgroundLight
     
-    static let ConfigButtonDark: SKColor = Color.BarDark
-    static let ConfigButtonLight: SKColor = Color.BarLight
-    
     // Pause node
     static let PauseNodeBackground: SKColor = SKColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.95)
-    static let PauseNodeSmallButtonDark: SKColor = Color.BarDark
+    static let PauseNodeSmallButtonDark: SKColor = Color.ConfigButtonDark
     static let PauseNodeSmallButtonLight: SKColor = Color.BackgroundLight
-    static let PauseNodeLargeButtonDark: SKColor = Color.BarDark
+    static let PauseNodeLargeButtonDark: SKColor = Color.ConfigButtonDark
     static let PauseNodeLargeButtonLight: SKColor = Color.BackgroundLight
     
     // ball selection
     static let BallSelectionNotPurchasedDark: SKColor = Color.RingDark
     static let BallSelectionNotPurchasedLight: SKColor = Color.RingLight
-    static let BallSelectionButtonDark: SKColor = Color.BarDark
-    static let BallSelectionButtonLight: SKColor = Color.BarLight
+    static let BallSelectionButtonDark: SKColor = Color.ConfigButtonDark
+    static let BallSelectionButtonLight: SKColor = Color.ConfigButtonLight
 }
 
 struct FontColor {

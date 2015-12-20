@@ -445,7 +445,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let topConfigButtonY = playableRect.height/2 - (playableRect.height * Geometry.ConfigButtonRelativeVerticalOffset) - configButtonHeight/2
         
         // music on button
-        musicOnButtonNode = SKSpriteNode(imageNamed: ImageFilename.MusicOnButton)
+        musicOnButtonNode = SKSpriteNode(imageNamed: isMusicOn ? ImageFilename.MusicOnButton : ImageFilename.MusicOffButton)
         let musicOnButtonRatio = musicOnButtonNode!.size.width / musicOnButtonNode!.size.height
         musicOnButtonNode!.size = CGSize(width: musicOnButtonRatio * configButtonHeight, height: configButtonHeight)
         musicOnButtonNode!.position = CGPoint(
@@ -910,7 +910,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if let musicOnOffNode = touchedNode as? SKSpriteNode {
                         musicOnOffNode.texture = SKTexture(imageNamed: isMusicOn ? ImageFilename.MusicOnButton : ImageFilename.MusicOffButton)
                     }
-//                    if isSoundActivated { runAction(buttonSmallSound) }
+                    if isSoundActivated { runAction(buttonSmallSound) }
                     
                 case NodeName.RemoveAdsButton:
                     if isSoundActivated { runAction(buttonSmallSound) }
@@ -1024,8 +1024,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     
                 } else if collision == PhysicsCategory.Ball | PhysicsCategory.MiddleBar
                     || collision == PhysicsCategory.Ball | PhysicsCategory.Boundary {
+                        if isSoundActivated { runAction(ballFailedSound) }
                         createNewBallForMenu()
                     
+                } else if collision == PhysicsCategory.Ball | PhysicsCategory.RingGoal {
+                    if isSoundActivated { runAction(ballCatchSound) }
+                    createNewBallForMenu()
                 }
             }
         }
