@@ -314,7 +314,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // the available height left to this point, is divided between top and bottom parts evenly
         let availableHeightLeft = availablePlayableRectHeight - playableRectHeight
         topBarHeight = minTopBarHeight + availableHeightLeft / 2.0
-        bottomBarHeight = max(1, bannerHeight + availableHeightLeft / 2.0)
+        bottomBarHeight = bannerHeight + availableHeightLeft / 2.0
         
         // UIView coord system ((0,0) is top left)
         playableRect = CGRect(
@@ -333,7 +333,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         verticalMiddleBarNode = nil
         
         let barColor = darkColorsOn ? Color.BarDark : Color.BarLight
-        // BOTTOM bar node
+        // TOP bar node
         topBarNode = SKSpriteNode(texture: nil, color: barColor, size: CGSize(
             width: size.width,
             height: topBarHeight))
@@ -347,17 +347,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         topBarNode!.name = NodeName.Boundary
         barsLayer.addChild(topBarNode!)
         
-        // TOP (add bannerHeight to size to show bar color while banner is not shown)
-        bottomBarNode = SKSpriteNode(texture: nil, color: barColor, size: CGSize(
-            width: size.width,
-            height: bottomBarHeight))
-        bottomBarNode!.position = CGPoint(x: size.width/2, y: bottomBarHeight/2)
-        // physics body
-        bottomBarNode!.physicsBody = SKPhysicsBody(rectangleOf: bottomBarNode!.size)
-        bottomBarNode!.physicsBody!.isDynamic = false
-        bottomBarNode!.physicsBody!.categoryBitMask = PhysicsCategory.Boundary
-        bottomBarNode!.name = NodeName.Boundary
-        barsLayer.addChild(bottomBarNode!)
+        // BOTTOM (add bannerHeight to size to show bar color while banner is not shown)
+        if bottomBarHeight > 0 {
+            bottomBarNode = SKSpriteNode(texture: nil, color: barColor, size: CGSize(
+                width: size.width,
+                height: bottomBarHeight))
+            bottomBarNode!.position = CGPoint(x: size.width/2, y: bottomBarHeight/2)
+            // physics body
+            bottomBarNode!.physicsBody = SKPhysicsBody(rectangleOf: bottomBarNode!.size)
+            bottomBarNode!.physicsBody!.isDynamic = false
+            bottomBarNode!.physicsBody!.categoryBitMask = PhysicsCategory.Boundary
+            bottomBarNode!.name = NodeName.Boundary
+            barsLayer.addChild(bottomBarNode!)
+        }
         
         // VERTICAL MIDDLE
         verticalMiddleBarNode = SKSpriteNode(texture: nil, color: barColor, size: CGSize(
