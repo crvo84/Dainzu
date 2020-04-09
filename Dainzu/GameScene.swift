@@ -305,24 +305,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func playableRectSetup() {
         // playableRect uses all scene width, with a constant ratio to define height
-        let playableRectSize = CGSize(width: size.width, height: size.width / Geometry.PlayableRectRatio)
-        
-        // height left after playableRect and bannerHeight is left for top and bottom bars
-        var availableHeightLeft = size.height - bannerHeight - playableRectSize.height
-        
-        // top bar is given part (or all) of height left until reaching a limit (rel to playableRect height)
-        let topBarHeightLimit = playableRectSize.height * Geometry.TopRelativeHeightAssignedBeforeBottomBar
-        topBarHeight = min(availableHeightLeft, topBarHeightLimit)
+        let playableRectWidth = size.width
+        let availableHeightAfterBanner = size.height - bannerHeight
+        let minTopBarHeight = availableHeightAfterBanner * Geometry.TopRelativeHeightAssignedBeforeBottomBar
+        let availablePlayableRectHeight = availableHeightAfterBanner - minTopBarHeight
+        let playableRectHeight = min(availablePlayableRectHeight, size.width / Geometry.PlayableRectRatio)
         
         // the available height left to this point, is divided between top and bottom parts evenly
-        availableHeightLeft -= topBarHeight
-        topBarHeight += availableHeightLeft/2
-        bottomBarHeight += bannerHeight + availableHeightLeft/2 // banner height is now considered into bottomBarHeight
+        let availableHeightLeft = availablePlayableRectHeight - playableRectHeight
+        topBarHeight = minTopBarHeight + availableHeightLeft / 2.0
+        bottomBarHeight = bannerHeight + availableHeightLeft / 2.0 // banner height is now considered into bottomBarHeight
         
         // UIView coord system ((0,0) is top left)
         playableRect = CGRect(
             origin: CGPoint(x: 0, y: topBarHeight),
-            size: playableRectSize)
+            size: .init(width: playableRectWidth, height: playableRectHeight))
     }
     
     // must be called after playableRectSetup()
