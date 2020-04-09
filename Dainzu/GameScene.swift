@@ -314,7 +314,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // the available height left to this point, is divided between top and bottom parts evenly
         let availableHeightLeft = availablePlayableRectHeight - playableRectHeight
         topBarHeight = minTopBarHeight + availableHeightLeft / 2.0
-        bottomBarHeight = bannerHeight + availableHeightLeft / 2.0 // banner height is now considered into bottomBarHeight
+        bottomBarHeight = max(1, bannerHeight + availableHeightLeft / 2.0)
         
         // UIView coord system ((0,0) is top left)
         playableRect = CGRect(

@@ -26,7 +26,7 @@ class AboutViewController: UIViewController {
     }
     
     @IBAction func homeButtonPressed(sender: AnyObject) {
-        performSegue(withIdentifier: SegueId.ExitAbout, sender: self)
+        presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     

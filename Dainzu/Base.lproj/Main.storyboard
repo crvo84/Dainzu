@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
+    <device id="ipad12_9" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Game View Controller-->
@@ -17,9 +16,9 @@
                         <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
                     </layoutGuides>
                     <view key="view" multipleTouchEnabled="YES" contentMode="scaleToFill" id="3se-qz-xqx" customClass="SKView">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="1366"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <connections>
                         <segue destination="oj3-at-C0J" kind="presentation" identifier="aboutSegue" id="JHh-JO-2IE"/>
@@ -27,6 +26,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="34" y="31"/>
         </scene>
         <!--About View Controller-->
         <scene sceneID="03d-Lz-z8A">
@@ -37,67 +37,67 @@
                         <viewControllerLayoutGuide type="bottom" id="AOQ-AC-amA"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="AhO-zC-AMf">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="712" height="1006.9200564096436"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xbp-MD-CdI">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xbp-MD-CdI">
                                 <rect key="frame" x="20" y="28" width="90" height="90"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="xbp-MD-CdI" secondAttribute="height" multiplier="1:1" id="kDI-wm-jMI"/>
                                 </constraints>
                                 <state key="normal" image="home">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="homeButtonPressed:" destination="oj3-at-C0J" eventType="touchDown" id="ACy-hv-gOM"/>
+                                    <action selector="homeButtonPressedWithSender:" destination="oj3-at-C0J" eventType="touchUpInside" id="3ii-gA-Jdt"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="villouLogo" translatesAutoresizingMaskIntoConstraints="NO" id="RW9-fg-k4Q">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="villouLogo" translatesAutoresizingMaskIntoConstraints="NO" id="RW9-fg-k4Q">
                                 <rect key="frame" x="250" y="224" width="100" height="100"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="AWN-ln-75m"/>
                                     <constraint firstAttribute="width" constant="100" id="qDH-FY-cG3"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="villou.com" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hay-YG-oZd">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="villou.com" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hay-YG-oZd">
                                 <rect key="frame" x="234" y="340" width="133" height="37"/>
                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="32"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a6T-nF-Scs" userLabel="Twitter Button">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a6T-nF-Scs" userLabel="Twitter Button">
                                 <rect key="frame" x="134" y="312" width="52" height="52"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="52" id="NcH-qe-XYa"/>
                                     <constraint firstAttribute="height" constant="52" id="qWe-bq-zCt"/>
                                 </constraints>
                                 <state key="normal" image="twitter">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="twitterButtonPressed:" destination="oj3-at-C0J" eventType="touchDown" id="dE8-t0-xmB"/>
+                                    <action selector="twitterButtonPressedWithSender:" destination="oj3-at-C0J" eventType="touchUpInside" id="Owc-Dl-PQp"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s4S-DY-Ll3" userLabel="Facebook Button">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s4S-DY-Ll3" userLabel="Facebook Button">
                                 <rect key="frame" x="134" y="227" width="52" height="52"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="52" id="Ik6-Z2-eBt"/>
                                     <constraint firstAttribute="width" constant="52" id="h7U-xY-Da9"/>
                                 </constraints>
                                 <state key="normal" image="facebook">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="facebookButtonPressed:" destination="oj3-at-C0J" eventType="touchDown" id="ocz-Ig-oBa"/>
+                                    <action selector="facebookButtonPressedWithSender:" destination="oj3-at-C0J" eventType="touchUpInside" id="AFn-5b-GkX"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mr Market" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j4J-7t-eSg">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Mr Market" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j4J-7t-eSg">
                                 <rect key="frame" x="411" y="281" width="54" height="14"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gFN-wj-bdP">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gFN-wj-bdP">
                                 <rect key="frame" x="414" y="229" width="48" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="48" id="73V-G1-QMH"/>
@@ -105,10 +105,10 @@
                                 </constraints>
                                 <state key="normal" image="mrMarketIcon"/>
                                 <connections>
-                                    <action selector="mrMarketButtonPressed:" destination="oj3-at-C0J" eventType="touchDown" id="nJL-Bd-1H7"/>
+                                    <action selector="mrMarketButtonPressedWithSender:" destination="oj3-at-C0J" eventType="touchUpInside" id="T8W-vo-f5w"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lnJ-lE-ILB">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lnJ-lE-ILB">
                                 <rect key="frame" x="414" y="314" width="48" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="48" id="7Pk-3c-7Dk"/>
@@ -116,17 +116,17 @@
                                 </constraints>
                                 <state key="normal" image="hiInvestIcon"/>
                                 <connections>
-                                    <action selector="hiInvestButtonPressed:" destination="oj3-at-C0J" eventType="touchDown" id="m1M-RX-RcD"/>
+                                    <action selector="hiInvestButtonPressedWithSender:" destination="oj3-at-C0J" eventType="touchUpInside" id="UoL-ff-tV8"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hi Invest" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z8i-FX-K3P">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Hi Invest" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z8i-FX-K3P">
                                 <rect key="frame" x="415" y="366" width="46" height="14"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" red="0.0" green="0.40000000000000002" blue="0.52549019607843139" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.0" green="0.40000000000000002" blue="0.52549019607843139" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="xbp-MD-CdI" firstAttribute="height" secondItem="AhO-zC-AMf" secondAttribute="height" multiplier="0.15" id="0qf-dM-bab"/>
                             <constraint firstItem="RW9-fg-k4Q" firstAttribute="centerY" secondItem="AhO-zC-AMf" secondAttribute="centerY" constant="-26" id="48w-ab-qw6"/>
@@ -152,11 +152,9 @@
                     <connections>
                         <outlet property="hiInvestButton" destination="lnJ-lE-ILB" id="Gnx-n3-enj"/>
                         <outlet property="mrMarketButton" destination="gFN-wj-bdP" id="4dT-47-mq3"/>
-                        <segue destination="8UQ-us-tUe" kind="unwind" identifier="exitAboutSegue" unwindAction="unwindToInitialViewController:" id="H7c-Zs-rAh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="haP-a4-pAa" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="8UQ-us-tUe" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="313" y="1056"/>
         </scene>
@@ -164,7 +162,7 @@
     <resources>
         <image name="facebook" width="200" height="200"/>
         <image name="hiInvestIcon" width="100" height="100"/>
-        <image name="home" width="100" height="100"/>
+        <image name="home" width="50" height="50"/>
         <image name="mrMarketIcon" width="100" height="100"/>
         <image name="twitter" width="200" height="200"/>
         <image name="villouLogo" width="100" height="100"/>

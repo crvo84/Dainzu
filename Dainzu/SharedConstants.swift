@@ -75,7 +75,7 @@ struct Geometry {
     
     // config buttons
     static let ConfigButtonRelativeHeight: CGFloat = 0.6 // relative to gameTitleLabel height
-    static let ConfigButtonRelativeHorizontalOffset: CGFloat = 0.05 // relative to playableRect width
+    static let ConfigButtonRelativeHorizontalOffset: CGFloat = 0.06 // relative to playableRect width
     static let ConfigButtonRelativeVerticalOffset: CGFloat = 0.02 // relative to playableRect height
     static let ConfigButtonRelativeSeparation: CGFloat = 0.1 // relative to playableRect width
     // config select ball button
@@ -396,7 +396,7 @@ struct NodeName {
 
 struct SegueId {
     static let About = "aboutSegue"
-    static let ExitAbout = "exitAboutSegue"
+//    static let ExitAbout = "exitAboutSegue" // currently not used
 }
 
 struct ActionKey {
@@ -419,7 +419,7 @@ struct UserDefaultsKey {
 
 struct UserDefaultsInitialValues {
     // default values
-    static let ShowAds = true
+    static let ShowAds = false // TODO: set 'true' to enable Ads
     static let MusicOn = true
     static let DarkColorsOn = false
     static let GravityNormal = true

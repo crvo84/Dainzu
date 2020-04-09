@@ -25,8 +25,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func userDefaultsSetup()
     {
         let defaults = UserDefaults.standard
-        
-        if defaults.object(forKey: UserDefaultsKey.ShowAds) == nil {
+
+        if UserDefaultsInitialValues.ShowAds == false {
+            // handles the case where the user have already installed the app,
+            // and then an update disables Ads for all users, even without paying.
+            defaults.set(false, forKey: UserDefaultsKey.ShowAds)
+        } else if defaults.object(forKey: UserDefaultsKey.ShowAds) == nil {
             defaults.set(UserDefaultsInitialValues.ShowAds, forKey: UserDefaultsKey.ShowAds)
         }
         
