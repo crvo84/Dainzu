@@ -1002,8 +1002,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     // MARK: SKPhysicsContact Delegate
-    
-    func didBeginContact(contact: SKPhysicsContact) {
+
+    func didBegin(_ contact: SKPhysicsContact) {
         let collision: UInt32 = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
         
         if let ballNode = contact.bodyA.node as? BallNode ?? (contact.bodyB.node as? BallNode ?? nil) {
