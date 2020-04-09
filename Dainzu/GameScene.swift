@@ -314,7 +314,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // the available height left to this point, is divided between top and bottom parts evenly
         let availableHeightLeft = availablePlayableRectHeight - playableRectHeight
         topBarHeight = minTopBarHeight + availableHeightLeft / 2.0
-        bottomBarHeight = bannerHeight + availableHeightLeft / 2.0
+        bottomBarHeight = max(1, bannerHeight + availableHeightLeft / 2.0)
         
         // UIView coord system ((0,0) is top left)
         playableRect = CGRect(
@@ -348,18 +348,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         barsLayer.addChild(topBarNode!)
         
         // BOTTOM (add bannerHeight to size to show bar color while banner is not shown)
-        if bottomBarHeight > 0 {
-            bottomBarNode = SKSpriteNode(texture: nil, color: barColor, size: CGSize(
-                width: size.width,
-                height: bottomBarHeight))
-            bottomBarNode!.position = CGPoint(x: size.width/2, y: bottomBarHeight/2)
-            // physics body
-            bottomBarNode!.physicsBody = SKPhysicsBody(rectangleOf: bottomBarNode!.size)
-            bottomBarNode!.physicsBody!.isDynamic = false
-            bottomBarNode!.physicsBody!.categoryBitMask = PhysicsCategory.Boundary
-            bottomBarNode!.name = NodeName.Boundary
-            barsLayer.addChild(bottomBarNode!)
-        }
+        bottomBarNode = SKSpriteNode(texture: nil, color: barColor, size: CGSize(
+            width: size.width,
+            height: bottomBarHeight))
+        bottomBarNode!.position = CGPoint(x: size.width/2, y: bottomBarHeight/2)
+        // physics body
+        bottomBarNode!.physicsBody = SKPhysicsBody(rectangleOf: bottomBarNode!.size)
+        bottomBarNode!.physicsBody!.isDynamic = false
+        bottomBarNode!.physicsBody!.categoryBitMask = PhysicsCategory.Boundary
+        bottomBarNode!.name = NodeName.Boundary
+        barsLayer.addChild(bottomBarNode!)
         
         // VERTICAL MIDDLE
         verticalMiddleBarNode = SKSpriteNode(texture: nil, color: barColor, size: CGSize(
@@ -857,7 +855,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         liveLeftNodes = []
 
-        for _ in 0..<(livesLeft - 1) {
+        for _ in 0..<max(0, livesLeft - 1) {
             let liveLeftNode = SKSpriteNode(imageNamed: ImageFilename.LiveLeft)
             liveLeftNode.name = NodeName.LiveLeftNode
             liveLeftNode.color = darkColorsOn ? Color.LiveLeftDark : Color.LiveLeftLight
