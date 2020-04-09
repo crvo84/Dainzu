@@ -73,8 +73,8 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
         }
         
         if let skView = self.view as? SKView {
-            skView.showsFPS = true
-            skView.showsNodeCount = true
+            skView.showsFPS = false
+            skView.showsNodeCount = false
             skView.showsPhysics = false
             skView.ignoresSiblingOrder = true
             

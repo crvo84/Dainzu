@@ -83,7 +83,7 @@ struct Geometry {
     
     // top left buttons
     static let TopLeftButtonRelativeHeight: CGFloat = 0.95 // relative to topBar height
-    static let TopLeftButtonRelativeSideOffset: CGFloat = 0.02 // relative to playableRect width
+    static let TopLeftButtonRelativeSideOffset: CGFloat = 0.04 // relative to playableRect width
 
     // pause node
     static let PauseNodeSmallButtonRelativeHeight: CGFloat = 0.11 // relative to pauseNode height
