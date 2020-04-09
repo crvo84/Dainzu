@@ -107,8 +107,7 @@ class RingNode: SKNode {
         }
     }
     
-    private func getOvalNode(leftHalfOnly: Bool) -> SKSpriteNode?
-    {
+    private func getOvalNode(leftHalfOnly: Bool) -> SKSpriteNode? {
         let ovalRect = CGRect(origin: CGPoint(x: -size.width/2, y: -size.height/2), size: size)
 
         let halfRingView = RingView(frame: ovalRect, halfRing: leftHalfOnly, leftHalf: true)
