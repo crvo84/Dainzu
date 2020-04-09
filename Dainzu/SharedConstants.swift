@@ -312,7 +312,7 @@ struct Color {
     static let RingDark: SKColor = SKColor(red: 43.0/255.0, green: 150.0/255.0, blue: 192.0/255.0, alpha: 1.0)
     static let RingLight: SKColor = SKColor(red: 255.0/255.0, green: 64.0/255.0, blue: 82.0/255.0, alpha: 1.0)
     
-    static let ConfigButtonDark: SKColor = SKColor.orangeColor()
+    static let ConfigButtonDark: SKColor = SKColor.orange
     static let ConfigButtonLight: SKColor = SKColor(red: 6.0/255.0, green: 81.0/255.0, blue: 111.0/255.0, alpha: 1.0)
     
     static let BlendFactor: CGFloat = 1.0
@@ -417,7 +417,7 @@ struct UserDefaultsKey {
     static let BallSelected = "ballSelected"
 }
 
-struct UserDefaults {
+struct UserDefaultsInitialValues {
     // default values
     static let ShowAds = true
     static let MusicOn = true

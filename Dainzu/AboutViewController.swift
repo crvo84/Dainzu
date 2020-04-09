@@ -12,10 +12,8 @@ class AboutViewController: UIViewController {
     
     @IBOutlet weak var mrMarketButton: UIButton!
     @IBOutlet weak var hiInvestButton: UIButton!
-    
-    override func prefersStatusBarHidden() -> Bool {
-        return true
-    }
+
+    override var prefersStatusBarHidden: Bool { return true }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,43 +26,39 @@ class AboutViewController: UIViewController {
     }
     
     @IBAction func homeButtonPressed(sender: AnyObject) {
-        performSegueWithIdentifier(SegueId.ExitAbout, sender: self)
+        performSegue(withIdentifier: SegueId.ExitAbout, sender: self)
     }
 
     
     @IBAction func mrMarketButtonPressed(sender: UIButton) {
-        if let url = NSURL(string: URLString.MrMarketAppStore) {
-            UIApplication.sharedApplication().openURL(url)
+        if let url = URL(string: URLString.MrMarketAppStore) {
+            UIApplication.shared.openURL(url)
         }
     }
     
     @IBAction func hiInvestButtonPressed(sender: UIButton) {
-        if let url = NSURL(string: URLString.HiInvestAppStore) {
-            UIApplication.sharedApplication().openURL(url)
+        if let url = URL(string: URLString.HiInvestAppStore) {
+            UIApplication.shared.openURL(url)
         }
     }
     
     @IBAction func facebookButtonPressed(sender: UIButton) {
-        if let facebookFromAppURL = NSURL(string: URLString.FacebookFromApp) {
-            if UIApplication.sharedApplication().canOpenURL(facebookFromAppURL) {
-                UIApplication.sharedApplication().openURL(facebookFromAppURL)
-            } else {
-                if let facebookURL = NSURL(string: URLString.Facebook) {
-                    UIApplication.sharedApplication().openURL(facebookURL)
-                }
-            }
+        guard let facebookFromAppURL = URL(string: URLString.FacebookFromApp) else { return }
+
+        if UIApplication.shared.canOpenURL(facebookFromAppURL) {
+            UIApplication.shared.openURL(facebookFromAppURL)
+        } else if let facebookURL = URL(string: URLString.Facebook) {
+            UIApplication.shared.openURL(facebookURL)
         }
     }
     
     @IBAction func twitterButtonPressed(sender: UIButton) {
-        if let twitterFromAppURL = NSURL(string: URLString.TwitterFromApp) {
-            if UIApplication.sharedApplication().canOpenURL(twitterFromAppURL) {
-                UIApplication.sharedApplication().openURL(twitterFromAppURL)
-            } else {
-                if let twitterURL = NSURL(string: URLString.Twitter) {
-                    UIApplication.sharedApplication().openURL(twitterURL)
-                }
-            }
+        guard let twitterFromAppURL = URL(string: URLString.TwitterFromApp) else { return }
+
+        if UIApplication.shared.canOpenURL(twitterFromAppURL) {
+            UIApplication.shared.openURL(twitterFromAppURL)
+        } else if let twitterURL = URL(string: URLString.Twitter) {
+            UIApplication.shared.openURL(twitterURL)
         }
     }
 

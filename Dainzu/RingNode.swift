@@ -61,7 +61,7 @@ class RingNode: SKNode {
         let upperBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: upperBodyCenter)
         
         physicsBody = SKPhysicsBody(bodies: [lowerBody, upperBody])
-        physicsBody!.dynamic = false
+        physicsBody!.isDynamic = false
         physicsBody!.allowsRotation = false
         physicsBody!.density = Physics.RingDensity
         physicsBody!.restitution = Physics.RingBounciness
@@ -107,7 +107,7 @@ class RingNode: SKNode {
         }
     }
     
-    private func getOvalNode(leftHalfOnly leftHalfOnly: Bool) -> SKSpriteNode?
+    private func getOvalNode(leftHalfOnly: Bool) -> SKSpriteNode?
     {
         let ovalRect = CGRect(origin: CGPoint(x: -size.width/2, y: -size.height/2), size: size)
 
@@ -127,16 +127,16 @@ class RingNode: SKNode {
     
     func activatePhysics() {
         stopFloatingAnimation()
-        physicsBody?.dynamic = true
+        physicsBody?.isDynamic = true
     }
 
     func startFloatingAnimation(verticalRange: CGFloat, durationPerCycle: Double, startUpward: Bool) {
         stopFloatingAnimation()
         
-        let moveUpAction = SKAction.moveByX(0, y: verticalRange/2, duration: durationPerCycle/4)
-        let moveUpReverseAction = moveUpAction.reversedAction()
-        let moveDownAction = SKAction.moveByX(0, y: -verticalRange/2, duration: durationPerCycle/4)
-        let moveDownReverseAction = moveDownAction.reversedAction()
+        let moveUpAction = SKAction.moveBy(x: 0, y: verticalRange/2, duration: durationPerCycle/4)
+        let moveUpReverseAction = moveUpAction.reversed()
+        let moveDownAction = SKAction.moveBy(x: 0, y: -verticalRange/2, duration: durationPerCycle/4)
+        let moveDownReverseAction = moveDownAction.reversed()
         
         let moveSequence: [SKAction]
         if startUpward {
@@ -144,21 +144,21 @@ class RingNode: SKNode {
         } else {
             moveSequence = [moveDownAction, moveDownReverseAction, moveUpAction, moveUpReverseAction]
         }
-        runAction(SKAction.repeatActionForever(SKAction.sequence(moveSequence)), withKey: ActionKey.RingFloatingAnimation)
+        run(SKAction.repeatForever(SKAction.sequence(moveSequence)), withKey: ActionKey.RingFloatingAnimation)
     }
     
     func stopFloatingAnimation() {
-        removeActionForKey(ActionKey.RingFloatingAnimation)
+        removeAction(forKey: ActionKey.RingFloatingAnimation)
     }
     
     // MARK: Helper methods
     
-    private func getImageWithView(view: UIView) -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0)
+    private func getImageWithView(_ view: UIView) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.isOpaque, 0.0)
         
         var img: UIImage?
         if let context = UIGraphicsGetCurrentContext() {
-            view.layer.renderInContext(context)
+            view.layer.render(in: context)
             img = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext()
         }

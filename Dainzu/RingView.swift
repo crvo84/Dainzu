@@ -13,7 +13,7 @@ class RingView: UIView {
     private let halfRing: Bool
     private let leftHalf: Bool
     
-    var color: UIColor = UIColor.blackColor() { didSet { setNeedsDisplay() } }
+    var color: UIColor = UIColor.black { didSet { setNeedsDisplay() } }
     
     var lineWidth: CGFloat = 2 { didSet { setNeedsDisplay() } }
     
@@ -24,15 +24,15 @@ class RingView: UIView {
         
         super.init(frame: frame)
         
-        opaque = false
-        backgroundColor = UIColor.clearColor()
+        isOpaque = false
+        backgroundColor = UIColor.clear
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    override func drawRect(rect: CGRect) {
+
+    override func draw(_ rect: CGRect) {
         if halfRing {
             let clipOrigin = CGPoint(x: leftHalf ? 0 : frame.size.width/2, y: 0)
             
@@ -42,10 +42,10 @@ class RingView: UIView {
             
             clipPath.addClip()
         }
+
+        let ovalRect = self.bounds.insetBy(dx: lineWidth/2, dy: lineWidth/2)
         
-        let ovalRect = CGRectInset(self.bounds, lineWidth/2, lineWidth/2)
-        
-        let ovalPath = UIBezierPath(ovalInRect: ovalRect)
+        let ovalPath = UIBezierPath(ovalIn: ovalRect)
         ovalPath.lineWidth = lineWidth
         color.setStroke()
         

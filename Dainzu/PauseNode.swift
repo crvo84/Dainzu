@@ -29,7 +29,7 @@ class PauseNode: SKNode {
         continueButton.size = CGSize(
             width: largeButtonHeight * continueButtonRatio,
             height: largeButtonHeight)
-        continueButton.position = CGPointZero
+        continueButton.position = .zero
         continueButton.color = darkColorsOn ? Color.PauseNodeLargeButtonDark : Color.PauseNodeLargeButtonLight
         continueButton.colorBlendFactor = Color.BlendFactor
         continueButton.name = NodeName.ContinueButton

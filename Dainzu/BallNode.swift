@@ -35,7 +35,7 @@ class BallNode: SKSpriteNode {
         let nodeRatio = texture != nil ? texture!.size().width / texture!.size().height : 1.0
         let nodeSize = CGSize(width: height * nodeRatio, height: height)
         
-        super.init(texture: texture, color: SKColor.clearColor(), size: nodeSize)
+        super.init(texture: texture, color: SKColor.clear, size: nodeSize)
         
         // if no given texture, add circle node
         if texture == nil && color != nil {

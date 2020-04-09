@@ -43,7 +43,7 @@ class BallSelectionScene: GameScene {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func didMoveToView(view: SKView) {
+    override func didMove(to view: SKView) {
         gameState = .GameMenu
         
         isSoundActivated = isMusicOn
@@ -78,7 +78,7 @@ class BallSelectionScene: GameScene {
         updateGrid()
         
         if unlockedSpecialBall && isSoundActivated {
-            runAction(moneySound) {
+            run(moneySound) {
                 self.unlockedSpecialBall = false
             }
         }
@@ -109,8 +109,8 @@ class BallSelectionScene: GameScene {
         let titleLabelHeight = topBarHeight * Geometry.TitleLabelRelativeHeight
         let titleLabelWidth = playableRect.width * Geometry.TitleLabelRelativeWidth
         titleLabel = SKLabelNode(text: Text.SelectBall)
-        titleLabel!.verticalAlignmentMode = .Center
-        titleLabel!.horizontalAlignmentMode = .Center
+        titleLabel!.verticalAlignmentMode = .center
+        titleLabel!.horizontalAlignmentMode = .center
         titleLabel!.fontName = FontName.Title
         titleLabel!.fontColor = darkColorsOn ? FontColor.TitleDark : FontColor.TitleLight
         adjustFontSizeForLabel(titleLabel!, tofitSize: CGSize(
@@ -155,7 +155,7 @@ class BallSelectionScene: GameScene {
                     let imageFilename = imageFilenames[ballIndex]
                     let ballNode: SKSpriteNode
                     
-                    let purchased = NSUserDefaults.standardUserDefaults().boolForKey(imageFilename)
+                    let purchased = UserDefaults.standard.bool(forKey: imageFilename)
                     
                     switch imageFilename {
                         
@@ -196,45 +196,44 @@ class BallSelectionScene: GameScene {
                     
                     gridNodes.append(ballNode)
                 }
-                ballIndex++
+                ballIndex += 1
             }
         }
     }
     
     private func resetGrid() {
-        for var i = 0; i < gridNodes.count; i++ {
+        for i in 0..<gridNodes.count {
             let ballNode = gridNodes[i]
             ballNode.removeFromParent()
         }
         gridNodes = []
     }
     
-    
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first!
-        let location = touch.locationInNode(self)
-        let touchedNode = self.nodeAtPoint(location)
+        let location = touch.location(in: self)
+        let touchedNode = self.atPoint(location)
             
         if let nodeName = touchedNode.name {
             if imageFilenames.contains(nodeName) {
                 selectBall(withImageFilename: nodeName)
                 
             } else {
-                super.touchesBegan(touches, withEvent: event)
+                super.touchesBegan(touches, with: event)
             }
         }
     }
     
     private func selectBall(withImageFilename imageFilename: String) {
-        let defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = UserDefaults.standard
         
         // if there is an object in user defaults, it has been purchased
-        if defaults.objectForKey(imageFilename) != nil {
+        if defaults.object(forKey: imageFilename) != nil {
             // already purchased. Select
             ballSelected = imageFilename
             
             if isSoundActivated {
-                runAction(ballCatchSound) { self.startNewGame() }
+                run(ballCatchSound) { self.startNewGame() }
             } else {
                 startNewGame()
             }
@@ -244,7 +243,7 @@ class BallSelectionScene: GameScene {
             if imageFilename == BallImage.NextScreenButton {
                 if let index = nextScreenIndex {
                     if isSoundActivated {
-                        runAction(buttonSmallSound) {
+                        run(buttonSmallSound) {
                             self.startBallSelection(withScreenIndex: index)
                         }
                     } else {
@@ -255,7 +254,7 @@ class BallSelectionScene: GameScene {
             } else if imageFilename == BallImage.PreviousScreenButton {
                 if let index = previousScreenIndex {
                     if isSoundActivated {
-                        runAction(buttonSmallSound) {
+                        run(buttonSmallSound) {
                             self.startBallSelection(withScreenIndex: index)
                         }
                     } else {
@@ -264,7 +263,7 @@ class BallSelectionScene: GameScene {
                 }
                 
             } else if imageFilename == BallImage.FacebookBall { // open facebook
-                defaults.setBool(true, forKey: imageFilename)
+                defaults.set(true, forKey: imageFilename)
                 ballSelected = imageFilename
                 if let gameViewController = viewController as? GameViewController {
                     gameViewController.facebookButtonPressed()
@@ -272,7 +271,7 @@ class BallSelectionScene: GameScene {
                 }
                 
             } else if imageFilename == BallImage.TwitterBall { // open twitter
-                defaults.setBool(true, forKey: imageFilename)
+                defaults.set(true, forKey: imageFilename)
                 ballSelected = imageFilename
                 if let gameViewController = viewController as? GameViewController {
                     gameViewController.twitterButtonPressed()
@@ -284,24 +283,25 @@ class BallSelectionScene: GameScene {
                 // if enough money, purchase
                 if coinsCount >= GameOption.BallPrice {
                     
-                    defaults.setBool(true, forKey: imageFilename)
+                    defaults.set(true, forKey: imageFilename)
                     coinsCount -= GameOption.BallPrice
                     ballSelected = imageFilename
                     
-                    if isSoundActivated { runAction(moneySound) }
+                    if isSoundActivated { run(moneySound) }
                     
                 } else {
-                    if isSoundActivated { runAction(ballFailedSound) }
+                    if isSoundActivated { run(ballFailedSound) }
                 }
                 
                 if coinsLabelFlashAction != nil && coinNodeFlashAction != nil {
-                    coinsLabel?.runAction(coinsLabelFlashAction!)
-                    coinNode?.runAction(coinNodeFlashAction!)
+                    coinsLabel?.run(coinsLabelFlashAction!)
+                    coinNode?.run(coinNodeFlashAction!)
                 }
                 
                 updateGrid()
             }
         }
+        defaults.synchronize()
     }
     
 }

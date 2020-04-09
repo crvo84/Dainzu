@@ -27,10 +27,12 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     
     private var showAds: Bool {
         get {
-            return NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.ShowAds)
+            return UserDefaults.standard.bool(forKey: UserDefaultsKey.ShowAds)
         }
         set {
-            NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: UserDefaultsKey.ShowAds)
+            let defaults = UserDefaults.standard
+            defaults.set(newValue, forKey: UserDefaultsKey.ShowAds)
+            defaults.synchronize()
             if !newValue {
                 adBanner?.removeFromSuperview()
                 adBanner = nil
@@ -39,14 +41,11 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
         }
     }
 
-    
-    override func prefersStatusBarHidden() -> Bool {
-        return true
-    }
+    override var prefersStatusBarHidden: Bool { return true}
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        interstitialPresentationPolicy = .Manual
+        interstitialPresentationPolicy = .manual
     }
     
     override func viewDidLoad() {
@@ -56,7 +55,7 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
         authenticatePlayer()
         
         if showAds {
-            SKPaymentQueue.defaultQueue().addTransactionObserver(self)
+            SKPaymentQueue.default().add(self)
             getProductInfo()
         }
         
@@ -65,11 +64,11 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     
     func startNewGameScene() {
         adBanner = nil
-        if NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultsKey.ShowAds) {
-            adBanner = ADBannerView(frame: CGRectZero)
+        if UserDefaults.standard.bool(forKey: UserDefaultsKey.ShowAds) {
+            adBanner = ADBannerView(frame: .zero)
             adBanner!.delegate = self
-            adBanner!.frame = CGRectMake(0.0, view.frame.size.height - adBanner!.frame.size.height, adBanner!.frame.size.width, adBanner!.frame.size.height)
-            adBanner!.backgroundColor = SKColor.clearColor()
+            adBanner!.frame = CGRect(x: 0.0, y: view.frame.size.height - adBanner!.frame.size.height, width: adBanner!.frame.size.width, height: adBanner!.frame.size.height)
+            adBanner!.backgroundColor = SKColor.clear
             view.addSubview(adBanner!)
         }
         
@@ -90,7 +89,7 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
             
             let gameScene = GameScene(size: view.frame.size, bannerHeight: bannerHeight)
             gameScene.viewController = self
-            gameScene.scaleMode = .AspectFill
+            gameScene.scaleMode = .aspectFill
             
             skView.presentScene(gameScene)
         }
@@ -107,8 +106,8 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     // ------------------------------------------ //
     // ----- MARK: iAd Banner View Delegate ---- //
     // ---------------------------------------- //
-    
-    func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
+
+    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
         /* whatever you need */
         if let skView = view as? SKView {
             if let gameScene = skView.scene as? GameScene {
@@ -119,21 +118,19 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
         
         return true
     }
-    
-    func bannerViewActionDidFinish(banner: ADBannerView!) {
-        
+
+    func bannerViewActionDidFinish(_ banner: ADBannerView) {
     }
-    
-    func bannerViewDidLoadAd(banner: ADBannerView!) {
-        banner.hidden = false
+
+    func bannerViewDidLoadAd(_ banner: ADBannerView) {
+        banner.isHidden = false
     }
-    
-    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
-        banner.hidden = true
+
+    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
+        banner.isHidden = true
     }
     
     func bannerViewWillLoadAd(banner: ADBannerView!) {
-        
     }
     
     
@@ -144,22 +141,23 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     func removeAdsButtonPressed(sourceView: UIView, sourceRect: CGRect) {
         
         var alertMessage: String?
-        if product != nil{
-            let numberFormatter = NSNumberFormatter()
-            numberFormatter.locale = product!.priceLocale
-            numberFormatter.numberStyle = .CurrencyStyle
-            alertMessage = numberFormatter.stringFromNumber(NSNumber(double: Double(product!.price)))
+
+        if let product = product {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.locale = product.priceLocale
+            numberFormatter.numberStyle = .currency
+            alertMessage = numberFormatter.string(from: NSNumber(value: Double(truncating: product.price)))
         }
         
-        let removeAdsActionSheet = UIAlertController(title: Text.RemoveAds, message: alertMessage, preferredStyle: .ActionSheet)
+        let removeAdsActionSheet = UIAlertController(title: Text.RemoveAds, message: alertMessage, preferredStyle: .actionSheet)
         
-        let purchaseAction = UIAlertAction(title: Text.Purchase, style: .Default) { (action:UIAlertAction) in
+        let purchaseAction = UIAlertAction(title: Text.Purchase, style: .default) { (action:UIAlertAction) in
             self.removeAds()
         }
-        let restorePurchaseAction = UIAlertAction(title: Text.Restore, style: .Default) { (action: UIAlertAction) in
+        let restorePurchaseAction = UIAlertAction(title: Text.Restore, style: .default) { (action: UIAlertAction) in
             self.restorePurchases()
         }
-        let cancelAction = UIAlertAction(title: Text.Cancel, style: .Cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: Text.Cancel, style: .cancel, handler: nil)
         removeAdsActionSheet.addAction(purchaseAction)
         removeAdsActionSheet.addAction(restorePurchaseAction)
         removeAdsActionSheet.addAction(cancelAction)
@@ -171,7 +169,7 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
             popoverController.sourceRect = sourceRect
         }
         
-        presentViewController(removeAdsActionSheet, animated: true, completion: nil)
+        present(removeAdsActionSheet, animated: true, completion: nil)
     }
     
     private func removeAds()
@@ -180,7 +178,7 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
         
         if product != nil {
             let payment = SKPayment(product: product!)
-            SKPaymentQueue.defaultQueue().addPayment(payment)
+            SKPaymentQueue.default().add(payment)
         } else {
             waitingForProduct = true
             getProductInfo()
@@ -188,7 +186,7 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     }
     
     private func restorePurchases() {
-        SKPaymentQueue.defaultQueue().restoreCompletedTransactions()
+        SKPaymentQueue.default().restoreCompletedTransactions()
     }
     
     func getProductInfo() {
@@ -203,8 +201,8 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     }
     
     // SKProduct request delegate
-    func productsRequest(request: SKProductsRequest, didReceiveResponse response: SKProductsResponse) {
-        var products = response.products
+    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+        let products = response.products
         if (products.count > 0) {
             product = products[0]
             if waitingForProduct {
@@ -219,47 +217,46 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     }
     
     // SKPayment transaction delegate
-    func paymentQueue(queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         for transaction in transactions {
             switch transaction.transactionState {
                 
-            case SKPaymentTransactionState.Failed:
-                SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+            case SKPaymentTransactionState.failed:
+                SKPaymentQueue.default().finishTransaction(transaction)
                 
-            case SKPaymentTransactionState.Restored:
+            case SKPaymentTransactionState.restored:
                 fallthrough
                 
-            case SKPaymentTransactionState.Purchased:
+            case SKPaymentTransactionState.purchased:
                 showAds = false
-                SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+                SKPaymentQueue.default().finishTransaction(transaction)
                 
             default:
                 break
             }
         }
     }
-    
-    func paymentQueueRestoreCompletedTransactionsFinished(queue: SKPaymentQueue) {
+
+    func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
         //called when the user successfully restores a purchase
         var itemsRestored = false
         for transaction in queue.transactions {
-            if transaction.transactionState == SKPaymentTransactionState.Restored {
+            if transaction.transactionState == SKPaymentTransactionState.restored {
                 itemsRestored = true
             }
         }
         let restoredTitle = itemsRestored ? Text.PurchasesRestored : Text.NoPreviousPurchases
-        let restoredAlertController = UIAlertController(title: restoredTitle, message: nil, preferredStyle: .Alert)
-        let okAction = UIAlertAction(title: Text.Ok, style: .Default, handler: nil)
+        let restoredAlertController = UIAlertController(title: restoredTitle, message: nil, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: Text.Ok, style: .default, handler: nil)
         restoredAlertController.addAction(okAction)
-        self.presentViewController(restoredAlertController, animated: true, completion: nil)
+        self.present(restoredAlertController, animated: true, completion: nil)
     }
     
-    
-    func paymentQueue(queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: NSError) {
-        let failToRestoreAlert = UIAlertController(title: error.localizedDescription, message: nil, preferredStyle: .Alert)
-        let okAction = UIAlertAction(title: Text.Ok, style: .Default, handler: nil)
+    func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
+        let failToRestoreAlert = UIAlertController(title: error.localizedDescription, message: nil, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: Text.Ok, style: .default, handler: nil)
         failToRestoreAlert.addAction(okAction)
-        presentViewController(failToRestoreAlert, animated: true, completion: nil)
+        present(failToRestoreAlert, animated: true, completion: nil)
     }
 
     
@@ -267,17 +264,17 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     // ----- MARK: GameCenter ---- //
     // -------------------------- //
     
-    func reportScore(score: Int) {
+    func reportScore(_ score: Int) {
         let gkScore = GKScore(leaderboardIdentifier: GameCenter.LeaderboardId)
         
         gkScore.value = Int64(score)
         
-        GKScore.reportScores([gkScore], withCompletionHandler: { (error) -> Void in
-            if error != nil {
-                print("Failed to report score: \(error)")
-            } else {
-                print("Successfully logged score!")
+        GKScore.report([gkScore], withCompletionHandler: { (error) -> Void in
+            guard let error = error else {
+                return print("Successfully logged score!")
             }
+
+            print("Failed to report score: \(error)")
         })
     }
     
@@ -285,7 +282,7 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     
     func authenticatePlayer()
     {
-        let localPlayer = GKLocalPlayer.localPlayer()
+        let localPlayer = GKLocalPlayer.local
         // Assigning a block to the localPlayer's
         // authenticateHandler kicks off the process
         // of authenticating the user with Game Center.
@@ -294,9 +291,9 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
             if viewController != nil {
                 // We need to present a view controller
                 // to finish the authentication process
-                self.presentViewController(viewController!, animated: true, completion: nil)
+                self.present(viewController!, animated: true, completion: nil)
                 
-            } else if localPlayer.authenticated {
+            } else if localPlayer.isAuthenticated {
                 // We're authenticated, and can now use Game Center features
                 print("Authenticated")
 //                self.isGameCenterEnabled = true
@@ -314,13 +311,13 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     {
         let gameCenterViewController: GKGameCenterViewController = GKGameCenterViewController()
         gameCenterViewController.gameCenterDelegate = self
-        gameCenterViewController.viewState = GKGameCenterViewControllerState.Leaderboards
+        gameCenterViewController.viewState = GKGameCenterViewControllerState.leaderboards
         gameCenterViewController.leaderboardIdentifier = GameCenter.LeaderboardId
-        self.presentViewController(gameCenterViewController, animated: true, completion: nil)
+        self.present(gameCenterViewController, animated: true, completion: nil)
     }
     
-    func gameCenterViewControllerDidFinish(gameCenterViewController: GKGameCenterViewController) {
-        gameCenterViewController.dismissViewControllerAnimated(true, completion: nil)
+    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
+        gameCenterViewController.dismiss(animated: true, completion: nil)
     }
 
     
@@ -329,7 +326,7 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     // -------------------------- //
     
     @IBAction func moreGamesButtonPressed() {
-        performSegueWithIdentifier(SegueId.About, sender: self)
+        performSegue(withIdentifier: SegueId.About, sender: self)
     }
     
     @IBAction func unwindToInitialViewController(segue: UIStoryboardSegue)
@@ -343,29 +340,23 @@ class GameViewController: UIViewController, ADBannerViewDelegate, SKPaymentTrans
     }
     
     @IBAction func facebookButtonPressed() {
-        if let facebookFromAppURL = NSURL(string: URLString.FacebookFromApp) {
-            if UIApplication.sharedApplication().canOpenURL(facebookFromAppURL) {
-                UIApplication.sharedApplication().openURL(facebookFromAppURL)
-            } else {
-                if let facebookURL = NSURL(string: URLString.Facebook) {
-                    UIApplication.sharedApplication().openURL(facebookURL)
-                }
-            }
+        guard let facebookFromAppURL = URL(string: URLString.FacebookFromApp) else { return }
+
+        if UIApplication.shared.canOpenURL(facebookFromAppURL) {
+            UIApplication.shared.openURL(facebookFromAppURL)
+        } else if let facebookURL = URL(string: URLString.Facebook) {
+            UIApplication.shared.openURL(facebookURL)
         }
     }
     
     @IBAction func twitterButtonPressed() {
-        if let twitterFromAppURL = NSURL(string: URLString.TwitterFromApp) {
-            if UIApplication.sharedApplication().canOpenURL(twitterFromAppURL) {
-                UIApplication.sharedApplication().openURL(twitterFromAppURL)
-            } else {
-                if let twitterURL = NSURL(string: URLString.Twitter) {
-                    UIApplication.sharedApplication().openURL(twitterURL)
-                }
-            }
+        guard let twitterFromAppURL = URL(string: URLString.TwitterFromApp) else { return }
+
+        if UIApplication.shared.canOpenURL(twitterFromAppURL) {
+            UIApplication.shared.openURL(twitterFromAppURL)
+        } else if let twitterURL = URL(string: URLString.Twitter) {
+            UIApplication.shared.openURL(twitterURL)
         }
     }
-    
-    
     
 }

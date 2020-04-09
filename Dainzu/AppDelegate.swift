@@ -13,80 +13,56 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func applicationDidFinishLaunching(_ application: UIApplication) {
         // Override point for customization after application launch.
-        
+
         userDefaultsSetup()
-        
+
         UIViewController.prepareInterstitialAds()
-        
-        return true
     }
 
-    func applicationWillResignActive(application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-    }
-
-    func applicationDidEnterBackground(application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    }
-
-    func applicationWillEnterForeground(application: UIApplication) {
-        // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    }
-
-    func applicationDidBecomeActive(application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    }
-
-    func applicationWillTerminate(application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
-    
     // MARK: User Defaults
     private func userDefaultsSetup()
     {
-        let defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = UserDefaults.standard
         
-        if defaults.objectForKey(UserDefaultsKey.ShowAds) == nil {
-            defaults.setBool(UserDefaults.ShowAds, forKey: UserDefaultsKey.ShowAds)
+        if defaults.object(forKey: UserDefaultsKey.ShowAds) == nil {
+            defaults.set(UserDefaultsInitialValues.ShowAds, forKey: UserDefaultsKey.ShowAds)
         }
         
-        if defaults.objectForKey(UserDefaultsKey.MusicOn) == nil {
-            defaults.setBool(UserDefaults.MusicOn, forKey: UserDefaultsKey.MusicOn)
+        if defaults.object(forKey: UserDefaultsKey.MusicOn) == nil {
+            defaults.set(UserDefaultsInitialValues.MusicOn, forKey: UserDefaultsKey.MusicOn)
         }
 
-        if defaults.objectForKey(UserDefaultsKey.DarkColorsOn) == nil {
-            defaults.setBool(UserDefaults.DarkColorsOn, forKey: UserDefaultsKey.DarkColorsOn)
+        if defaults.object(forKey: UserDefaultsKey.DarkColorsOn) == nil {
+            defaults.set(UserDefaultsInitialValues.DarkColorsOn, forKey: UserDefaultsKey.DarkColorsOn)
         }
         
-        if defaults.objectForKey(UserDefaultsKey.GravityNormal) == nil {
-            defaults.setBool(UserDefaults.GravityNormal, forKey: UserDefaultsKey.GravityNormal)
+        if defaults.object(forKey: UserDefaultsKey.GravityNormal) == nil {
+            defaults.set(UserDefaultsInitialValues.GravityNormal, forKey: UserDefaultsKey.GravityNormal)
         }
         
-        if defaults.objectForKey(UserDefaultsKey.CoinsCount) == nil {
-            defaults.setInteger(UserDefaults.CoinsCount, forKey: UserDefaultsKey.CoinsCount)
+        if defaults.object(forKey: UserDefaultsKey.CoinsCount) == nil {
+            defaults.set(UserDefaultsInitialValues.CoinsCount, forKey: UserDefaultsKey.CoinsCount)
         }
         
-        if defaults.objectForKey(UserDefaultsKey.BestScore) == nil {
-            defaults.setInteger(UserDefaults.BestScore, forKey: UserDefaultsKey.BestScore)
+        if defaults.object(forKey: UserDefaultsKey.BestScore) == nil {
+            defaults.set(UserDefaultsInitialValues.BestScore, forKey: UserDefaultsKey.BestScore)
         }
         
         // ball available by default
-        if defaults.objectForKey(UserDefaultsKey.BallDefault) == nil {
-            defaults.setBool(UserDefaults.BallDefault, forKey: UserDefaultsKey.BallDefault)
+        if defaults.object(forKey: UserDefaultsKey.BallDefault) == nil {
+            defaults.set(UserDefaultsInitialValues.BallDefault, forKey: UserDefaultsKey.BallDefault)
         }
         
-        if defaults.objectForKey(UserDefaultsKey.BallSelected) == nil {
-            defaults.setObject(UserDefaults.BallSelected, forKey: UserDefaultsKey.BallSelected)
+        if defaults.object(forKey: UserDefaultsKey.BallSelected) == nil {
+            defaults.set(UserDefaultsInitialValues.BallSelected, forKey: UserDefaultsKey.BallSelected)
         }
         
         // instructions will be shown always the first game after the app launches
-        defaults.setBool(UserDefaults.ShowInstructions, forKey: UserDefaultsKey.ShowInstructions)
-        
+        defaults.set(UserDefaultsInitialValues.ShowInstructions, forKey: UserDefaultsKey.ShowInstructions)
+
+        defaults.synchronize()
     }
 
 
